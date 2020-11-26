@@ -17,31 +17,31 @@ public enum State {
     HANDSHAKING(0){
         {
             serverBound.register(Version.getMinimal(), 0x00, PacketHandshake::new);
-
-            int[] i = new int[16 * 16 * 16];
         }
     },
     STATUS(1){
         {
-            clientBound.register(Version.getMinimal(), 0x00, PacketStatusResponse::new);
-            clientBound.register(Version.getMinimal(), 0x01, PacketStatusPing::new);
             serverBound.register(Version.getMinimal(), 0x01, PacketStatusPing::new);
             serverBound.register(Version.getMinimal(), 0x00, PacketStatusRequest::new);
+            clientBound.register(Version.getMinimal(), 0x00, PacketStatusResponse::new);
+            clientBound.register(Version.getMinimal(), 0x01, PacketStatusPing::new);
         }
     },
     LOGIN(2){
         {
+            serverBound.register(Version.getMinimal(), 0x00, PacketLoginStart::new);
             clientBound.register(Version.getMinimal(), 0x00, PacketDisconnect::new);
             clientBound.register(Version.getMinimal(), 0x02, PacketLoginSuccess::new);
-            serverBound.register(Version.getMinimal(), 0x00, PacketLoginStart::new);
         }
     },
     PLAY(3){
         {
+            serverBound.register(Version.V1_16_4, 0x10, PacketKeepAlive::new);
             clientBound.register(Version.V1_16_4, 0x24, PacketJoinGame::new);
             clientBound.register(Version.V1_16_4, 0x34, PacketPlayerPositionAndLook::new);
             clientBound.register(Version.V1_16_4, 0x1F, PacketKeepAlive::new);
-            serverBound.register(Version.V1_16_4, 0x10, PacketKeepAlive::new);
+            clientBound.register(Version.V1_16_4, 0x0E, PacketChatMessage::new);
+            clientBound.register(Version.V1_16_4, 0x0C, PacketBossBar::new);
         }
     };
 

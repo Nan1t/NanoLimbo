@@ -6,6 +6,8 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import ru.nanit.limbo.LimboConfig;
 import ru.nanit.limbo.connection.ClientChannelInitializer;
 import ru.nanit.limbo.connection.ClientConnection;
+import ru.nanit.limbo.protocol.packets.play.PacketBossBar;
+import ru.nanit.limbo.protocol.packets.play.PacketChatMessage;
 import ru.nanit.limbo.util.Logger;
 import ru.nanit.limbo.world.DimensionRegistry;
 
@@ -22,6 +24,9 @@ public final class LimboServer {
     private final Map<UUID, ClientConnection> connections = new ConcurrentHashMap<>();
     private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
+    private PacketChatMessage joinMessage;
+    private PacketBossBar joinBossBar;
+
     public int getConnectionsCount(){
         return connections.size();
     }
@@ -34,11 +39,21 @@ public final class LimboServer {
         connections.remove(connection.getUuid());
     }
 
+    public PacketChatMessage getJoinMessage() {
+        return joinMessage;
+    }
+
+    public PacketBossBar getJoinBossBar() {
+        return joinBossBar;
+    }
+
     public void start() throws Exception {
         Logger.info("Starting server...");
 
         LimboConfig.load(Paths.get("./settings.properties"));
         DimensionRegistry.init();
+
+        initializeInGameData();
 
         executor.scheduleAtFixedRate(this::broadcastKeepAlive, 0L, 5L, TimeUnit.SECONDS);
 
@@ -50,6 +65,24 @@ public final class LimboServer {
         bootstrap.bind(LimboConfig.getHost(), LimboConfig.getPort());
 
         Logger.info("Server started on %s:%d", LimboConfig.getHost(), LimboConfig.getPort());
+    }
+
+    private void initializeInGameData(){
+        if (LimboConfig.getJoinMessages().getChatMessage() != null){
+            joinMessage = new PacketChatMessage();
+            joinMessage.setJsonData(LimboConfig.getJoinMessages().getChatMessage());
+            joinMessage.setPosition(PacketChatMessage.Position.CHAT);
+            joinMessage.setSender(UUID.randomUUID());
+        }
+
+        if (LimboConfig.getJoinMessages().getBossBarText() != null){
+            joinBossBar = new PacketBossBar();
+            joinBossBar.setTitle(LimboConfig.getJoinMessages().getBossBarText());
+            joinBossBar.setHealth(LimboConfig.getJoinMessages().getBossBarHealth());
+            joinBossBar.setColor(LimboConfig.getJoinMessages().getBossBarColor());
+            joinBossBar.setDivision(LimboConfig.getJoinMessages().getBossBarDivision());
+            joinBossBar.setUuid(UUID.randomUUID());
+        }
     }
 
     private void broadcastKeepAlive(){

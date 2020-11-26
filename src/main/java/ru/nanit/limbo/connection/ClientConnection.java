@@ -98,11 +98,11 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
             server.addConnection(this);
             Logger.info("Player %s connected", this.username);
 
-            startJoinProcess();
+            sendJoinPackets();
         }
     }
 
-    private void startJoinProcess(){
+    private void sendJoinPackets(){
         PacketJoinGame joinGame = new PacketJoinGame();
 
         joinGame.setEntityId(0);
@@ -133,6 +133,14 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         sendPacket(joinGame);
         sendPacket(positionAndLook);
         sendKeepAlive();
+
+        if (server.getJoinMessage() != null){
+            sendPacket(server.getJoinMessage());
+        }
+
+        if (server.getJoinBossBar() != null){
+            sendPacket(server.getJoinBossBar());
+        }
     }
 
     public void disconnect(String reason){
