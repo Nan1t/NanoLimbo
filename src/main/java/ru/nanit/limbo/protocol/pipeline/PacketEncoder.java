@@ -5,7 +5,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 import ru.nanit.limbo.protocol.ByteMessage;
 import ru.nanit.limbo.protocol.Packet;
-import ru.nanit.limbo.protocol.Direction;
 import ru.nanit.limbo.protocol.registry.Version;
 import ru.nanit.limbo.protocol.registry.State;
 import ru.nanit.limbo.util.Logger;
@@ -35,7 +34,7 @@ public class PacketEncoder extends MessageToByteEncoder<Packet> {
         msg.writeVarInt(packetId);
 
         try {
-            packet.encode(msg, Direction.CLIENT, version);
+            packet.encode(msg, version);
         } catch (Exception e){
             Logger.warning("Cannot encode packet 0x%s: %s", Integer.toHexString(packetId), e.getMessage());
         }

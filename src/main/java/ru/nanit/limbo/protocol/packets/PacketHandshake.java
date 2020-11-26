@@ -2,7 +2,6 @@ package ru.nanit.limbo.protocol.packets;
 
 import ru.nanit.limbo.protocol.ByteMessage;
 import ru.nanit.limbo.protocol.Packet;
-import ru.nanit.limbo.protocol.Direction;
 import ru.nanit.limbo.protocol.registry.Version;
 
 public class PacketHandshake implements Packet {
@@ -45,7 +44,7 @@ public class PacketHandshake implements Packet {
     }
 
     @Override
-    public void encode(ByteMessage msg, Direction direction, Version version) {
+    public void encode(ByteMessage msg, Version version) {
         msg.writeVarInt(this.version.getProtocolNumber());
         msg.writeString(host);
         msg.writeShort(port);
@@ -53,7 +52,7 @@ public class PacketHandshake implements Packet {
     }
 
     @Override
-    public void decode(ByteMessage msg, Direction direction, Version version) {
+    public void decode(ByteMessage msg, Version version) {
         this.version = Version.of(msg.readVarInt());
         this.host = msg.readString();
         this.port = msg.readUnsignedShort();

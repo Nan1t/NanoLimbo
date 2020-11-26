@@ -12,7 +12,7 @@ public class PacketLoginStart implements PacketIn {
     }
 
     @Override
-    public void decode(ByteMessage msg, Direction direction, Version version) {
+    public void decode(ByteMessage msg, Version version) {
         this.username = msg.readString();
     }
 

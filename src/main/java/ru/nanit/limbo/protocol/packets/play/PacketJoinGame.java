@@ -2,11 +2,8 @@ package ru.nanit.limbo.protocol.packets.play;
 
 import net.kyori.adventure.nbt.CompoundBinaryTag;
 import ru.nanit.limbo.protocol.ByteMessage;
-import ru.nanit.limbo.protocol.Direction;
 import ru.nanit.limbo.protocol.PacketOut;
 import ru.nanit.limbo.protocol.registry.Version;
-
-import java.util.List;
 
 public class PacketJoinGame implements PacketOut {
 
@@ -14,8 +11,7 @@ public class PacketJoinGame implements PacketOut {
     private boolean isHardcore = false;
     private int gameMode = 2;
     private int previousGameMode = -1;
-    private int worldCount = 1;
-    private List<String> worldNames;
+    private String[] worldNames;
     private CompoundBinaryTag dimensionCodec;
     private CompoundBinaryTag dimension;
     private String worldName;
@@ -43,11 +39,7 @@ public class PacketJoinGame implements PacketOut {
         this.previousGameMode = previousGameMode;
     }
 
-    public void setWorldCount(int worldCount) {
-        this.worldCount = worldCount;
-    }
-
-    public void setWorldNames(List<String> worldNames) {
+    public void setWorldNames(String... worldNames) {
         this.worldNames = worldNames;
     }
 
@@ -92,8 +84,22 @@ public class PacketJoinGame implements PacketOut {
     }
 
     @Override
-    public void encode(ByteMessage msg, Direction direction, Version version) {
-
+    public void encode(ByteMessage msg, Version version) {
+        msg.writeInt(entityId);
+        msg.writeBoolean(isHardcore);
+        msg.writeByte(gameMode);
+        msg.writeByte(previousGameMode);
+        msg.writeStringsArray(worldNames);
+        msg.writeCompoundTag(dimensionCodec);
+        msg.writeCompoundTag(dimension);
+        msg.writeString(worldName);
+        msg.writeLong(hashedSeed);
+        msg.writeVarInt(maxPlayers);
+        msg.writeVarInt(viewDistance);
+        msg.writeBoolean(reducedDebugInfo);
+        msg.writeBoolean(enableRespawnScreen);
+        msg.writeBoolean(isDebug);
+        msg.writeBoolean(isFlat);
     }
 
 }

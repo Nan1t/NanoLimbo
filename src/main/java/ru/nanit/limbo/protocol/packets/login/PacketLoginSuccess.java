@@ -1,7 +1,6 @@
 package ru.nanit.limbo.protocol.packets.login;
 
 import ru.nanit.limbo.protocol.ByteMessage;
-import ru.nanit.limbo.protocol.Direction;
 import ru.nanit.limbo.protocol.PacketOut;
 import ru.nanit.limbo.protocol.registry.Version;
 
@@ -21,7 +20,7 @@ public class PacketLoginSuccess implements PacketOut {
     }
 
     @Override
-    public void encode(ByteMessage msg, Direction direction, Version version) {
+    public void encode(ByteMessage msg, Version version) {
         msg.writeUuid(uuid);
         msg.writeString(username);
     }

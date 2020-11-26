@@ -4,6 +4,8 @@ import ru.nanit.limbo.protocol.Packet;
 import ru.nanit.limbo.protocol.packets.*;
 import ru.nanit.limbo.protocol.packets.login.*;
 import ru.nanit.limbo.protocol.packets.play.PacketJoinGame;
+import ru.nanit.limbo.protocol.packets.play.PacketPlayerPositionAndLook;
+import ru.nanit.limbo.protocol.packets.play.PacketUpdateViewPos;
 import ru.nanit.limbo.protocol.packets.status.PacketStatusPing;
 import ru.nanit.limbo.protocol.packets.status.PacketStatusRequest;
 import ru.nanit.limbo.protocol.packets.status.PacketStatusResponse;
@@ -37,6 +39,8 @@ public enum State {
     PLAY(3){
         {
             clientBound.register(Version.V1_16_4, 0x24, PacketJoinGame::new);
+            clientBound.register(Version.V1_16_4, 0x34, PacketPlayerPositionAndLook::new);
+            clientBound.register(Version.V1_16_4, 0x40, PacketUpdateViewPos::new);
         }
     };
 
