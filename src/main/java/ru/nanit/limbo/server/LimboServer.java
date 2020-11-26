@@ -51,7 +51,7 @@ public final class LimboServer {
         Logger.info("Starting server...");
 
         LimboConfig.load(Paths.get("./settings.properties"));
-        DimensionRegistry.init();
+        DimensionRegistry.init(LimboConfig.getDimensionType());
 
         initializeInGameData();
 

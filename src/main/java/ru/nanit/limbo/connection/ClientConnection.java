@@ -38,6 +38,10 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         return uuid;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
     public ClientConnection(Channel channel, LimboServer server){
         this.server = server;
         this.channel = channel;
@@ -125,19 +129,26 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         joinGame.setWorldNames("minecraft:world");
         joinGame.setHashedSeed(0);
         joinGame.setDimensionCodec(DimensionRegistry.getCodec());
-        joinGame.setDimension(DimensionRegistry.getDimension());
+        joinGame.setDimension(DimensionRegistry.getDefaultDimension());
 
         PacketPlayerPositionAndLook positionAndLook = new PacketPlayerPositionAndLook();
 
-        positionAndLook.setX(0.0);
-        positionAndLook.setY(0.0);
-        positionAndLook.setZ(0.0);
+        positionAndLook.setX(LimboConfig.getSpawnPosition().getX());
+        positionAndLook.setY(LimboConfig.getSpawnPosition().getY());
+        positionAndLook.setZ(LimboConfig.getSpawnPosition().getZ());
         positionAndLook.setYaw(90.0F);
         positionAndLook.setPitch(0.0F);
         positionAndLook.setTeleportId(ThreadLocalRandom.current().nextInt());
 
+        PacketPlayerInfo info = new PacketPlayerInfo();
+
+        info.setConnection(this);
+        info.setGameMode(2);
+
         sendPacket(joinGame);
         sendPacket(positionAndLook);
+        sendPacket(info);
+
         sendKeepAlive();
 
         if (server.getJoinMessage() != null){

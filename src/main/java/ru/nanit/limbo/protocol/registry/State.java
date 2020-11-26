@@ -42,6 +42,7 @@ public enum State {
             clientBound.register(0x1F, PacketKeepAlive::new);
             clientBound.register(0x0E, PacketChatMessage::new);
             clientBound.register(0x0C, PacketBossBar::new);
+            clientBound.register(0x32, PacketPlayerInfo::new);
         }
     };
 
@@ -85,55 +86,5 @@ public enum State {
         }
 
     }
-
-    /*
-
-    Temporary don't needed
-
-    public static class PacketVersionRegistry {
-
-        private final Map<Version, PacketIdRegistry<?>> MAPPINGS = new HashMap<>();
-
-        public PacketIdRegistry<?> getRegistry(Version version){
-            PacketIdRegistry<?> registry = MAPPINGS.get(version);
-            return registry != null ? registry : MAPPINGS.get(version.getClosest(MAPPINGS.keySet()));
-        }
-
-        public <T extends Packet> void register(Version version, int packetId, Supplier<T> supplier){
-            PacketIdRegistry<T> registry = (PacketIdRegistry<T>) MAPPINGS.computeIfAbsent(version, PacketIdRegistry::new);
-            registry.register(packetId, supplier);
-        }
-
-        public static class PacketIdRegistry<T extends Packet> {
-
-            private final Version version;
-            private final Map<Integer, Supplier<T>> packetsById = new HashMap<>();
-            private final Map<Class<?>, Integer> packetIdByClass = new HashMap<>();
-
-            public PacketIdRegistry(Version version){
-                this.version = version;
-            }
-
-            public Version getVersion(){
-                return version;
-            }
-
-            public Packet getPacket(int packetId){
-                Supplier<T> supplier = packetsById.get(packetId);
-                return supplier == null ? null : supplier.get();
-            }
-
-            public int getPacketId(Class<?> packetClass){
-                return packetIdByClass.getOrDefault(packetClass, -1);
-            }
-
-            public void register(int packetId, Supplier<T> supplier){
-                packetsById.put(packetId, supplier);
-                packetIdByClass.put(supplier.get().getClass(), packetId);
-            }
-
-        }
-
-    }*/
 
 }
