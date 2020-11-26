@@ -62,7 +62,11 @@ public final class LimboServer {
                 .channel(NioServerSocketChannel.class)
                 .childHandler(new ClientChannelInitializer(this));
 
-        bootstrap.bind(LimboConfig.getHost(), LimboConfig.getPort());
+        if (LimboConfig.getHost().isEmpty()){
+            bootstrap.bind(LimboConfig.getPort());
+        } else {
+            bootstrap.bind(LimboConfig.getHost(), LimboConfig.getPort());
+        }
 
         Logger.info("Server started on %s:%d", LimboConfig.getHost(), LimboConfig.getPort());
     }
