@@ -7,10 +7,28 @@ import ru.nanit.limbo.LimboConfig;
 import ru.nanit.limbo.connection.ClientChannelInitializer;
 import ru.nanit.limbo.util.Logger;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public final class LimboServer {
+
+    private AtomicInteger playersCount;
+
+    public int getPlayersCount(){
+        return playersCount.get();
+    }
+
+    public void incrementPlayers(){
+        playersCount.incrementAndGet();
+    }
+
+    public void decrementPlayers(){
+        playersCount.decrementAndGet();
+    }
 
     public void start() throws Exception {
         Logger.info("Starting server...");
+
+        playersCount = new AtomicInteger();
 
         ServerBootstrap bootstrap = new ServerBootstrap()
                 .group(new NioEventLoopGroup(), new NioEventLoopGroup())

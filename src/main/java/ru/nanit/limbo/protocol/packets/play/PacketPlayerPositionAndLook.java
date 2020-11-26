@@ -11,7 +11,7 @@ public class PacketPlayerPositionAndLook implements PacketOut {
     private double z;
     private float yaw;
     private float pitch;
-    private byte flags = 0x01;
+    private byte flags = 0x08;
     private int teleportId;
 
     public void setX(double x) {

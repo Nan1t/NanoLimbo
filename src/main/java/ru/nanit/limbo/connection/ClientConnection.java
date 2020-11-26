@@ -4,11 +4,10 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import net.kyori.adventure.nbt.CompoundBinaryTag;
 import ru.nanit.limbo.LimboConfig;
 import ru.nanit.limbo.protocol.packets.login.*;
-import ru.nanit.limbo.protocol.packets.play.PacketJoinGame;
-import ru.nanit.limbo.protocol.packets.play.PacketPlayerPositionAndLook;
-import ru.nanit.limbo.protocol.packets.play.PacketUpdateViewPos;
+import ru.nanit.limbo.protocol.packets.play.*;
 import ru.nanit.limbo.protocol.registry.Version;
 import ru.nanit.limbo.protocol.pipeline.PacketDecoder;
 import ru.nanit.limbo.protocol.pipeline.PacketEncoder;
@@ -21,6 +20,7 @@ import ru.nanit.limbo.server.LimboServer;
 import ru.nanit.limbo.util.Logger;
 import ru.nanit.limbo.util.UuidUtil;
 import ru.nanit.limbo.world.DefaultDimension;
+import ru.nanit.limbo.world.DefaultWorld;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -33,13 +33,14 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
     private String username;
 
     public ClientConnection(Channel channel, LimboServer server){
-        this.channel = channel;
         this.server = server;
+        this.channel = channel;
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         if (state.equals(State.PLAY)){
+            server.decrementPlayers();
             Logger.info("Player %s disconnected", this.username);
         }
         super.channelInactive(ctx);
@@ -47,7 +48,9 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        Logger.error("Unhandled exception: %s", cause.getMessage());
+        if (channel.isActive()){
+            Logger.error("Unhandled exception: %s", cause.getMessage());
+        }
     }
 
     @Override
@@ -71,6 +74,11 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         }
 
         if (packet instanceof PacketLoginStart){
+            if (server.getPlayersCount() >= LimboConfig.getMaxPlayers()){
+                disconnect("Too many players connected");
+                return;
+            }
+
             this.username = ((PacketLoginStart) packet).getUsername();
 
             PacketLoginSuccess loginSuccess = new PacketLoginSuccess();
@@ -80,8 +88,15 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
 
             sendPacket(loginSuccess);
             updateState(State.PLAY);
+
+            server.incrementPlayers();
             Logger.info("Player %s connected", this.username);
+
             startJoinProcess();
+        }
+
+        if (packet instanceof PacketKeepAlive){
+            System.out.println("Get KeepAlive " + ((PacketKeepAlive)packet).getId());
         }
     }
 
@@ -118,9 +133,40 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         updateViewPos.setChunkX(0);
         updateViewPos.setChunkY(0);
 
+        PacketChunkData chunkData = new PacketChunkData();
+
+        chunkData.setChunkX(0);
+        chunkData.setChunkZ(0);
+        chunkData.setFullChunk(false);
+        chunkData.setPrimaryBitMask(1);
+        chunkData.setHeightMaps(DefaultWorld.getHeightMaps());
+        chunkData.setData(new byte[0]);
+        chunkData.setBlockEntities(new CompoundBinaryTag[]{CompoundBinaryTag.empty()});
+
         sendPacket(joinGame);
         sendPacket(positionAndLook);
         sendPacket(updateViewPos);
+        sendPacket(chunkData);
+        sendPacket(updateViewPos);
+        sendPacket(positionAndLook);
+
+        sendKeepAlive();
+    }
+
+    public void disconnect(String reason){
+        if (isConnected() && state == State.LOGIN){
+            PacketDisconnect disconnect = new PacketDisconnect();
+            disconnect.setReason(reason);
+            sendPacketAndClose(disconnect);
+        }
+    }
+
+    public void sendKeepAlive(){
+        if (state.equals(State.PLAY)){
+            PacketKeepAlive keepAlive = new PacketKeepAlive();
+            keepAlive.setId(ThreadLocalRandom.current().nextLong());
+            sendPacket(keepAlive);
+        }
     }
 
     public void sendPacket(Object packet){
@@ -131,18 +177,6 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
     public void sendPacketAndClose(Object packet){
         if (isConnected())
             channel.writeAndFlush(packet).addListener(ChannelFutureListener.CLOSE);
-    }
-
-    public void disconnect(){
-        if (channel.isActive()){
-            channel.close();
-        }
-    }
-
-    public void disconnect(String reason){
-        PacketDisconnect packet = new PacketDisconnect();
-        packet.setReason(reason);
-        sendPacketAndClose(packet);
     }
 
     public boolean isConnected(){

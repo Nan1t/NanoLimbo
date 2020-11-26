@@ -120,6 +120,27 @@ public class ByteMessage extends ByteBuf {
         }
     }
 
+    public void writeVarIntArray(int[] array) {
+        writeVarInt(array.length);
+        for (int i : array) {
+            writeVarInt(i);
+        }
+    }
+
+    public void writeCompoundTagArray(CompoundBinaryTag[] compoundTags) {
+        try {
+            ByteBufOutputStream stream = new ByteBufOutputStream(buf);
+
+            writeVarInt(compoundTags.length);
+
+            for (CompoundBinaryTag tag : compoundTags){
+                BinaryTagIO.writeDataOutput(tag, stream);
+            }
+        } catch (IOException e) {
+            throw new EncoderException("Cannot write NBT CompoundTag");
+        }
+    }
+
     public CompoundBinaryTag readCompoundTag() {
         try {
             return BinaryTagIO.readDataInput(new ByteBufInputStream(buf));
