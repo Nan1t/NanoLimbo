@@ -17,6 +17,8 @@ public enum State {
     HANDSHAKING(0){
         {
             serverBound.register(Version.getMinimal(), 0x00, PacketHandshake::new);
+
+            int[] i = new int[16 * 16 * 16];
         }
     },
     STATUS(1){
@@ -36,12 +38,10 @@ public enum State {
     },
     PLAY(3){
         {
-            clientBound.register(Version.V1_16_4, 0x20, PacketChunkData::new);
             clientBound.register(Version.V1_16_4, 0x24, PacketJoinGame::new);
             clientBound.register(Version.V1_16_4, 0x34, PacketPlayerPositionAndLook::new);
-            clientBound.register(Version.V1_16_4, 0x40, PacketUpdateViewPos::new);
             clientBound.register(Version.V1_16_4, 0x1F, PacketKeepAlive::new);
-            serverBound.register(Version.V1_16_4, 0x1F, PacketKeepAlive::new);
+            serverBound.register(Version.V1_16_4, 0x10, PacketKeepAlive::new);
         }
     };
 

@@ -27,6 +27,12 @@ public class ByteMessage extends ByteBuf {
         this.buf = buf;
     }
 
+    public byte[] toByteArray(){
+        byte[] bytes = new byte[buf.readableBytes()];
+        buf.readBytes(bytes);
+        return bytes;
+    }
+
     /* Minecraft protocol methods */
 
     public int readVarInt() {
@@ -124,6 +130,13 @@ public class ByteMessage extends ByteBuf {
         writeVarInt(array.length);
         for (int i : array) {
             writeVarInt(i);
+        }
+    }
+
+    public void writeLongArray(long[] array) {
+        writeVarInt(array.length);
+        for (long i : array) {
+            writeLong(i);
         }
     }
 
@@ -1124,5 +1137,9 @@ public class ByteMessage extends ByteBuf {
     @Override
     public boolean release(int decrement) {
         return buf.release(decrement);
+    }
+
+    public static ByteMessage create(){
+        return new ByteMessage(Unpooled.buffer());
     }
 }

@@ -17,7 +17,7 @@ public final class LimboConfig {
 
     public static void load(Path file) throws IOException {
         if (!Files.exists(file)){
-            Files.copy(LimboConfig.class.getResourceAsStream("/settings.properties"), file);
+            Files.copy(NanoLimbo.getResource("/settings.properties"), file);
         }
 
         Properties properties = new Properties();

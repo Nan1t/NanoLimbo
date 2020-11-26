@@ -20,8 +20,8 @@ import ru.nanit.limbo.server.LimboServer;
 import ru.nanit.limbo.util.Logger;
 import ru.nanit.limbo.util.UuidUtil;
 import ru.nanit.limbo.world.DefaultDimension;
-import ru.nanit.limbo.world.DefaultWorld;
 
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class ClientConnection extends ChannelInboundHandlerAdapter {
@@ -30,7 +30,17 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
     private final Channel channel;
 
     private State state;
+
+    private UUID uuid;
     private String username;
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public String getUsername() {
+        return username;
+    }
 
     public ClientConnection(Channel channel, LimboServer server){
         this.server = server;
@@ -40,14 +50,14 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         if (state.equals(State.PLAY)){
-            server.decrementPlayers();
+            server.removeConnection(this);
             Logger.info("Player %s disconnected", this.username);
         }
         super.channelInactive(ctx);
     }
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         if (channel.isActive()){
             Logger.error("Unhandled exception: %s", cause.getMessage());
         }
@@ -74,12 +84,13 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         }
 
         if (packet instanceof PacketLoginStart){
-            if (server.getPlayersCount() >= LimboConfig.getMaxPlayers()){
+            if (server.getConnectionsCount() >= LimboConfig.getMaxPlayers()){
                 disconnect("Too many players connected");
                 return;
             }
 
             this.username = ((PacketLoginStart) packet).getUsername();
+            this.uuid = UuidUtil.getOfflineModeUuid(this.username);
 
             PacketLoginSuccess loginSuccess = new PacketLoginSuccess();
 
@@ -89,7 +100,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
             sendPacket(loginSuccess);
             updateState(State.PLAY);
 
-            server.incrementPlayers();
+            server.addConnection(this);
             Logger.info("Player %s connected", this.username);
 
             startJoinProcess();
@@ -122,34 +133,14 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         PacketPlayerPositionAndLook positionAndLook = new PacketPlayerPositionAndLook();
 
         positionAndLook.setX(0.0);
-        positionAndLook.setY(2.0);
+        positionAndLook.setY(0.0);
         positionAndLook.setZ(0.0);
         positionAndLook.setYaw(90.0F);
         positionAndLook.setPitch(0.0F);
         positionAndLook.setTeleportId(ThreadLocalRandom.current().nextInt());
 
-        PacketUpdateViewPos updateViewPos = new PacketUpdateViewPos();
-
-        updateViewPos.setChunkX(0);
-        updateViewPos.setChunkY(0);
-
-        PacketChunkData chunkData = new PacketChunkData();
-
-        chunkData.setChunkX(0);
-        chunkData.setChunkZ(0);
-        chunkData.setFullChunk(false);
-        chunkData.setPrimaryBitMask(1);
-        chunkData.setHeightMaps(DefaultWorld.getHeightMaps());
-        chunkData.setData(new byte[0]);
-        chunkData.setBlockEntities(new CompoundBinaryTag[]{CompoundBinaryTag.empty()});
-
         sendPacket(joinGame);
         sendPacket(positionAndLook);
-        sendPacket(updateViewPos);
-        sendPacket(chunkData);
-        sendPacket(updateViewPos);
-        sendPacket(positionAndLook);
-
         sendKeepAlive();
     }
 
