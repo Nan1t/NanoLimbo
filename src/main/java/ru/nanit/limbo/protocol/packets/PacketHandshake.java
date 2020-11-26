@@ -44,7 +44,7 @@ public class PacketHandshake implements Packet {
     }
 
     @Override
-    public void encode(ByteMessage msg, Version version) {
+    public void encode(ByteMessage msg) {
         msg.writeVarInt(this.version.getProtocolNumber());
         msg.writeString(host);
         msg.writeShort(port);
@@ -52,7 +52,7 @@ public class PacketHandshake implements Packet {
     }
 
     @Override
-    public void decode(ByteMessage msg, Version version) {
+    public void decode(ByteMessage msg) {
         this.version = Version.of(msg.readVarInt());
         this.host = msg.readString();
         this.port = msg.readUnsignedShort();

@@ -2,7 +2,6 @@ package ru.nanit.limbo.protocol.packets.play;
 
 import ru.nanit.limbo.protocol.ByteMessage;
 import ru.nanit.limbo.protocol.PacketOut;
-import ru.nanit.limbo.protocol.registry.Version;
 
 import java.util.UUID;
 
@@ -40,7 +39,7 @@ public class PacketBossBar implements PacketOut {
     }
 
     @Override
-    public void encode(ByteMessage msg, Version version) {
+    public void encode(ByteMessage msg) {
         msg.writeUuid(uuid);
         msg.writeVarInt(0); // Create bossbar
         msg.writeString(title);

@@ -8,11 +8,20 @@ public class PacketStatusResponse implements PacketOut {
 
     private static final String TEMPLATE = "{ \"version\": { \"name\": \"%s\", \"protocol\": %d }, \"players\": { \"max\": %d, \"online\": %d, \"sample\": [] }, \"description\": %s }";
 
+    private int online;
+
+    public PacketStatusResponse(){ }
+
+    public PacketStatusResponse(int online){
+        this.online = online;
+    }
+
     @Override
-    public void encode(ByteMessage msg, Version version) {
+    public void encode(ByteMessage msg) {
         String ver = LimboConfig.getPingData().getVersion();
         String desc = LimboConfig.getPingData().getDescription();
-        String json = getResponseJson(ver, version.getProtocolNumber(), LimboConfig.getMaxPlayers(), 0, desc);
+        String json = getResponseJson(ver, Version.getCurrentSupported().getProtocolNumber(),
+                LimboConfig.getMaxPlayers(), online, desc);
         msg.writeString(json);
     }
 

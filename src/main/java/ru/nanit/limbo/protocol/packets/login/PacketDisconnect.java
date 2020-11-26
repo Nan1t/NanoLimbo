@@ -2,7 +2,6 @@ package ru.nanit.limbo.protocol.packets.login;
 
 import ru.nanit.limbo.protocol.ByteMessage;
 import ru.nanit.limbo.protocol.PacketOut;
-import ru.nanit.limbo.protocol.registry.Version;
 
 public class PacketDisconnect implements PacketOut {
 
@@ -13,7 +12,7 @@ public class PacketDisconnect implements PacketOut {
     }
 
     @Override
-    public void encode(ByteMessage msg, Version version) {
+    public void encode(ByteMessage msg) {
         msg.writeString(String.format("{\"text\": \"%s\"}", reason));
     }
 

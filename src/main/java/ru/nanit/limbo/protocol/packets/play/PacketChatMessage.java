@@ -2,7 +2,6 @@ package ru.nanit.limbo.protocol.packets.play;
 
 import ru.nanit.limbo.protocol.ByteMessage;
 import ru.nanit.limbo.protocol.PacketOut;
-import ru.nanit.limbo.protocol.registry.Version;
 
 import java.util.UUID;
 
@@ -25,7 +24,7 @@ public class PacketChatMessage implements PacketOut {
     }
 
     @Override
-    public void encode(ByteMessage msg, Version version) {
+    public void encode(ByteMessage msg) {
         msg.writeString(jsonData);
         msg.writeByte(position.index);
         msg.writeUuid(sender);

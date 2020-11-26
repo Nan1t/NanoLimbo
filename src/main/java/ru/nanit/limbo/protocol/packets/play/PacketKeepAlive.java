@@ -2,7 +2,6 @@ package ru.nanit.limbo.protocol.packets.play;
 
 import ru.nanit.limbo.protocol.ByteMessage;
 import ru.nanit.limbo.protocol.Packet;
-import ru.nanit.limbo.protocol.registry.Version;
 
 public class PacketKeepAlive implements Packet {
 
@@ -17,12 +16,12 @@ public class PacketKeepAlive implements Packet {
     }
 
     @Override
-    public void encode(ByteMessage msg, Version version) {
+    public void encode(ByteMessage msg) {
         msg.writeLong(id);
     }
 
     @Override
-    public void decode(ByteMessage msg, Version version) {
+    public void decode(ByteMessage msg) {
         this.id = msg.readLong();
     }
 

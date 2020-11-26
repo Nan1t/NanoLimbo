@@ -3,7 +3,6 @@ package ru.nanit.limbo.protocol.packets.play;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
 import ru.nanit.limbo.protocol.ByteMessage;
 import ru.nanit.limbo.protocol.PacketOut;
-import ru.nanit.limbo.protocol.registry.Version;
 
 public class PacketJoinGame implements PacketOut {
 
@@ -84,7 +83,7 @@ public class PacketJoinGame implements PacketOut {
     }
 
     @Override
-    public void encode(ByteMessage msg, Version version) {
+    public void encode(ByteMessage msg) {
         msg.writeInt(entityId);
         msg.writeBoolean(isHardcore);
         msg.writeByte(gameMode);

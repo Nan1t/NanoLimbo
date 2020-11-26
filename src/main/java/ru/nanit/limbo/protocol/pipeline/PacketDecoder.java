@@ -5,18 +5,15 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
 import ru.nanit.limbo.protocol.*;
 import ru.nanit.limbo.protocol.registry.State;
-import ru.nanit.limbo.protocol.registry.Version;
 import ru.nanit.limbo.util.Logger;
 
 import java.util.List;
 
 public class PacketDecoder extends MessageToMessageDecoder<ByteBuf> {
 
-    private State.PacketVersionRegistry.PacketIdRegistry<?> mappings;
-    private Version version;
+    private State.PacketRegistry mappings;
 
     public PacketDecoder(){
-        updateVersion(Version.getMinimal());
         updateState(State.HANDSHAKING);
     }
 
@@ -30,7 +27,7 @@ public class PacketDecoder extends MessageToMessageDecoder<ByteBuf> {
 
         if (packet != null){
             try {
-                packet.decode(msg, mappings.getVersion());
+                packet.decode(msg);
             } catch (Exception e){
                 Logger.warning("Cannot decode packet 0x%s: %s", Integer.toHexString(packetId), e.getMessage());
             }
@@ -41,12 +38,8 @@ public class PacketDecoder extends MessageToMessageDecoder<ByteBuf> {
         }
     }
 
-    public void updateVersion(Version version){
-        this.version = version;
-    }
-
     public void updateState(State state){
-        this.mappings = state.serverBound.getRegistry(version);
+        this.mappings = state.serverBound;
     }
 
 }

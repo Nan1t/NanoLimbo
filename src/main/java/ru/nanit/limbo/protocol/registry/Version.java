@@ -1,6 +1,5 @@
 package ru.nanit.limbo.protocol.registry;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,8 +43,8 @@ public enum Version {
         }
     }
 
-    public static Version getMinimal(){
-        return V1_9;
+    public static Version getCurrentSupported(){
+        return V1_16_4;
     }
 
     public static Version of(int protocolNumber){
@@ -60,18 +59,6 @@ public enum Version {
 
     public int getProtocolNumber(){
         return this.protocolNumber;
-    }
-
-    public Version getClosest(Collection<Version> available){
-        Version closest = getMinimal();
-
-        for (Version version : available){
-            if (version.protocolNumber > closest.protocolNumber && version.protocolNumber < this.protocolNumber){
-                closest = version;
-            }
-        }
-
-        return closest;
     }
 
 }
