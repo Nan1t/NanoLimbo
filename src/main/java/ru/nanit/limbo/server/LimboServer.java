@@ -7,7 +7,7 @@ import ru.nanit.limbo.LimboConfig;
 import ru.nanit.limbo.connection.ClientChannelInitializer;
 import ru.nanit.limbo.connection.ClientConnection;
 import ru.nanit.limbo.util.Logger;
-import ru.nanit.limbo.world.DefaultDimension;
+import ru.nanit.limbo.world.DimensionRegistry;
 
 import java.nio.file.Paths;
 import java.util.Map;
@@ -38,7 +38,7 @@ public final class LimboServer {
         Logger.info("Starting server...");
 
         LimboConfig.load(Paths.get("./settings.properties"));
-        DefaultDimension.init();
+        DimensionRegistry.init();
 
         executor.scheduleAtFixedRate(this::broadcastKeepAlive, 0L, 5L, TimeUnit.SECONDS);
 

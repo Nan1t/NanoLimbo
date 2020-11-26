@@ -3,7 +3,7 @@ package ru.nanit.limbo.world;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.kyori.adventure.nbt.ListBinaryTag;
 
-public final class DefaultDimension {
+public final class DimensionRegistry {
 
     private static CompoundBinaryTag CODEC;
     private static CompoundBinaryTag DIMENSION;

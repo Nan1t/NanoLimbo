@@ -16,31 +16,27 @@ public class VarIntFrameDecoder extends ByteToMessageDecoder {
             return;
         }
 
-        final VarIntByteDecoder reader = new VarIntByteDecoder();
+        VarIntByteDecoder reader = new VarIntByteDecoder();
+        int varIntEnd = in.forEachByte(reader);
 
-        int varintEnd = in.forEachByte(reader);
-
-        if (varintEnd == -1) {
-            return;
-        }
+        if (varIntEnd == -1) return;
 
         if (reader.getResult() == VarIntByteDecoder.DecodeResult.SUCCESS) {
-            int readVarint = reader.getReadVarint();
+            int readVarInt = reader.getReadVarInt();
             int bytesRead = reader.getBytesRead();
-            if (readVarint < 0) {
-                Logger.error("BAD_LENGTH_CACHED");
-            } else if (readVarint == 0) {
-                // skip over the empty packet and ignore it
-                in.readerIndex(varintEnd + 1);
+            if (readVarInt < 0) {
+                Logger.error("[VarIntFrameDecoder] Bad data length");
+            } else if (readVarInt == 0) {
+                in.readerIndex(varIntEnd + 1);
             } else {
-                int minimumRead = bytesRead + readVarint;
+                int minimumRead = bytesRead + readVarInt;
                 if (in.isReadable(minimumRead)) {
-                    out.add(in.retainedSlice(varintEnd + 1, readVarint));
+                    out.add(in.retainedSlice(varIntEnd + 1, readVarInt));
                     in.skipBytes(minimumRead);
                 }
             }
         } else if (reader.getResult() == VarIntByteDecoder.DecodeResult.TOO_BIG) {
-            Logger.error("Too big");
+            Logger.error("[VarIntFrameDecoder] Too big data");
         }
     }
 }

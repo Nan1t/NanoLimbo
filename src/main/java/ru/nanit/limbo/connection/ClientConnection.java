@@ -4,7 +4,6 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import net.kyori.adventure.nbt.CompoundBinaryTag;
 import ru.nanit.limbo.LimboConfig;
 import ru.nanit.limbo.protocol.packets.login.*;
 import ru.nanit.limbo.protocol.packets.play.*;
@@ -19,7 +18,7 @@ import ru.nanit.limbo.protocol.registry.State;
 import ru.nanit.limbo.server.LimboServer;
 import ru.nanit.limbo.util.Logger;
 import ru.nanit.limbo.util.UuidUtil;
-import ru.nanit.limbo.world.DefaultDimension;
+import ru.nanit.limbo.world.DimensionRegistry;
 
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
@@ -36,10 +35,6 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
 
     public UUID getUuid() {
         return uuid;
-    }
-
-    public String getUsername() {
-        return username;
     }
 
     public ClientConnection(Channel channel, LimboServer server){
@@ -105,10 +100,6 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
 
             startJoinProcess();
         }
-
-        if (packet instanceof PacketKeepAlive){
-            System.out.println("Get KeepAlive " + ((PacketKeepAlive)packet).getId());
-        }
     }
 
     private void startJoinProcess(){
@@ -127,8 +118,8 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         joinGame.setWorldName("minecraft:world");
         joinGame.setWorldNames("minecraft:world");
         joinGame.setHashedSeed(0);
-        joinGame.setDimensionCodec(DefaultDimension.getCodec());
-        joinGame.setDimension(DefaultDimension.getDimension());
+        joinGame.setDimensionCodec(DimensionRegistry.getCodec());
+        joinGame.setDimension(DimensionRegistry.getDimension());
 
         PacketPlayerPositionAndLook positionAndLook = new PacketPlayerPositionAndLook();
 

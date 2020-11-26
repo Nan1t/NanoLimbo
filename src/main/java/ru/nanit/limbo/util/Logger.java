@@ -1,11 +1,15 @@
 package ru.nanit.limbo.util;
 
+import ru.nanit.limbo.LimboConfig;
+
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 public final class Logger {
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("hh:mm:ss");
+
+    private Logger(){}
 
     public static void info(Object msg, Object... args){
         print(Level.INFO, msg, null, args);
@@ -32,8 +36,10 @@ public final class Logger {
     }
 
     public static void print(Level level, Object msg, Throwable t, Object... args){
-        System.out.println(String.format("%s: %s", getPrefix(level), String.format(msg.toString(), args)));
-        if (t != null) t.printStackTrace();
+        if (LimboConfig.getDebugLevel() >= level.getIndex()){
+            System.out.println(String.format("%s: %s", getPrefix(level), String.format(msg.toString(), args)));
+            if (t != null) t.printStackTrace();
+        }
     }
 
     private static String getPrefix(Level level){
@@ -46,18 +52,24 @@ public final class Logger {
 
     public enum Level {
 
-        INFO ("INFO"),
-        WARNING("WARNING"),
-        ERROR("ERROR");
+        INFO ("INFO", 1),
+        WARNING("WARNING", 2),
+        ERROR("ERROR", 3);
 
         private final String display;
+        private final int index;
 
-        Level(String display){
+        Level(String display, int index){
             this.display = display;
+            this.index = index;
         }
 
         public String getDisplay() {
             return display;
+        }
+
+        public int getIndex() {
+            return index;
         }
     }
 }

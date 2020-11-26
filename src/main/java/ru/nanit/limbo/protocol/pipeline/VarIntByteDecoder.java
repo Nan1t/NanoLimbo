@@ -22,7 +22,7 @@ public class VarIntByteDecoder implements ByteProcessor {
         return true;
     }
 
-    public int getReadVarint() {
+    public int getReadVarInt() {
         return readVarInt;
     }
 

@@ -10,14 +10,14 @@ import ru.nanit.limbo.protocol.ByteMessage;
 public class VarIntLengthEncoder extends MessageToByteEncoder<ByteBuf> {
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, ByteBuf buf, ByteBuf out) throws Exception {
+    protected void encode(ChannelHandlerContext ctx, ByteBuf buf, ByteBuf out) {
         ByteMessage msg = new ByteMessage(out);
         msg.writeVarInt(buf.readableBytes());
         msg.writeBytes(buf);
     }
 
     @Override
-    protected ByteBuf allocateBuffer(ChannelHandlerContext ctx, ByteBuf msg, boolean preferDirect) throws Exception {
+    protected ByteBuf allocateBuffer(ChannelHandlerContext ctx, ByteBuf msg, boolean preferDirect) {
         int anticipatedRequiredCapacity = 5 + msg.readableBytes();
         return ctx.alloc().heapBuffer(anticipatedRequiredCapacity);
     }
