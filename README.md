@@ -5,15 +5,24 @@ The main goal of the project is maximum simplicity with a minimum number of sent
 This limbo is empty, there are no ability to set schematic building since 
 this is not necessary. You can send useful information in chat or BossBar.
 
+No plugins, no logs. The server is fully clear. It only able keep a lot of players while the main server is down.
+
 The general features is:
 * High performance. The server not saves and not cached any useless (for limbo) data.
 * Support for BungeeCord and Velocity info forwarding.
 * All necessary data are configurable.
 * Lightweight. App size is around 1.5 MB.
 
+### Protocol support
+
+The server written based on `1.16.4` minecraft protocol. You can use `ViaVersion` 
+or another protocol hack on your **proxy server** to achieve compatibility with other versions.
+However, compatibility with other versions is in the plans, but not the nearest ones, since there 
+is a way to do this using a plugin that is installed on most networks.
+
 ### Commands
 
-There are no commands. To close server just run Ctrl+C in terminal. It will be closed correctly.
+There are no commands. To close server just run `Ctrl+C` in the terminal. It will be closed correctly.
 
 ### Installation
 
