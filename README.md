@@ -47,7 +47,7 @@ which will not significantly load the server.
 
 ### Building
 
-The app use `Gradle` to build and minimize .jar file.
+The project uses `Gradle` to build and minimize output .jar file.
 Run `shadowJar` task to build minimized executable jar file.
 
 ### Contacts
