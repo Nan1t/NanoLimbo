@@ -49,3 +49,7 @@ which will not significantly load the server.
 
 The app use `Gradle` to build and minimize .jar file.
 Run `shadowJar` task to build minimized executable jar file.
+
+### Contacts
+
+If you have any question or offer, join to [Discord server](https://discord.gg/4VGP3Gv)
