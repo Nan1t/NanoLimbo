@@ -1,9 +1,9 @@
-.idea
-.gradle
-gradle
+/.idea/
+/.gradle/
+/gradle/
 gradlew
 gradlew.bat
-build
+/build/
 
 # Do it with jenkins in the future
-!build/libs
+!/build/libs/
