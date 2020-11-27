@@ -66,7 +66,7 @@ public class ByteMessage extends ByteBuf {
         return readString(readVarInt());
     }
 
-    private String readString(int length) {
+    public String readString(int length) {
         String str = buf.toString(buf.readerIndex(), length, StandardCharsets.UTF_8);
         buf.skipBytes(length);
         return str;

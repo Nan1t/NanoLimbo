@@ -30,8 +30,10 @@ public enum State {
     LOGIN(2){
         {
             serverBound.register(0x00, PacketLoginStart::new);
+            serverBound.register(0x02, PacketLoginPluginResponse::new);
             clientBound.register(0x00, PacketDisconnect::new);
             clientBound.register(0x02, PacketLoginSuccess::new);
+            clientBound.register(0x04, PacketLoginPluginRequest::new);
         }
     },
     PLAY(3){

@@ -12,6 +12,7 @@ import ru.nanit.limbo.protocol.packets.play.PacketBossBar;
 import ru.nanit.limbo.protocol.packets.play.PacketChatMessage;
 import ru.nanit.limbo.server.data.*;
 import ru.nanit.limbo.util.Logger;
+import ru.nanit.limbo.util.VelocityUtil;
 import ru.nanit.limbo.world.DimensionRegistry;
 
 import java.net.SocketAddress;
@@ -63,6 +64,10 @@ public final class LimboServer {
         config.load();
 
         Logger.setLevel(config.getDebugLevel());
+
+        if (config.getInfoForwarding().isModern()){
+            VelocityUtil.init(config);
+        }
 
         dimensionRegistry = new DimensionRegistry();
         dimensionRegistry.load(config.getDimensionType());

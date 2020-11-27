@@ -41,5 +41,4 @@ public class PacketDecoder extends MessageToMessageDecoder<ByteBuf> {
     public void updateState(State state){
         this.mappings = state.serverBound;
     }
-
 }

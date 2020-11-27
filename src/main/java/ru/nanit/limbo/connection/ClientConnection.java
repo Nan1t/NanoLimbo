@@ -1,9 +1,11 @@
 package ru.nanit.limbo.connection;
 
+import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import ru.nanit.limbo.LimboConstants;
 import ru.nanit.limbo.protocol.packets.login.*;
 import ru.nanit.limbo.protocol.packets.play.*;
 import ru.nanit.limbo.protocol.pipeline.PacketDecoder;
@@ -17,7 +19,10 @@ import ru.nanit.limbo.protocol.registry.Version;
 import ru.nanit.limbo.server.LimboServer;
 import ru.nanit.limbo.util.Logger;
 import ru.nanit.limbo.util.UuidUtil;
+import ru.nanit.limbo.util.VelocityUtil;
 
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -25,31 +30,38 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
 
     private final LimboServer server;
     private final Channel channel;
+    private final GameProfile profile;
 
     private State state;
     private Version clientVersion;
+    private SocketAddress address;
 
-    private UUID uuid;
-    private String username;
-
-    public UUID getUuid() {
-        return uuid;
-    }
-
-    public String getUsername() {
-        return username;
-    }
+    private int velocityLoginMessageId = -1;
 
     public ClientConnection(Channel channel, LimboServer server){
         this.server = server;
         this.channel = channel;
+        this.address = channel.remoteAddress();
+        this.profile = new GameProfile();
+    }
+
+    public UUID getUuid() {
+        return profile.getUuid();
+    }
+
+    public String getUsername() {
+        return profile.getUsername();
+    }
+
+    private void setAddress(String host){
+        this.address = new InetSocketAddress(host, ((InetSocketAddress)this.address).getPort());
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         if (state.equals(State.PLAY)){
             server.getConnections().removeConnection(this);
-            Logger.info("Player %s disconnected", this.username);
+            Logger.info("Player %s disconnected", getUsername());
         }
         super.channelInactive(ctx);
     }
@@ -69,9 +81,20 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
     public void handlePacket(Object packet){
         if (packet instanceof PacketHandshake){
             PacketHandshake handshake = (PacketHandshake) packet;
-            updateState(State.getById(handshake.getNextState()));
             clientVersion = handshake.getVersion();
-            Logger.debug("Pinged from " + handshake.getHost() + ":" + handshake.getPort());
+            updateState(State.getById(handshake.getNextState()));
+            Logger.debug("Pinged from " + address);
+
+            if (server.getConfig().getInfoForwarding().isLegacy()){
+                String[] split = handshake.getHost().split("\00");
+
+                if (split.length == 3 || split.length == 4){
+                    setAddress(split[1]);
+                    profile.setUuid(UuidUtil.fromString(split[2]));
+                } else {
+                    disconnect("You've enabled player info forwarding. To join, enable it in your proxy too");
+                }
+            }
         }
 
         if (packet instanceof PacketStatusRequest){
@@ -93,22 +116,66 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
                 return;
             }
 
-            this.username = ((PacketLoginStart) packet).getUsername();
-            this.uuid = UuidUtil.getOfflineModeUuid(this.username);
+            if (server.getConfig().getInfoForwarding().isModern()){
+                velocityLoginMessageId = ThreadLocalRandom.current().nextInt(0, Integer.MAX_VALUE);
+                PacketLoginPluginRequest request = new PacketLoginPluginRequest();
+                request.setMessageId(velocityLoginMessageId);
+                request.setChannel(LimboConstants.VELOCITY_INFO_CHANNEL);
+                request.setData(Unpooled.EMPTY_BUFFER);
+                sendPacket(request);
+                return;
+            }
 
-            PacketLoginSuccess loginSuccess = new PacketLoginSuccess();
+            if (server.getConfig().getInfoForwarding().isNone()){
+                profile.setUsername(((PacketLoginStart) packet).getUsername());
+                profile.setUuid(UuidUtil.getOfflineModeUuid(getUsername()));
+            }
 
-            loginSuccess.setUuid(UuidUtil.getOfflineModeUuid(this.username));
-            loginSuccess.setUsername(this.username);
-
-            sendPacket(loginSuccess);
-            updateState(State.PLAY);
-
-            server.getConnections().addConnection(this);
-            Logger.info("Player %s connected (%s)", this.username, channel.remoteAddress());
-
-            sendJoinPackets();
+            fireLoginSuccess();
         }
+
+        if (packet instanceof PacketLoginPluginResponse){
+            PacketLoginPluginResponse response = (PacketLoginPluginResponse) packet;
+
+            if (server.getConfig().getInfoForwarding().isModern()
+                    && response.getMessageId() == velocityLoginMessageId){
+
+                if (!response.isSuccessful() || response.getData() == null){
+                    disconnect("You need to connect with Velocity");
+                    return;
+                }
+
+                if (!VelocityUtil.checkIntegrity(response.getData())) {
+                    disconnect("Can't verify forwarded player info");
+                    return;
+                }
+
+                setAddress(response.getData().readString());
+                profile.setUuid(response.getData().readUuid());
+                profile.setUsername(response.getData().readString());
+
+                fireLoginSuccess();
+            }
+        }
+    }
+
+    private void fireLoginSuccess(){
+        if (server.getConfig().getInfoForwarding().isModern() && velocityLoginMessageId == -1){
+            disconnect("You need to connect with Velocity");
+            return;
+        }
+
+        PacketLoginSuccess loginSuccess = new PacketLoginSuccess();
+        loginSuccess.setUuid(UuidUtil.getOfflineModeUuid(getUsername()));
+        loginSuccess.setUsername(getUsername());
+        sendPacket(loginSuccess);
+
+        updateState(State.PLAY);
+        server.getConnections().addConnection(this);
+
+        Logger.info("Player %s connected (%s)", getUsername(), address);
+
+        sendJoinPackets();
     }
 
     private void sendJoinPackets(){

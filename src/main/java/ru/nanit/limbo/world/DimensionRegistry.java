@@ -57,12 +57,12 @@ public final class DimensionRegistry {
         overWorld = CompoundBinaryTag.builder()
                 .putString("name", "minecraft:overworld")
                 .putByte("piglin_safe", (byte) 0)
-                .putByte("natural", (byte) 0)
+                .putByte("natural", (byte) 1)
                 .putFloat("ambient_light", 0.0F)
                 .putString("infiniburn", "minecraft:infiniburn_overworld")
                 .putByte("respawn_anchor_works", (byte) 0)
-                .putByte("has_skylight", (byte) 0)
-                .putByte("bed_works", (byte) 0)
+                .putByte("has_skylight", (byte) 1)
+                .putByte("bed_works", (byte) 1)
                 .putString("effects", "minecraft:overworld")
                 .putLong("fixed_time", 6000L)
                 .putByte("has_raids", (byte) 1)
@@ -74,20 +74,20 @@ public final class DimensionRegistry {
 
         nether = CompoundBinaryTag.builder()
                 .putString("name", "minecraft:the_nether")
-                .putByte("piglin_safe", (byte) 0)
+                .putByte("piglin_safe", (byte) 1)
                 .putByte("natural", (byte) 0)
-                .putFloat("ambient_light", 0.0F)
+                .putFloat("ambient_light", 0.1F)
                 .putString("infiniburn", "minecraft:infiniburn_nether")
-                .putByte("respawn_anchor_works", (byte) 0)
+                .putByte("respawn_anchor_works", (byte) 1)
                 .putByte("has_skylight", (byte) 0)
                 .putByte("bed_works", (byte) 0)
                 .putString("effects", "minecraft:the_nether")
                 .putLong("fixed_time", 18000L)
-                .putByte("has_raids", (byte) 1)
+                .putByte("has_raids", (byte) 0)
                 .putInt("logical_height", 128)
                 .putDouble("coordinate_scale", 1.0)
-                .putByte("ultrawarm", (byte) 0)
-                .putByte("has_ceiling", (byte) 0)
+                .putByte("ultrawarm", (byte) 1)
+                .putByte("has_ceiling", (byte) 1)
                 .build();
 
         theEnd = CompoundBinaryTag.builder()
@@ -110,13 +110,13 @@ public final class DimensionRegistry {
 
         CompoundBinaryTag overWorldData = CompoundBinaryTag.builder()
                 .putString("name", "minecraft:overworld")
-                .putInt("id", 2)
+                .putInt("id", 0)
                 .put("element", overWorld)
                 .build();
 
         CompoundBinaryTag netherData = CompoundBinaryTag.builder()
                 .putString("name", "minecraft:the_nether")
-                .putInt("id", 2)
+                .putInt("id", 1)
                 .put("element", nether)
                 .build();
 

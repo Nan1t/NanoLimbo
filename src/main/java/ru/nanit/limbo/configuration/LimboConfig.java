@@ -35,7 +35,7 @@ public final class LimboConfig {
 
     public void load() throws Exception {
         Configuration conf = YamlConfiguration.builder()
-                .source(ConfigSources.resource("/limbo.yml", this).copyTo(root))
+                .source(ConfigSources.resource("/settings.yml", this).copyTo(root))
                 .build();
 
         conf.reload();

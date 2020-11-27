@@ -4,19 +4,31 @@ import napi.configurate.data.ConfigNode;
 import napi.configurate.serializing.NodeSerializer;
 import napi.configurate.serializing.NodeSerializingException;
 
-import java.util.Optional;
+import java.nio.charset.StandardCharsets;
 
 public class InfoForwarding {
 
     private Type type;
-    private String secret;
+    private byte[] secretKey;
 
     public Type getType() {
         return type;
     }
 
-    public Optional<String> getSecret() {
-        return Optional.ofNullable(secret);
+    public byte[] getSecretKey() {
+        return secretKey;
+    }
+
+    public boolean isNone(){
+        return type == Type.NONE;
+    }
+
+    public boolean isLegacy(){
+        return type == Type.LEGACY;
+    }
+
+    public boolean isModern(){
+        return type == Type.MODERN;
     }
 
     public enum Type {
@@ -38,14 +50,14 @@ public class InfoForwarding {
             }
 
             if (forwarding.type == Type.MODERN){
-                forwarding.secret = node.getNode("secret").getString();
+                forwarding.secretKey = node.getNode("secret").getString().getBytes(StandardCharsets.UTF_8);
             }
 
             return forwarding;
         }
 
         @Override
-        public void serialize(InfoForwarding infoForwarding, ConfigNode configNode) throws NodeSerializingException {
+        public void serialize(InfoForwarding infoForwarding, ConfigNode configNode) {
 
         }
     }
