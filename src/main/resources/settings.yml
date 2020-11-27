@@ -21,7 +21,7 @@ dimension: THE_END
 # Spawn position in the world
 spawnPosition:
   x: 0.0
-  y: 32.0
+  y: 64.0
   z: 0.0
   yaw: 0.0
   pitch: 0.0

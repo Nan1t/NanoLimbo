@@ -92,7 +92,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
                     setAddress(split[1]);
                     profile.setUuid(UuidUtil.fromString(split[2]));
                 } else {
-                    disconnect("You've enabled player info forwarding. To join, enable it in your proxy too");
+                    disconnect("You've enabled player info forwarding. You need to connect with proxy");
                 }
             }
         }
@@ -126,9 +126,11 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
                 return;
             }
 
-            if (server.getConfig().getInfoForwarding().isNone()){
+            if (!server.getConfig().getInfoForwarding().isModern()){
                 profile.setUsername(((PacketLoginStart) packet).getUsername());
-                profile.setUuid(UuidUtil.getOfflineModeUuid(getUsername()));
+
+                if (profile.getUuid() == null)
+                    profile.setUuid(UuidUtil.getOfflineModeUuid(getUsername()));
             }
 
             fireLoginSuccess();
