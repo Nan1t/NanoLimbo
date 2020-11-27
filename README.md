@@ -7,7 +7,7 @@ this is not necessary. You can send useful information in chat or BossBar.
 
 No plugins, no logs. The server is fully clear. It only able keep a lot of players while the main server is down.
 
-The general features is:
+The general features:
 * High performance. The server not saves and not cached any useless (for limbo) data.
 * Support for **BungeeCord** and **Velocity** info forwarding.
 * All necessary data are configurable.
