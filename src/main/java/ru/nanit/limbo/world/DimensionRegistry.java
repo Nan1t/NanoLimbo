@@ -6,11 +6,55 @@ import ru.nanit.limbo.util.Logger;
 
 public final class DimensionRegistry {
 
-    private static CompoundBinaryTag codec;
-    private static CompoundBinaryTag defaultDimension;
+    private CompoundBinaryTag defaultDimension;
 
-    public static void init(String defaultDimensionName){
-        CompoundBinaryTag overworld = CompoundBinaryTag.builder()
+    private CompoundBinaryTag codec;
+    private CompoundBinaryTag overWorld;
+    private CompoundBinaryTag theEnd;
+    private CompoundBinaryTag nether;
+
+    public CompoundBinaryTag getCodec(){
+        return codec;
+    }
+
+    public CompoundBinaryTag getDefaultDimension() {
+        return defaultDimension;
+    }
+
+    public CompoundBinaryTag getOverWorld() {
+        return overWorld;
+    }
+
+    public CompoundBinaryTag getTheEnd() {
+        return theEnd;
+    }
+
+    public CompoundBinaryTag getNether() {
+        return nether;
+    }
+
+    public void load(String def){
+        initDimensions();
+
+        switch (def.toLowerCase()){
+            case "overworld":
+                defaultDimension = overWorld;
+                break;
+            case "nether":
+                defaultDimension = nether;
+                break;
+            case "the_end":
+                defaultDimension = theEnd;
+                break;
+            default:
+                defaultDimension = theEnd;
+                Logger.warning("Undefined dimension type: '%s'. Using THE_END as default", def);
+                break;
+        }
+    }
+
+    private void initDimensions(){
+        overWorld = CompoundBinaryTag.builder()
                 .putString("name", "minecraft:overworld")
                 .putByte("piglin_safe", (byte) 0)
                 .putByte("natural", (byte) 0)
@@ -28,7 +72,7 @@ public final class DimensionRegistry {
                 .putByte("has_ceiling", (byte) 0)
                 .build();
 
-        CompoundBinaryTag nether = CompoundBinaryTag.builder()
+        nether = CompoundBinaryTag.builder()
                 .putString("name", "minecraft:the_nether")
                 .putByte("piglin_safe", (byte) 0)
                 .putByte("natural", (byte) 0)
@@ -46,7 +90,7 @@ public final class DimensionRegistry {
                 .putByte("has_ceiling", (byte) 0)
                 .build();
 
-        CompoundBinaryTag theEnd = CompoundBinaryTag.builder()
+        theEnd = CompoundBinaryTag.builder()
                 .putString("name", "minecraft:the_end")
                 .putByte("piglin_safe", (byte) 0)
                 .putByte("natural", (byte) 0)
@@ -64,10 +108,10 @@ public final class DimensionRegistry {
                 .putByte("has_ceiling", (byte) 0)
                 .build();
 
-        CompoundBinaryTag overworldData = CompoundBinaryTag.builder()
+        CompoundBinaryTag overWorldData = CompoundBinaryTag.builder()
                 .putString("name", "minecraft:overworld")
                 .putInt("id", 2)
-                .put("element", overworld)
+                .put("element", overWorld)
                 .build();
 
         CompoundBinaryTag netherData = CompoundBinaryTag.builder()
@@ -111,7 +155,7 @@ public final class DimensionRegistry {
                 .put("minecraft:dimension_type", CompoundBinaryTag.builder()
                         .putString("type", "minecraft:dimension_type")
                         .put("value", ListBinaryTag.builder()
-                                .add(overworldData)
+                                .add(overWorldData)
                                 .add(netherData)
                                 .add(endData)
                                 .build())
@@ -123,29 +167,5 @@ public final class DimensionRegistry {
                                 .build())
                         .build())
                 .build();
-
-        switch (defaultDimensionName.toLowerCase()){
-            case "overworld":
-                defaultDimension = overworld;
-                break;
-            case "nether":
-                defaultDimension = nether;
-                break;
-            case "the_end":
-                defaultDimension = theEnd;
-                break;
-            default:
-                defaultDimension = theEnd;
-                Logger.error("Undefined dimension type: '%s'. Using THE_END as default", defaultDimensionName);
-                break;
-        }
-    }
-
-    public static CompoundBinaryTag getCodec(){
-        return codec;
-    }
-
-    public static CompoundBinaryTag getDefaultDimension() {
-        return defaultDimension;
     }
 }

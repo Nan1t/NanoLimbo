@@ -3,8 +3,6 @@ package ru.nanit.limbo;
 import ru.nanit.limbo.server.LimboServer;
 import ru.nanit.limbo.util.Logger;
 
-import java.io.InputStream;
-
 public final class NanoLimbo {
 
     public static void main(String[] args){
@@ -15,7 +13,4 @@ public final class NanoLimbo {
         }
     }
 
-    public static InputStream getResource(String path){
-        return NanoLimbo.class.getResourceAsStream(path);
-    }
 }

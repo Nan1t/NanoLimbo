@@ -1,27 +1,28 @@
 package ru.nanit.limbo.protocol.packets.status;
 
-import ru.nanit.limbo.LimboConfig;
 import ru.nanit.limbo.protocol.*;
 import ru.nanit.limbo.protocol.registry.Version;
+import ru.nanit.limbo.server.LimboServer;
 
 public class PacketStatusResponse implements PacketOut {
 
     private static final String TEMPLATE = "{ \"version\": { \"name\": \"%s\", \"protocol\": %d }, \"players\": { \"max\": %d, \"online\": %d, \"sample\": [] }, \"description\": %s }";
 
-    private int online;
+    private LimboServer server;
 
     public PacketStatusResponse(){ }
 
-    public PacketStatusResponse(int online){
-        this.online = online;
+    public PacketStatusResponse(LimboServer server){
+        this.server = server;
     }
 
     @Override
     public void encode(ByteMessage msg) {
-        String ver = LimboConfig.getPingData().getVersion();
-        String desc = LimboConfig.getPingData().getDescription();
+        String ver = server.getConfig().getPingData().getVersion();
+        String desc = server.getConfig().getPingData().getDescription();
         String json = getResponseJson(ver, Version.getCurrentSupported().getProtocolNumber(),
-                LimboConfig.getMaxPlayers(), online, desc);
+                server.getConfig().getMaxPlayers(), server.getConnections().getCount(), desc);
+
         msg.writeString(json);
     }
 

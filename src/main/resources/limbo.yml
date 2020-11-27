@@ -1,0 +1,60 @@
+#
+# NanoLimbo configuration
+#
+
+# Server's host address and port. Set ip empty to use public address
+bind:
+  ip: 'localhost'
+  port: 65535
+
+# Max amount of players can join to server
+maxPlayers: 100
+
+# Server's data in servers list
+ping:
+  description: '{"text": "&9NanoLimbo"}'
+  version: 'NanoLimbo'
+
+# Available dimensions: OVERWORLD, NETHER, THE_END
+dimension: THE_END
+
+# Spawn position in the world
+spawnPosition:
+  x: 0.0
+  y: 0.0
+  z: 0.0
+  yaw: 0.0
+  pitch: 0.0
+
+# Message sends when player join to server
+joinMessage:
+  enable: true
+  text: '{"text": "&eWelcome to the Limbo!"}'
+
+# Bossbar sends when player join to server
+bossBar:
+  enable: true
+  text: '{"text": "Welcome to the Limbo!"}'
+  health: 1.0
+  # Available colors: PINK, BLUE, RED, GREEN, YELLOW, PURPLE, WHITE
+  color: PINK
+  # Available divisions: SOLID, DASHES_6, DASHES_10, DASHES_12, DASHES_20
+  division: SOLID
+
+# Player info forwarding support. Available types: NONE, LEGACY, MODERN
+# Don't use secret if you not use MODERN type
+infoForwarding:
+  type: LEGACY
+  secret: '<YOUR_SECRET_HERE>'
+
+# Read timeout for connections in milliseconds
+readTimeout: 30000
+
+# Define debug level. On release, i recommend to use 0 level, since
+# there are many useless for release information about ping, received packets, etc.
+# Levels:
+# 0 - Display only useful info
+# 1 - Display info and some debug
+# 2 - Display info and warnings
+# 3 - Display info, warnings, errors
+debugLevel: 3

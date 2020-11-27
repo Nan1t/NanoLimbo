@@ -4,7 +4,6 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import ru.nanit.limbo.LimboConfig;
 import ru.nanit.limbo.protocol.packets.login.*;
 import ru.nanit.limbo.protocol.packets.play.*;
 import ru.nanit.limbo.protocol.pipeline.PacketDecoder;
@@ -18,7 +17,6 @@ import ru.nanit.limbo.protocol.registry.Version;
 import ru.nanit.limbo.server.LimboServer;
 import ru.nanit.limbo.util.Logger;
 import ru.nanit.limbo.util.UuidUtil;
-import ru.nanit.limbo.world.DimensionRegistry;
 
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
@@ -50,7 +48,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         if (state.equals(State.PLAY)){
-            server.removeConnection(this);
+            server.getConnections().removeConnection(this);
             Logger.info("Player %s disconnected", this.username);
         }
         super.channelInactive(ctx);
@@ -73,10 +71,11 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
             PacketHandshake handshake = (PacketHandshake) packet;
             updateState(State.getById(handshake.getNextState()));
             clientVersion = handshake.getVersion();
+            Logger.debug("Pinged from " + handshake.getHost() + ":" + handshake.getPort());
         }
 
         if (packet instanceof PacketStatusRequest){
-            sendPacket(new PacketStatusResponse(server.getConnectionsCount()));
+            sendPacket(new PacketStatusResponse(server));
         }
 
         if (packet instanceof PacketStatusPing){
@@ -84,7 +83,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         }
 
         if (packet instanceof PacketLoginStart){
-            if (server.getConnectionsCount() >= LimboConfig.getMaxPlayers()){
+            if (server.getConnections().getCount() >= server.getConfig().getMaxPlayers()){
                 disconnect("Too many players connected");
                 return;
             }
@@ -105,7 +104,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
             sendPacket(loginSuccess);
             updateState(State.PLAY);
 
-            server.addConnection(this);
+            server.getConnections().addConnection(this);
             Logger.info("Player %s connected (%s)", this.username, channel.remoteAddress());
 
             sendJoinPackets();
@@ -120,7 +119,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         joinGame.setFlat(false);
         joinGame.setGameMode(2);
         joinGame.setHardcore(false);
-        joinGame.setMaxPlayers(LimboConfig.getMaxPlayers());
+        joinGame.setMaxPlayers(server.getConfig().getMaxPlayers());
         joinGame.setPreviousGameMode(-1);
         joinGame.setReducedDebugInfo(false);
         joinGame.setDebug(false);
@@ -128,16 +127,16 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         joinGame.setWorldName("minecraft:world");
         joinGame.setWorldNames("minecraft:world");
         joinGame.setHashedSeed(0);
-        joinGame.setDimensionCodec(DimensionRegistry.getCodec());
-        joinGame.setDimension(DimensionRegistry.getDefaultDimension());
+        joinGame.setDimensionCodec(server.getDimensionRegistry().getCodec());
+        joinGame.setDimension(server.getDimensionRegistry().getDefaultDimension());
 
         PacketPlayerPositionAndLook positionAndLook = new PacketPlayerPositionAndLook();
 
-        positionAndLook.setX(LimboConfig.getSpawnPosition().getX());
-        positionAndLook.setY(LimboConfig.getSpawnPosition().getY());
-        positionAndLook.setZ(LimboConfig.getSpawnPosition().getZ());
-        positionAndLook.setYaw(90.0F);
-        positionAndLook.setPitch(0.0F);
+        positionAndLook.setX(server.getConfig().getSpawnPosition().getX());
+        positionAndLook.setY(server.getConfig().getSpawnPosition().getY());
+        positionAndLook.setZ(server.getConfig().getSpawnPosition().getZ());
+        positionAndLook.setYaw(server.getConfig().getSpawnPosition().getYaw());
+        positionAndLook.setPitch(server.getConfig().getSpawnPosition().getPitch());
         positionAndLook.setTeleportId(ThreadLocalRandom.current().nextInt());
 
         PacketPlayerInfo info = new PacketPlayerInfo();

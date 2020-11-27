@@ -4,7 +4,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.timeout.ReadTimeoutHandler;
-import ru.nanit.limbo.LimboConfig;
+import ru.nanit.limbo.configuration.LimboConfig;
 import ru.nanit.limbo.protocol.pipeline.VarIntFrameDecoder;
 import ru.nanit.limbo.protocol.pipeline.PacketDecoder;
 import ru.nanit.limbo.protocol.pipeline.PacketEncoder;
@@ -25,7 +25,8 @@ public class ClientChannelInitializer extends ChannelInitializer<Channel> {
     protected void initChannel(Channel channel) {
         ChannelPipeline pipeline = channel.pipeline();
 
-        pipeline.addLast("timeout", new ReadTimeoutHandler(LimboConfig.getReadTimeout(), TimeUnit.MILLISECONDS));
+        pipeline.addLast("timeout", new ReadTimeoutHandler(server.getConfig().getReadTimeout(),
+                TimeUnit.MILLISECONDS));
         pipeline.addLast("frame_decoder", new VarIntFrameDecoder());
         pipeline.addLast("frame_encoder", new VarIntLengthEncoder());
         pipeline.addLast("decoder", new PacketDecoder());
