@@ -3,7 +3,7 @@
 /gradle/
 gradlew
 gradlew.bat
-/build/
-
-# Do it with jenkins in the future
-!/build/libs/
+/build/generated/
+/build/classes/
+/build/resources/
+/build/tmp/
