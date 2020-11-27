@@ -28,11 +28,12 @@ There are no commands. To close server just run `Ctrl+C` in the terminal. It wil
 
 The installation process is simple.
 
-1. Put jar file folder you want.
-2. Create start script as you did it with bukkit/spigot/etc. with command like this:
+1. Download the latest version of program **[here](https://github.com/Nan1t/NanoLimbo/tree/main/build/libs)**
+2. Put jar file folder you want.
+3. Create start script as you did it with bukkit/spigot/etc. with command like this:
 `java -jar <FileName>.jar`
-3. The server will create `settings.yml` file. It's a server configuration.
-4. Configure it as you want and restart server.
+4. The server will create `settings.yml` file. It's a server configuration.
+5. Configure it as you want and restart server.
 
 I recommend you set parameter `debugLevel` to `0` when you finish test server and run it into production.
 This will disable some useless for production information in the console.
