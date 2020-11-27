@@ -1,4 +1,5 @@
 plugins {
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
     id 'java'
 }
 
@@ -13,7 +14,7 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     compile group: 'org.yaml', name: 'snakeyaml', version: '1.27'
     compile files('libs/napi-configurate-yaml-1.0.jar')
-    compile group: 'io.netty', name: 'netty-all', version: '4.1.54.Final'
+    compile "io.netty:netty-handler:4.1.54.Final"
     compile group: 'net.kyori', name: 'adventure-nbt', version: '4.1.1'
 }
 
@@ -21,8 +22,8 @@ jar {
     manifest {
         attributes('Main-Class': 'ru.nanit.limbo.NanoLimbo')
     }
+}
 
-    from {
-        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-    }
+shadowJar{
+    minimize()
 }
