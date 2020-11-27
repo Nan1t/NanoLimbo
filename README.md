@@ -9,11 +9,11 @@ No plugins, no logs. The server is fully clear. It only able keep a lot of playe
 
 The general features is:
 * High performance. The server not saves and not cached any useless (for limbo) data.
-* Support for BungeeCord and Velocity info forwarding.
+* Support for **BungeeCord** and **Velocity** info forwarding.
 * All necessary data are configurable.
-* Lightweight. App size is around 1.5 MB.
+* Lightweight. App size is around **1.5 MB.**
 
-![](https://i.imgur.com/CKuc8iP.png)
+![](https://i.imgur.com/sT8p1Gz.png)
 
 ### Protocol support
 
@@ -37,7 +37,7 @@ The installation process is simple.
 4. The server will create `settings.yml` file. It's a server configuration.
 5. Configure it as you want and restart server.
 
-I recommend you set parameter `debugLevel` to `0` when you finish test server and run it into production.
+I recommend you to set parameter `debugLevel` to `0` when you finish testing server and run it into production.
 This will disable some useless for production information in the console.
 
 ### Contributing
