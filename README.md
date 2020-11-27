@@ -13,6 +13,8 @@ The general features is:
 * All necessary data are configurable.
 * Lightweight. App size is around 1.5 MB.
 
+![](https://i.imgur.com/CKuc8iP.png)
+
 ### Protocol support
 
 The server written based on `1.16.4` minecraft protocol. You can use `ViaVersion` 
@@ -29,8 +31,8 @@ There are no commands. To close server just run `Ctrl+C` in the terminal. It wil
 The installation process is simple.
 
 1. Download the latest version of program **[here](https://github.com/Nan1t/NanoLimbo/tree/main/build/libs)**
-2. Put jar file folder you want.
-3. Create start script as you did it with bukkit/spigot/etc. with command like this:
+2. Put jar file in the folder you want.
+3. Create a start script as you did it for Bukkit/Spigot/etc. with command like this:
 `java -jar <FileName>.jar`
 4. The server will create `settings.yml` file. It's a server configuration.
 5. Configure it as you want and restart server.
