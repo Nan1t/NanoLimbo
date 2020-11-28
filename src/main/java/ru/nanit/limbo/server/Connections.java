@@ -1,6 +1,7 @@
 package ru.nanit.limbo.server;
 
 import ru.nanit.limbo.connection.ClientConnection;
+import ru.nanit.limbo.util.Logger;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -26,9 +27,11 @@ public final class Connections {
 
     public void addConnection(ClientConnection connection){
         connections.put(connection.getUuid(), connection);
+        Logger.info("Player %s connected (%s)", connection.getUsername(), connection.getAddress());
     }
 
     public void removeConnection(ClientConnection connection){
         connections.remove(connection.getUuid());
+        Logger.info("Player %s disconnected", connection.getUsername());
     }
 }

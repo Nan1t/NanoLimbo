@@ -5,6 +5,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 import ru.nanit.limbo.protocol.ByteMessage;
 import ru.nanit.limbo.protocol.Packet;
+import ru.nanit.limbo.protocol.PreRenderedPacket;
 import ru.nanit.limbo.protocol.registry.State;
 import ru.nanit.limbo.util.Logger;
 
@@ -21,7 +22,13 @@ public class PacketEncoder extends MessageToByteEncoder<Packet> {
         if (registry == null) return;
 
         ByteMessage msg = new ByteMessage(out);
-        int packetId = registry.getPacketId(packet.getClass());
+        int packetId;
+
+        if (packet instanceof PreRenderedPacket){
+            packetId = registry.getPacketId(((PreRenderedPacket)packet).getWrappedPacket().getClass());
+        } else {
+            packetId = registry.getPacketId(packet.getClass());
+        }
 
         if (packetId == -1){
             Logger.warning("Undefined packet class: %s", packet.getClass().getName());

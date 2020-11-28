@@ -8,16 +8,12 @@ import ru.nanit.limbo.configuration.LimboConfig;
 import ru.nanit.limbo.configuration.SocketAddressSerializer;
 import ru.nanit.limbo.connection.ClientChannelInitializer;
 import ru.nanit.limbo.connection.ClientConnection;
-import ru.nanit.limbo.protocol.packets.play.PacketBossBar;
-import ru.nanit.limbo.protocol.packets.play.PacketChatMessage;
 import ru.nanit.limbo.server.data.*;
 import ru.nanit.limbo.util.Logger;
-import ru.nanit.limbo.util.VelocityUtil;
 import ru.nanit.limbo.world.DimensionRegistry;
 
 import java.net.SocketAddress;
 import java.nio.file.Paths;
-import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -27,9 +23,6 @@ public final class LimboServer {
     private LimboConfig config;
     private Connections connections;
     private DimensionRegistry dimensionRegistry;
-
-    private PacketChatMessage joinMessage;
-    private PacketBossBar joinBossBar;
 
     public LimboConfig getConfig(){
         return config;
@@ -41,14 +34,6 @@ public final class LimboServer {
 
     public DimensionRegistry getDimensionRegistry() {
         return dimensionRegistry;
-    }
-
-    public PacketChatMessage getJoinMessage() {
-        return joinMessage;
-    }
-
-    public PacketBossBar getJoinBossBar() {
-        return joinBossBar;
     }
 
     public void start() throws Exception {
@@ -65,16 +50,11 @@ public final class LimboServer {
 
         Logger.setLevel(config.getDebugLevel());
 
-        if (config.getInfoForwarding().isModern()){
-            VelocityUtil.init(config);
-        }
-
         dimensionRegistry = new DimensionRegistry();
         dimensionRegistry.load(config.getDimensionType());
-
         connections = new Connections();
 
-        initInGameData();
+        ClientConnection.preInitPackets(this);
 
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         executor.scheduleAtFixedRate(this::broadcastKeepAlive, 0L, 5L, TimeUnit.SECONDS);
@@ -87,21 +67,6 @@ public final class LimboServer {
                 .bind();
 
         Logger.info("Server started on %s", config.getAddress());
-    }
-
-    private void initInGameData(){
-        if (config.isUseJoinMessage()){
-            joinMessage = new PacketChatMessage();
-            joinMessage.setJsonData(config.getJoinMessage());
-            joinMessage.setPosition(PacketChatMessage.Position.CHAT);
-            joinMessage.setSender(UUID.randomUUID());
-        }
-
-        if (config.isUseBossBar()){
-            joinBossBar = new PacketBossBar();
-            joinBossBar.setBossBar(config.getBossBar());
-            joinBossBar.setUuid(UUID.randomUUID());
-        }
     }
 
     private void broadcastKeepAlive(){
