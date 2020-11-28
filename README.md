@@ -52,4 +52,4 @@ Run `shadowJar` task to build minimized executable jar file.
 
 ### Contacts
 
-If you have any question or offer, join to [Discord server](https://discord.gg/4VGP3Gv)
+If you have any question or suggestion, join to [Discord server](https://discord.gg/4VGP3Gv)
