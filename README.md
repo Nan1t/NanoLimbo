@@ -40,6 +40,17 @@ The installation process is simple.
 I recommend you to set parameter `debugLevel` to `0` when you finish testing server and run it into production.
 This will disable some useless for production information in the console.
 
+### About player info forwarding
+
+The server supports player info forwarding from the proxy. There are two type of info forwarding:
+
+* LEGACY - The BungeeCord IP forwarding
+* MODERN - Velocity native info forwarding type
+
+If you use **BungeeCord**, or Velocity with LEGACY forwarding, just set this type in the config.
+If you use **Velocity** with modern info forwarding, set this type and paste secret key from Velocity 
+config into `secret` field.
+
 ### Contributing
 
 You can create pull request, if you found some bug, optimization ability, or you wanna add some functional, 
