@@ -186,7 +186,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         joinGame.setEntityId(0);
         joinGame.setEnableRespawnScreen(true);
         joinGame.setFlat(false);
-        joinGame.setGameMode(2);
+        joinGame.setGameMode(server.getConfig().getGameMode());
         joinGame.setHardcore(false);
         joinGame.setMaxPlayers(server.getConfig().getMaxPlayers());
         joinGame.setPreviousGameMode(-1);
@@ -198,6 +198,12 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         joinGame.setHashedSeed(0);
         joinGame.setDimensionCodec(server.getDimensionRegistry().getCodec());
         joinGame.setDimension(server.getDimensionRegistry().getDefaultDimension());
+
+        PacketPlayerAbilities abilities = new PacketPlayerAbilities();
+
+        abilities.setFlyingSpeed(0.0F);
+        abilities.setFlags(0x02);
+        abilities.setFieldOfView(0.1F);
 
         PacketPlayerPositionAndLook positionAndLook = new PacketPlayerPositionAndLook();
 
@@ -211,9 +217,10 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         PacketPlayerInfo info = new PacketPlayerInfo();
 
         info.setConnection(this);
-        info.setGameMode(2);
+        info.setGameMode(server.getConfig().getGameMode());
 
         sendPacket(joinGame);
+        sendPacket(abilities);
         sendPacket(positionAndLook);
         sendPacket(info);
 

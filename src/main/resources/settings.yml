@@ -26,6 +26,13 @@ spawnPosition:
   yaw: 0.0
   pitch: 0.0
 
+# Setup player's game mode
+# 0 - Survival
+# 1 - Creative (hide HP and food bar)
+# 2 - Adventure
+# 3 - Spectator (hide all UI bars)
+gameMode: 1
+
 # Message sends when player join to server
 joinMessage:
   enable: true

@@ -19,6 +19,7 @@ public final class LimboConfig {
 
     private String dimensionType;
     private Position spawnPosition;
+    private int gameMode;
 
     private boolean useJoinMessage;
     private boolean useBossBar;
@@ -45,6 +46,7 @@ public final class LimboConfig {
         pingData = conf.getNode("ping").getValue(PingData.class);
         dimensionType = conf.getNode("dimension").getString();
         spawnPosition = conf.getNode("spawnPosition").getValue(Position.class);
+        gameMode = conf.getNode("gameMode").getInt();
         useJoinMessage = conf.getNode("joinMessage", "enable").getBoolean();
         useBossBar = conf.getNode("bossBar", "enable").getBoolean();
 
@@ -77,6 +79,10 @@ public final class LimboConfig {
 
     public Position getSpawnPosition() {
         return spawnPosition;
+    }
+
+    public int getGameMode() {
+        return gameMode;
     }
 
     public InfoForwarding getInfoForwarding() {
