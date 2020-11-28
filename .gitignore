@@ -3,7 +3,4 @@
 /gradle/
 gradlew
 gradlew.bat
-/build/generated/
-/build/classes/
-/build/resources/
-/build/tmp/
+build/
