@@ -31,7 +31,7 @@ spawnPosition:
 # 1 - Creative (hide HP and food bar)
 # 2 - Adventure
 # 3 - Spectator (hide all UI bars)
-gameMode: 1
+gameMode: 3
 
 # Message sends when player join to server
 joinMessage:
