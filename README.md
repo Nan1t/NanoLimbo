@@ -30,7 +30,7 @@ There are no commands. To close server just run `Ctrl+C` in the terminal. It wil
 
 The installation process is simple.
 
-1. Download the latest version of program **[here](https://github.com/Nan1t/NanoLimbo/tree/main/build/libs)**
+1. Download the latest version of program **[here](https://github.com/Nan1t/NanoLimbo/releases)**
 2. Put jar file in the folder you want.
 3. Create a start script as you did it for Bukkit/Spigot/etc. with command like this:
 `java -jar <FileName>.jar`
