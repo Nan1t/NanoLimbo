@@ -1,4 +1,4 @@
-package ru.nanit.limbo.protocol.pipeline;
+package ru.nanit.limbo.connection.pipeline;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;

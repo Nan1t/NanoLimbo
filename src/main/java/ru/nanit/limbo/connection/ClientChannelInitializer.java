@@ -4,11 +4,10 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.timeout.ReadTimeoutHandler;
-import ru.nanit.limbo.configuration.LimboConfig;
-import ru.nanit.limbo.protocol.pipeline.VarIntFrameDecoder;
-import ru.nanit.limbo.protocol.pipeline.PacketDecoder;
-import ru.nanit.limbo.protocol.pipeline.PacketEncoder;
-import ru.nanit.limbo.protocol.pipeline.VarIntLengthEncoder;
+import ru.nanit.limbo.connection.pipeline.VarIntFrameDecoder;
+import ru.nanit.limbo.connection.pipeline.PacketDecoder;
+import ru.nanit.limbo.connection.pipeline.PacketEncoder;
+import ru.nanit.limbo.connection.pipeline.VarIntLengthEncoder;
 import ru.nanit.limbo.server.LimboServer;
 
 import java.util.concurrent.TimeUnit;

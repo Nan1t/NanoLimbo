@@ -10,8 +10,8 @@ import ru.nanit.limbo.protocol.ByteMessage;
 import ru.nanit.limbo.protocol.PreRenderedPacket;
 import ru.nanit.limbo.protocol.packets.login.*;
 import ru.nanit.limbo.protocol.packets.play.*;
-import ru.nanit.limbo.protocol.pipeline.PacketDecoder;
-import ru.nanit.limbo.protocol.pipeline.PacketEncoder;
+import ru.nanit.limbo.connection.pipeline.PacketDecoder;
+import ru.nanit.limbo.connection.pipeline.PacketEncoder;
 import ru.nanit.limbo.protocol.packets.PacketHandshake;
 import ru.nanit.limbo.protocol.packets.status.PacketStatusPing;
 import ru.nanit.limbo.protocol.packets.status.PacketStatusRequest;
@@ -81,7 +81,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         if (channel.isActive()){
-            Logger.error("Unhandled exception: %s", cause.getMessage());
+            Logger.error("Unhandled exception: ", cause);
         }
     }
 
