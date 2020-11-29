@@ -19,7 +19,7 @@ public final class Logger {
     }
 
     public static void debug(Object msg, Object... args){
-        print(Level.INFO, msg, null, args);
+        print(Level.DEBUG, msg, null, args);
     }
 
     public static void warning(Object msg, Object... args){

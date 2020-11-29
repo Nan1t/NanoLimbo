@@ -14,7 +14,7 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     compile files('libs/napi-configurate-yaml-1.0.jar')
     compile group: 'org.yaml', name: 'snakeyaml', version: '1.27'
-    compile group: 'io.netty', name: 'netty-handler', version: '4.1.54.Final'
+    compile group: 'io.netty', name: 'netty-all', version: '4.1.54.Final'
     compile group: 'net.kyori', name: 'adventure-nbt', version: '4.1.1'
 }
 

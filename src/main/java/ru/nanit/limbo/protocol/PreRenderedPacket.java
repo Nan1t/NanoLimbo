@@ -17,6 +17,7 @@ public class PreRenderedPacket implements PacketOut {
         ByteMessage renderedMessage = ByteMessage.create();
         packet.encode(renderedMessage);
         this.message = renderedMessage.toByteArray();
+        renderedMessage.release();
         return this;
     }
 

@@ -182,23 +182,23 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
             return;
         }
 
-        sendPacket(PACKET_LOGIN_SUCCESS);
+        writePacket(PACKET_LOGIN_SUCCESS);
         updateState(State.PLAY);
 
         server.getConnections().addConnection(this);
 
-        sendPacket(PACKET_JOIN_GAME);
-        sendPacket(PACKET_PLAYER_ABILITIES);
-        sendPacket(PACKET_PLAYER_POS);
-        sendPacket(PACKET_PLAYER_INFO);
-
-        sendKeepAlive();
+        writePacket(PACKET_JOIN_GAME);
+        writePacket(PACKET_PLAYER_ABILITIES);
+        writePacket(PACKET_PLAYER_POS);
+        writePacket(PACKET_PLAYER_INFO);
 
         if (PACKET_BOSS_BAR != null)
-            sendPacket(PACKET_BOSS_BAR);
+            writePacket(PACKET_BOSS_BAR);
 
         if (PACKET_JOIN_MESSAGE != null)
-            sendPacket(PACKET_JOIN_MESSAGE);
+            writePacket(PACKET_JOIN_MESSAGE);
+
+        sendKeepAlive();
     }
 
     public void disconnectLogin(String reason){
@@ -225,6 +225,14 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
     public void sendPacketAndClose(Object packet){
         if (isConnected())
             channel.writeAndFlush(packet).addListener(ChannelFutureListener.CLOSE);
+    }
+
+    public void writePacket(Object packet){
+        if (isConnected()) channel.write(packet, channel.voidPromise());
+    }
+
+    public void flushPackets(){
+        if (isConnected()) channel.flush();
     }
 
     public boolean isConnected(){
