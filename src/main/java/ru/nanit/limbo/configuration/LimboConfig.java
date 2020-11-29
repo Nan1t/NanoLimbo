@@ -30,6 +30,10 @@ public final class LimboConfig {
     private long readTimeout;
     private int debugLevel = 3;
 
+    private boolean useEpoll;
+    private int bossGroupSize;
+    private int workerGroupSize;
+
     public LimboConfig(Path root){
         this.root = root;
     }
@@ -59,6 +63,10 @@ public final class LimboConfig {
         infoForwarding = conf.getNode("infoForwarding").getValue(InfoForwarding.class);
         readTimeout = conf.getNode("readTimeout").getLong();
         debugLevel = conf.getNode("debugLevel").getInt();
+
+        useEpoll = conf.getNode("netty", "useEpoll").getBoolean(true);
+        bossGroupSize = conf.getNode("netty", "threads", "bossGroup").getInt(1);
+        workerGroupSize = conf.getNode("netty", "threads", "workerGroup").getInt(4);
     }
 
     public SocketAddress getAddress() {
@@ -111,5 +119,17 @@ public final class LimboConfig {
 
     public BossBar getBossBar() {
         return bossBar;
+    }
+
+    public boolean isUseEpoll() {
+        return useEpoll;
+    }
+
+    public int getBossGroupSize() {
+        return bossGroupSize;
+    }
+
+    public int getWorkerGroupSize() {
+        return workerGroupSize;
     }
 }

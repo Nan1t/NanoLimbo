@@ -65,3 +65,12 @@ readTimeout: 30000
 # 2 - Display info and warnings
 # 3 - Display info, warnings, errors
 debugLevel: 3
+
+# Warning! Do not touch params of this block, if you not completely sure what is this!
+netty:
+  # Use Linux native transport type, if it possible
+  useEpoll: true
+  # EventLoopGroup threads count
+  threads:
+    bossGroup: 1
+    workerGroup: 4

@@ -80,14 +80,14 @@ public final class LimboServer {
     private void startBootstrap(){
         Class<? extends ServerChannel> channelClass;
 
-        if (Epoll.isAvailable()){
-            bossGroup = new EpollEventLoopGroup(1);
-            workerGroup = new EpollEventLoopGroup(4);
+        if (config.isUseEpoll() && Epoll.isAvailable()){
+            bossGroup = new EpollEventLoopGroup(config.getBossGroupSize());
+            workerGroup = new EpollEventLoopGroup(config.getWorkerGroupSize());
             channelClass = EpollServerSocketChannel.class;
             Logger.debug("Using Epoll transport type");
         } else {
-            bossGroup = new NioEventLoopGroup(1);
-            workerGroup = new NioEventLoopGroup(4);
+            bossGroup = new NioEventLoopGroup(config.getBossGroupSize());
+            workerGroup = new NioEventLoopGroup(config.getWorkerGroupSize());
             channelClass = NioServerSocketChannel.class;
             Logger.debug("Using Java NIO transport type");
         }
