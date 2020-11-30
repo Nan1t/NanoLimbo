@@ -44,11 +44,11 @@ This will disable some useless for production information in the console.
 
 The server supports player info forwarding from the proxy. There are two type of info forwarding:
 
-* LEGACY - The BungeeCord IP forwarding
-* MODERN - Velocity native info forwarding type
+* `LEGACY` - The **BungeeCord** IP forwarding.
+* `MODERN` - **Velocity** native info forwarding type.
 
-If you use **BungeeCord**, or Velocity with LEGACY forwarding, just set this type in the config.
-If you use **Velocity** with modern info forwarding, set this type and paste secret key from Velocity 
+If you use BungeeCord, or Velocity with `LEGACY` forwarding, just set this type in the config.  
+If you use Velocity with `MODERN` info forwarding, set this type and paste secret key from Velocity 
 config into `secret` field.
 
 ### Contributing
