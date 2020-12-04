@@ -39,6 +39,7 @@ public enum State {
     PLAY(3){
         {
             serverBound.register(0x10, PacketKeepAlive::new);
+            clientBound.register(0x10, PacketDeclareCommands::new);
             clientBound.register(0x24, PacketJoinGame::new);
             clientBound.register(0x30, PacketPlayerAbilities::new);
             clientBound.register(0x34, PacketPlayerPositionAndLook::new);
