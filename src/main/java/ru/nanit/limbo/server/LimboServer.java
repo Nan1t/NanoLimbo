@@ -63,7 +63,7 @@ public final class LimboServer {
         Logger.setLevel(config.getDebugLevel());
 
         dimensionRegistry = new DimensionRegistry();
-        dimensionRegistry.load(config.getDimensionType());
+        dimensionRegistry.load(this, config.getDimensionType());
         connections = new Connections();
 
         ClientConnection.preInitPackets(this);
