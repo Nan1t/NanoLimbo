@@ -2,6 +2,7 @@ package ru.nanit.limbo.protocol.packets.play;
 
 import ru.nanit.limbo.protocol.ByteMessage;
 import ru.nanit.limbo.protocol.PacketOut;
+import ru.nanit.limbo.protocol.registry.Version;
 
 import java.util.UUID;
 
@@ -27,7 +28,7 @@ public class PacketPlayerInfo implements PacketOut {
     }
 
     @Override
-    public void encode(ByteMessage msg) {
+    public void encode(ByteMessage msg, Version version) {
         msg.writeVarInt(0);
         msg.writeVarInt(1);
         msg.writeUuid(uuid);

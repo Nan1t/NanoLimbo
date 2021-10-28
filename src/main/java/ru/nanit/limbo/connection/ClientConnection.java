@@ -97,6 +97,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
             PacketHandshake handshake = (PacketHandshake) packet;
             clientVersion = handshake.getVersion();
             updateState(State.getById(handshake.getNextState()));
+
             Logger.debug("Pinged from " + address);
 
             if (server.getConfig().getInfoForwarding().isLegacy()) {
@@ -128,7 +129,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
                 return;
             }
 
-            if (!clientVersion.equals(Version.getCurrentSupported())) {
+            if (clientVersion.equals(Version.UNDEFINED)) {
                 disconnectLogin("Incompatible client version");
                 return;
             }

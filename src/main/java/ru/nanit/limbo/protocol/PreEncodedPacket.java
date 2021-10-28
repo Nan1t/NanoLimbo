@@ -1,5 +1,7 @@
 package ru.nanit.limbo.protocol;
 
+import ru.nanit.limbo.protocol.registry.Version;
+
 public class PreEncodedPacket implements PacketOut {
 
     private final PacketOut packet;
@@ -15,14 +17,14 @@ public class PreEncodedPacket implements PacketOut {
 
     public PreEncodedPacket encodePacket() {
         ByteMessage encodedMessage = ByteMessage.create();
-        packet.encode(encodedMessage);
+        packet.encode(encodedMessage, );
         this.message = encodedMessage.toByteArray();
         encodedMessage.release();
         return this;
     }
 
     @Override
-    public void encode(ByteMessage msg) {
+    public void encode(ByteMessage msg, Version version) {
         msg.writeBytes(message);
     }
 

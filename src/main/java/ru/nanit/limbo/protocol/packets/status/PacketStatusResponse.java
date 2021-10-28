@@ -17,10 +17,10 @@ public class PacketStatusResponse implements PacketOut {
     }
 
     @Override
-    public void encode(ByteMessage msg) {
+    public void encode(ByteMessage msg, Version version) {
         String ver = server.getConfig().getPingData().getVersion();
         String desc = server.getConfig().getPingData().getDescription();
-        String json = getResponseJson(ver, Version.getCurrentSupported().getProtocolNumber(),
+        String json = getResponseJson(ver, Version.getMinimal().getProtocolNumber(),
                 server.getConfig().getMaxPlayers(), server.getConnections().getCount(), desc);
 
         msg.writeString(json);

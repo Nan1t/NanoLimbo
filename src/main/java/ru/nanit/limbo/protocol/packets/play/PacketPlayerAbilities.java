@@ -2,6 +2,7 @@ package ru.nanit.limbo.protocol.packets.play;
 
 import ru.nanit.limbo.protocol.ByteMessage;
 import ru.nanit.limbo.protocol.PacketOut;
+import ru.nanit.limbo.protocol.registry.Version;
 
 public class PacketPlayerAbilities implements PacketOut {
 
@@ -22,7 +23,7 @@ public class PacketPlayerAbilities implements PacketOut {
     }
 
     @Override
-    public void encode(ByteMessage msg) {
+    public void encode(ByteMessage msg, Version version) {
         msg.writeByte(flags);
         msg.writeFloat(flyingSpeed);
         msg.writeFloat(fieldOfView);

@@ -15,36 +15,16 @@ public class PacketHandshake implements Packet {
         return version;
     }
 
-    public void setVersion(Version version) {
-        this.version = version;
-    }
-
     public String getHost() {
         return host;
-    }
-
-    public void setHost(String host) {
-        this.host = host;
-    }
-
-    public int getPort() {
-        return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
     }
 
     public int getNextState() {
         return nextState;
     }
 
-    public void setNextState(int nextState) {
-        this.nextState = nextState;
-    }
-
     @Override
-    public void encode(ByteMessage msg) {
+    public void encode(ByteMessage msg, Version version) {
         msg.writeVarInt(this.version.getProtocolNumber());
         msg.writeString(host);
         msg.writeShort(port);
@@ -52,7 +32,7 @@ public class PacketHandshake implements Packet {
     }
 
     @Override
-    public void decode(ByteMessage msg) {
+    public void decode(ByteMessage msg, Version version) {
         this.version = Version.of(msg.readVarInt());
         this.host = msg.readString();
         this.port = msg.readUnsignedShort();

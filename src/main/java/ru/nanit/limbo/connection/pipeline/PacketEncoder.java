@@ -38,7 +38,7 @@ public class PacketEncoder extends MessageToByteEncoder<Packet> {
         msg.writeVarInt(packetId);
 
         try {
-            packet.encode(msg);
+            packet.encode(msg, );
         } catch (Exception e) {
             Logger.warning("Cannot encode packet 0x%s: %s", Integer.toHexString(packetId), e.getMessage());
         }

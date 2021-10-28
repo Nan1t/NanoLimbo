@@ -2,6 +2,7 @@ package ru.nanit.limbo.protocol.packets.login;
 
 import ru.nanit.limbo.protocol.ByteMessage;
 import ru.nanit.limbo.protocol.PacketIn;
+import ru.nanit.limbo.protocol.registry.Version;
 
 public class PacketLoginPluginResponse implements PacketIn {
 
@@ -22,7 +23,7 @@ public class PacketLoginPluginResponse implements PacketIn {
     }
 
     @Override
-    public void decode(ByteMessage msg) {
+    public void decode(ByteMessage msg, Version version) {
         messageId = msg.readVarInt();
         successful = msg.readBoolean();
 

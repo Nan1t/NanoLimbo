@@ -1,6 +1,7 @@
 package ru.nanit.limbo.protocol.packets.login;
 
 import ru.nanit.limbo.protocol.*;
+import ru.nanit.limbo.protocol.registry.Version;
 
 public class PacketLoginStart implements PacketIn {
 
@@ -11,7 +12,7 @@ public class PacketLoginStart implements PacketIn {
     }
 
     @Override
-    public void decode(ByteMessage msg) {
+    public void decode(ByteMessage msg, Version version) {
         this.username = msg.readString();
     }
 
