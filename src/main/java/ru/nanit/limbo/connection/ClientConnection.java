@@ -96,9 +96,9 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         if (packet instanceof PacketHandshake) {
             PacketHandshake handshake = (PacketHandshake) packet;
             clientVersion = handshake.getVersion();
-            updateState(State.getById(handshake.getNextState()));
+            updateStateAndVersion(handshake.getNextState(), clientVersion);
 
-            Logger.debug("Pinged from " + address);
+            Logger.debug("Pinged from %s [%s]", address, clientVersion.toString());
 
             if (server.getConfig().getInfoForwarding().isLegacy()) {
                 String[] split = handshake.getHost().split("\00");
@@ -243,6 +243,18 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         this.state = state;
         channel.pipeline().get(PacketDecoder.class).updateState(state);
         channel.pipeline().get(PacketEncoder.class).updateState(state);
+    }
+
+    public void updateStateAndVersion(State state, Version version){
+        this.state = state;
+
+        PacketDecoder decoder = channel.pipeline().get(PacketDecoder.class);
+        PacketEncoder encoder = channel.pipeline().get(PacketEncoder.class);
+
+        decoder.updateVersion(version);
+        decoder.updateState(state);
+        encoder.updateVersion(version);
+        encoder.updateState(state);
     }
 
     private void setAddress(String host) {

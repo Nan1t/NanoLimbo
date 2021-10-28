@@ -20,7 +20,7 @@ public class PacketStatusResponse implements PacketOut {
     public void encode(ByteMessage msg, Version version) {
         String ver = server.getConfig().getPingData().getVersion();
         String desc = server.getConfig().getPingData().getDescription();
-        String json = getResponseJson(ver, Version.getMinimal().getProtocolNumber(),
+        String json = getResponseJson(ver, version.getProtocolNumber(),
                 server.getConfig().getMaxPlayers(), server.getConnections().getCount(), desc);
 
         msg.writeString(json);

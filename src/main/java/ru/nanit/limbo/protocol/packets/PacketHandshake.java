@@ -2,14 +2,16 @@ package ru.nanit.limbo.protocol.packets;
 
 import ru.nanit.limbo.protocol.ByteMessage;
 import ru.nanit.limbo.protocol.Packet;
+import ru.nanit.limbo.protocol.PacketIn;
+import ru.nanit.limbo.protocol.registry.State;
 import ru.nanit.limbo.protocol.registry.Version;
 
-public class PacketHandshake implements Packet {
+public class PacketHandshake implements PacketIn {
 
     private Version version;
     private String host;
     private int port;
-    private int nextState;
+    private State nextState;
 
     public Version getVersion() {
         return version;
@@ -19,16 +21,12 @@ public class PacketHandshake implements Packet {
         return host;
     }
 
-    public int getNextState() {
-        return nextState;
+    public int getPort() {
+        return port;
     }
 
-    @Override
-    public void encode(ByteMessage msg, Version version) {
-        msg.writeVarInt(this.version.getProtocolNumber());
-        msg.writeString(host);
-        msg.writeShort(port);
-        msg.writeVarInt(nextState);
+    public State getNextState() {
+        return nextState;
     }
 
     @Override
@@ -36,6 +34,6 @@ public class PacketHandshake implements Packet {
         this.version = Version.of(msg.readVarInt());
         this.host = msg.readString();
         this.port = msg.readUnsignedShort();
-        this.nextState = msg.readVarInt();
+        this.nextState = State.getById(msg.readVarInt());
     }
 }

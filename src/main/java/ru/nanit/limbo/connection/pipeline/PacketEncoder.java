@@ -7,13 +7,16 @@ import ru.nanit.limbo.protocol.ByteMessage;
 import ru.nanit.limbo.protocol.Packet;
 import ru.nanit.limbo.protocol.PreEncodedPacket;
 import ru.nanit.limbo.protocol.registry.State;
+import ru.nanit.limbo.protocol.registry.Version;
 import ru.nanit.limbo.util.Logger;
 
 public class PacketEncoder extends MessageToByteEncoder<Packet> {
 
     private State.PacketRegistry registry;
+    private Version version;
 
     public PacketEncoder() {
+        updateVersion(Version.getMinimal());
         updateState(State.HANDSHAKING);
     }
 
@@ -38,10 +41,14 @@ public class PacketEncoder extends MessageToByteEncoder<Packet> {
         msg.writeVarInt(packetId);
 
         try {
-            packet.encode(msg, );
+            packet.encode(msg, version);
         } catch (Exception e) {
             Logger.warning("Cannot encode packet 0x%s: %s", Integer.toHexString(packetId), e.getMessage());
         }
+    }
+
+    public void updateVersion(Version version) {
+        this.version = version;
     }
 
     public void updateState(State state) {
