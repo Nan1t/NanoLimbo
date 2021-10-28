@@ -10,16 +10,12 @@ import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.util.ResourceLeakDetector;
-import napi.configurate.serializing.NodeSerializers;
 import ru.nanit.limbo.configuration.LimboConfig;
-import ru.nanit.limbo.configuration.SocketAddressSerializer;
 import ru.nanit.limbo.connection.ClientChannelInitializer;
 import ru.nanit.limbo.connection.ClientConnection;
-import ru.nanit.limbo.server.data.*;
 import ru.nanit.limbo.util.Logger;
 import ru.nanit.limbo.world.DimensionRegistry;
 
-import java.net.SocketAddress;
 import java.nio.file.Paths;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -50,12 +46,6 @@ public final class LimboServer {
         Logger.info("Starting server...");
 
         ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.DISABLED);
-
-        NodeSerializers.register(SocketAddress.class, new SocketAddressSerializer());
-        NodeSerializers.register(InfoForwarding.class, new InfoForwarding.Serializer());
-        NodeSerializers.register(PingData.class, new PingData.Serializer());
-        NodeSerializers.register(BossBar.class, new BossBar.Serializer());
-        NodeSerializers.register(Position.class, new Position.Serializer());
 
         config = new LimboConfig(Paths.get("./"));
         config.load();

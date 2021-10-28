@@ -1,13 +1,17 @@
 package ru.nanit.limbo.configuration;
 
-import napi.configurate.Configuration;
-import napi.configurate.source.ConfigSources;
-import napi.configurate.yaml.YamlConfiguration;
+import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.ConfigurationOptions;
+import org.spongepowered.configurate.serialize.TypeSerializerCollection;
+import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 import ru.nanit.limbo.server.data.*;
 import ru.nanit.limbo.util.Colors;
 
+import java.io.*;
 import java.net.SocketAddress;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public final class LimboConfig {
 
@@ -39,34 +43,62 @@ public final class LimboConfig {
     }
 
     public void load() throws Exception {
-        Configuration conf = YamlConfiguration.builder()
-                .source(ConfigSources.resource("/settings.yml", this).copyTo(root))
+        ConfigurationOptions options = ConfigurationOptions.defaults().serializers(getSerializers());
+        YamlConfigurationLoader loader = YamlConfigurationLoader.builder()
+                .source(this::getReader)
+                .defaultOptions(options)
                 .build();
 
-        conf.reload();
+        ConfigurationNode conf = loader.load();
 
-        address = conf.getNode("bind").getValue(SocketAddress.class);
-        maxPlayers = conf.getNode("maxPlayers").getInt();
-        pingData = conf.getNode("ping").getValue(PingData.class);
-        dimensionType = conf.getNode("dimension").getString();
-        spawnPosition = conf.getNode("spawnPosition").getValue(Position.class);
-        gameMode = conf.getNode("gameMode").getInt();
-        useJoinMessage = conf.getNode("joinMessage", "enable").getBoolean();
-        useBossBar = conf.getNode("bossBar", "enable").getBoolean();
+        address = conf.node("bind").get(SocketAddress.class);
+        maxPlayers = conf.node("maxPlayers").getInt();
+        pingData = conf.node("ping").get(PingData.class);
+        dimensionType = conf.node("dimension").getString();
+        spawnPosition = conf.node("spawnPosition").get(Position.class);
+        gameMode = conf.node("gameMode").getInt();
+        useJoinMessage = conf.node("joinMessage", "enable").getBoolean();
+        useBossBar = conf.node("bossBar", "enable").getBoolean();
 
         if (useJoinMessage)
-            joinMessage = Colors.of(conf.getNode("joinMessage", "text").getString());
+            joinMessage = Colors.of(conf.node("joinMessage", "text").getString(""));
 
         if (useBossBar)
-            bossBar = conf.getNode("bossBar").getValue(BossBar.class);
+            bossBar = conf.node("bossBar").get(BossBar.class);
 
-        infoForwarding = conf.getNode("infoForwarding").getValue(InfoForwarding.class);
-        readTimeout = conf.getNode("readTimeout").getLong();
-        debugLevel = conf.getNode("debugLevel").getInt();
+        infoForwarding = conf.node("infoForwarding").get(InfoForwarding.class);
+        readTimeout = conf.node("readTimeout").getLong();
+        debugLevel = conf.node("debugLevel").getInt();
 
-        useEpoll = conf.getNode("netty", "useEpoll").getBoolean(true);
-        bossGroupSize = conf.getNode("netty", "threads", "bossGroup").getInt(1);
-        workerGroupSize = conf.getNode("netty", "threads", "workerGroup").getInt(4);
+        useEpoll = conf.node("netty", "useEpoll").getBoolean(true);
+        bossGroupSize = conf.node("netty", "threads", "bossGroup").getInt(1);
+        workerGroupSize = conf.node("netty", "threads", "workerGroup").getInt(4);
+    }
+
+    private BufferedReader getReader() throws IOException {
+        String name = "settings.yml";
+        Path filePath = Paths.get(root.toString(), name);
+
+        if (!Files.exists(filePath)) {
+            InputStream stream = getClass().getResourceAsStream( "/" + name);
+
+            if (stream == null)
+                throw new FileNotFoundException("Cannot find settings resource file");
+
+            Files.copy(stream, filePath);
+        }
+
+        return Files.newBufferedReader(filePath);
+    }
+
+    private TypeSerializerCollection getSerializers() {
+        return TypeSerializerCollection.builder()
+                .register(SocketAddress.class, new SocketAddressSerializer())
+                .register(InfoForwarding.class, new InfoForwarding.Serializer())
+                .register(PingData.class, new PingData.Serializer())
+                .register(BossBar.class, new BossBar.Serializer())
+                .register(Position.class, new Position.Serializer())
+                .build();
     }
 
     public SocketAddress getAddress() {

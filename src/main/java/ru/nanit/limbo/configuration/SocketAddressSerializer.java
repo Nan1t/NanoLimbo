@@ -1,18 +1,20 @@
 package ru.nanit.limbo.configuration;
 
-import napi.configurate.data.ConfigNode;
-import napi.configurate.serializing.NodeSerializer;
-import napi.configurate.serializing.NodeSerializingException;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
+import org.spongepowered.configurate.serialize.TypeSerializer;
 
+import java.lang.reflect.Type;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 
-public class SocketAddressSerializer implements NodeSerializer<SocketAddress> {
+public class SocketAddressSerializer implements TypeSerializer<SocketAddress> {
 
     @Override
-    public SocketAddress deserialize(ConfigNode node) {
-        String ip = node.getNode("ip").getString();
-        int port = node.getNode("port").getInt();
+    public SocketAddress deserialize(Type type, ConfigurationNode node) {
+        String ip = node.node("ip").getString();
+        int port = node.node("port").getInt();
         SocketAddress address;
 
         if (ip == null || ip.isEmpty()){
@@ -25,7 +27,7 @@ public class SocketAddressSerializer implements NodeSerializer<SocketAddress> {
     }
 
     @Override
-    public void serialize(SocketAddress socketAddress, ConfigNode configNode) throws NodeSerializingException {
+    public void serialize(Type type, @Nullable SocketAddress obj, ConfigurationNode node) {
 
     }
 }

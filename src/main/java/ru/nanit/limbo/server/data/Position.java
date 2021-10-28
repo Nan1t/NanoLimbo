@@ -1,7 +1,10 @@
 package ru.nanit.limbo.server.data;
 
-import napi.configurate.data.ConfigNode;
-import napi.configurate.serializing.NodeSerializer;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.serialize.TypeSerializer;
+
+import java.lang.reflect.Type;
 
 public class Position {
 
@@ -51,21 +54,21 @@ public class Position {
         this.pitch = pitch;
     }
 
-    public static class Serializer implements NodeSerializer<Position> {
+    public static class Serializer implements TypeSerializer<Position> {
 
         @Override
-        public Position deserialize(ConfigNode node) {
+        public Position deserialize(Type type, ConfigurationNode node) {
             Position position = new Position();
-            position.setX(node.getNode("x").getDouble());
-            position.setY(node.getNode("y").getDouble());
-            position.setZ(node.getNode("z").getDouble());
-            position.setYaw(node.getNode("yaw").getFloat());
-            position.setPitch(node.getNode("pitch").getFloat());
+            position.setX(node.node("x").getDouble());
+            position.setY(node.node("y").getDouble());
+            position.setZ(node.node("z").getDouble());
+            position.setYaw(node.node("yaw").getFloat());
+            position.setPitch(node.node("pitch").getFloat());
             return position;
         }
 
         @Override
-        public void serialize(Position position, ConfigNode configNode) {
+        public void serialize(Type type, @Nullable Position obj, ConfigurationNode node) {
 
         }
     }

@@ -1,8 +1,9 @@
 package ru.nanit.limbo.server.data;
 
-import napi.configurate.data.ConfigNode;
-import napi.configurate.serializing.NodeSerializer;
-import napi.configurate.serializing.NodeSerializingException;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
+import org.spongepowered.configurate.serialize.TypeSerializer;
 
 import java.nio.charset.StandardCharsets;
 
@@ -37,27 +38,27 @@ public class InfoForwarding {
         MODERN
     }
 
-    public static class Serializer implements NodeSerializer<InfoForwarding> {
+    public static class Serializer implements TypeSerializer<InfoForwarding> {
 
         @Override
-        public InfoForwarding deserialize(ConfigNode node) throws NodeSerializingException {
+        public InfoForwarding deserialize(java.lang.reflect.Type type, ConfigurationNode node) throws SerializationException {
             InfoForwarding forwarding = new InfoForwarding();
 
             try {
-                forwarding.type = Type.valueOf(node.getNode("type").getString().toUpperCase());
+                forwarding.type = Type.valueOf(node.node("type").getString("").toUpperCase());
             } catch (IllegalArgumentException e){
-                throw new NodeSerializingException("Undefined info forwarding type");
+                throw new SerializationException("Undefined info forwarding type");
             }
 
             if (forwarding.type == Type.MODERN){
-                forwarding.secretKey = node.getNode("secret").getString().getBytes(StandardCharsets.UTF_8);
+                forwarding.secretKey = node.node("secret").getString("").getBytes(StandardCharsets.UTF_8);
             }
 
             return forwarding;
         }
 
         @Override
-        public void serialize(InfoForwarding infoForwarding, ConfigNode configNode) {
+        public void serialize(java.lang.reflect.Type type, @Nullable InfoForwarding obj, ConfigurationNode node) throws SerializationException {
 
         }
     }
