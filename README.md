@@ -53,13 +53,21 @@ config into `secret` field.
 
 ### Contributing
 
-You can create pull request, if you found some bug, optimization ability, or you wanna add some functional, 
+You can create pull request, if you found some bug, optimization ability, or you want to add some functional, 
 which will not significantly load the server.
 
 ### Building
 
-The project uses `Gradle` to build and minimize output .jar file.
-Run `shadowJar` task to build minimized executable jar file.
+Required software:
+
+* JDK 1.8
+* Gradle 7+
+
+To build minimized .jar, go to project root and write in terminal:
+
+```
+gradlew shadowJar
+```
 
 ### Contacts
 
