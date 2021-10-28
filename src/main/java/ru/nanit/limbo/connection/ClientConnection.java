@@ -7,7 +7,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import ru.nanit.limbo.LimboConstants;
 import ru.nanit.limbo.protocol.ByteMessage;
-import ru.nanit.limbo.protocol.PreRenderedPacket;
+import ru.nanit.limbo.protocol.PreEncodedPacket;
 import ru.nanit.limbo.protocol.packets.login.*;
 import ru.nanit.limbo.protocol.packets.play.*;
 import ru.nanit.limbo.connection.pipeline.PacketDecoder;
@@ -34,14 +34,14 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class ClientConnection extends ChannelInboundHandlerAdapter {
 
-    private static PreRenderedPacket PACKET_LOGIN_SUCCESS;
-    private static PreRenderedPacket PACKET_JOIN_GAME;
-    private static PreRenderedPacket PACKET_PLAYER_ABILITIES;
-    private static PreRenderedPacket PACKET_PLAYER_INFO;
-    private static PreRenderedPacket PACKET_DECLARE_COMMANDS;
-    private static PreRenderedPacket PACKET_PLAYER_POS;
-    private static PreRenderedPacket PACKET_JOIN_MESSAGE;
-    private static PreRenderedPacket PACKET_BOSS_BAR;
+    private static PreEncodedPacket PACKET_LOGIN_SUCCESS;
+    private static PreEncodedPacket PACKET_JOIN_GAME;
+    private static PreEncodedPacket PACKET_PLAYER_ABILITIES;
+    private static PreEncodedPacket PACKET_PLAYER_INFO;
+    private static PreEncodedPacket PACKET_DECLARE_COMMANDS;
+    private static PreEncodedPacket PACKET_PLAYER_POS;
+    private static PreEncodedPacket PACKET_JOIN_MESSAGE;
+    private static PreEncodedPacket PACKET_BOSS_BAR;
 
     private final LimboServer server;
     private final Channel channel;
@@ -318,26 +318,26 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         PacketDeclareCommands declareCommands = new PacketDeclareCommands();
         declareCommands.setCommands(Collections.singletonList("limbo"));
 
-        PACKET_LOGIN_SUCCESS = PreRenderedPacket.of(loginSuccess);
-        PACKET_JOIN_GAME = PreRenderedPacket.of(joinGame);
-        PACKET_PLAYER_ABILITIES = PreRenderedPacket.of(playerAbilities);
-        PACKET_PLAYER_POS = PreRenderedPacket.of(positionAndLook);
-        PACKET_PLAYER_INFO = PreRenderedPacket.of(info);
-        PACKET_DECLARE_COMMANDS = PreRenderedPacket.of(declareCommands);
+        PACKET_LOGIN_SUCCESS = PreEncodedPacket.of(loginSuccess);
+        PACKET_JOIN_GAME = PreEncodedPacket.of(joinGame);
+        PACKET_PLAYER_ABILITIES = PreEncodedPacket.of(playerAbilities);
+        PACKET_PLAYER_POS = PreEncodedPacket.of(positionAndLook);
+        PACKET_PLAYER_INFO = PreEncodedPacket.of(info);
+        PACKET_DECLARE_COMMANDS = PreEncodedPacket.of(declareCommands);
 
         if (server.getConfig().isUseJoinMessage()){
             PacketChatMessage joinMessage = new PacketChatMessage();
             joinMessage.setJsonData(server.getConfig().getJoinMessage());
             joinMessage.setPosition(PacketChatMessage.Position.CHAT);
             joinMessage.setSender(UUID.randomUUID());
-            PACKET_JOIN_MESSAGE = PreRenderedPacket.of(joinMessage);
+            PACKET_JOIN_MESSAGE = PreEncodedPacket.of(joinMessage);
         }
 
         if (server.getConfig().isUseBossBar()){
             PacketBossBar bossBar = new PacketBossBar();
             bossBar.setBossBar(server.getConfig().getBossBar());
             bossBar.setUuid(UUID.randomUUID());
-            PACKET_BOSS_BAR = PreRenderedPacket.of(bossBar);
+            PACKET_BOSS_BAR = PreEncodedPacket.of(bossBar);
         }
     }
 }
