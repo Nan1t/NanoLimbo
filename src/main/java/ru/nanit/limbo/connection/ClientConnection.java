@@ -272,7 +272,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         return true;
     }
 
-    public static void preInitPackets(LimboServer server) {
+    public static void initPackets(LimboServer server) {
         final String username = server.getConfig().getPingData().getVersion();
         final UUID uuid = UuidUtil.getOfflineModeUuid(username);
 

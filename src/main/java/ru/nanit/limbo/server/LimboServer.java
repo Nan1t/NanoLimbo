@@ -56,7 +56,7 @@ public final class LimboServer {
         dimensionRegistry.load(this, config.getDimensionType());
         connections = new Connections();
 
-        ClientConnection.preInitPackets(this);
+        ClientConnection.initPackets(this);
 
         startBootstrap();
 
