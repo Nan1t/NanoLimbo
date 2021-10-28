@@ -1,5 +1,5 @@
 plugins {
-    id 'com.github.johnrengelman.shadow' version '6.1.0'
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
     id 'java'
 }
 
@@ -11,11 +11,13 @@ repositories {
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-    compile files('libs/napi-configurate-yaml-1.0.jar')
-    compile group: 'org.yaml', name: 'snakeyaml', version: '1.27'
-    compile group: 'io.netty', name: 'netty-all', version: '4.1.54.Final'
-    compile group: 'net.kyori', name: 'adventure-nbt', version: '4.1.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+
+    implementation files('libs/napi-configurate-yaml-1.0.jar')
+    implementation group: 'org.yaml', name: 'snakeyaml', version: '1.27'
+    implementation group: 'io.netty', name: 'netty-all', version: '4.1.54.Final'
+    implementation group: 'net.kyori', name: 'adventure-nbt', version: '4.1.1'
 }
 
 jar {
@@ -26,4 +28,8 @@ jar {
 
 shadowJar{
     minimize()
+}
+
+test {
+    useJUnitPlatform()
 }
