@@ -53,7 +53,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
 
     private int velocityLoginMessageId = -1;
 
-    public ClientConnection(Channel channel, LimboServer server){
+    public ClientConnection(Channel channel, LimboServer server) {
         this.server = server;
         this.channel = channel;
         this.address = channel.remoteAddress();
@@ -64,7 +64,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         return gameProfile.getUuid();
     }
 
-    public String getUsername(){
+    public String getUsername() {
         return gameProfile.getUsername();
     }
 
@@ -74,7 +74,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        if (state.equals(State.PLAY)){
+        if (state.equals(State.PLAY)) {
             server.getConnections().removeConnection(this);
         }
         super.channelInactive(ctx);
@@ -82,7 +82,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        if (channel.isActive()){
+        if (channel.isActive()) {
             Logger.error("Unhandled exception: ", cause);
         }
     }
@@ -92,17 +92,17 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         handlePacket(msg);
     }
 
-    public void handlePacket(Object packet){
-        if (packet instanceof PacketHandshake){
+    public void handlePacket(Object packet) {
+        if (packet instanceof PacketHandshake) {
             PacketHandshake handshake = (PacketHandshake) packet;
             clientVersion = handshake.getVersion();
             updateState(State.getById(handshake.getNextState()));
             Logger.debug("Pinged from " + address);
 
-            if (server.getConfig().getInfoForwarding().isLegacy()){
+            if (server.getConfig().getInfoForwarding().isLegacy()) {
                 String[] split = handshake.getHost().split("\00");
 
-                if (split.length == 3 || split.length == 4){
+                if (split.length == 3 || split.length == 4) {
                     setAddress(split[1]);
                     gameProfile.setUuid(UuidUtil.fromString(split[2]));
                 } else {
@@ -112,28 +112,28 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
             return;
         }
 
-        if (packet instanceof PacketStatusRequest){
+        if (packet instanceof PacketStatusRequest) {
             sendPacket(new PacketStatusResponse(server));
             return;
         }
 
-        if (packet instanceof PacketStatusPing){
+        if (packet instanceof PacketStatusPing) {
             sendPacketAndClose(packet);
             return;
         }
 
-        if (packet instanceof PacketLoginStart){
-            if (server.getConnections().getCount() >= server.getConfig().getMaxPlayers()){
+        if (packet instanceof PacketLoginStart) {
+            if (server.getConnections().getCount() >= server.getConfig().getMaxPlayers()) {
                 disconnectLogin("Too many players connected");
                 return;
             }
 
-            if (!clientVersion.equals(Version.getCurrentSupported())){
+            if (!clientVersion.equals(Version.getCurrentSupported())) {
                 disconnectLogin("Incompatible client version");
                 return;
             }
 
-            if (server.getConfig().getInfoForwarding().isModern()){
+            if (server.getConfig().getInfoForwarding().isModern()) {
                 velocityLoginMessageId = ThreadLocalRandom.current().nextInt(0, Integer.MAX_VALUE);
                 PacketLoginPluginRequest request = new PacketLoginPluginRequest();
                 request.setMessageId(velocityLoginMessageId);
@@ -143,7 +143,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
                 return;
             }
 
-            if (!server.getConfig().getInfoForwarding().isModern()){
+            if (!server.getConfig().getInfoForwarding().isModern()) {
                 gameProfile.setUsername(((PacketLoginStart)packet).getUsername());
                 gameProfile.setUuid(UuidUtil.getOfflineModeUuid(getUsername()));
             }
@@ -152,13 +152,13 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
             return;
         }
 
-        if (packet instanceof PacketLoginPluginResponse){
+        if (packet instanceof PacketLoginPluginResponse) {
             PacketLoginPluginResponse response = (PacketLoginPluginResponse) packet;
 
             if (server.getConfig().getInfoForwarding().isModern()
-                    && response.getMessageId() == velocityLoginMessageId){
+                    && response.getMessageId() == velocityLoginMessageId) {
 
-                if (!response.isSuccessful() || response.getData() == null){
+                if (!response.isSuccessful() || response.getData() == null) {
                     disconnectLogin("You need to connect with Velocity");
                     return;
                 }
@@ -178,8 +178,8 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         }
     }
 
-    private void fireLoginSuccess(){
-        if (server.getConfig().getInfoForwarding().isModern() && velocityLoginMessageId == -1){
+    private void fireLoginSuccess() {
+        if (server.getConfig().getInfoForwarding().isModern() && velocityLoginMessageId == -1) {
             disconnectLogin("You need to connect with Velocity");
             return;
         }
@@ -204,51 +204,51 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         sendKeepAlive();
     }
 
-    public void disconnectLogin(String reason){
-        if (isConnected() && state == State.LOGIN){
+    public void disconnectLogin(String reason) {
+        if (isConnected() && state == State.LOGIN) {
             PacketDisconnect disconnect = new PacketDisconnect();
             disconnect.setReason(reason);
             sendPacketAndClose(disconnect);
         }
     }
 
-    public void sendKeepAlive(){
-        if (state.equals(State.PLAY)){
+    public void sendKeepAlive() {
+        if (state.equals(State.PLAY)) {
             PacketKeepAlive keepAlive = new PacketKeepAlive();
             keepAlive.setId(ThreadLocalRandom.current().nextLong());
             sendPacket(keepAlive);
         }
     }
 
-    public void sendPacket(Object packet){
+    public void sendPacket(Object packet) {
         if (isConnected())
             channel.writeAndFlush(packet, channel.voidPromise());
     }
 
-    public void sendPacketAndClose(Object packet){
+    public void sendPacketAndClose(Object packet) {
         if (isConnected())
             channel.writeAndFlush(packet).addListener(ChannelFutureListener.CLOSE);
     }
 
-    public void writePacket(Object packet){
+    public void writePacket(Object packet) {
         if (isConnected()) channel.write(packet, channel.voidPromise());
     }
 
-    public void flushPackets(){
+    public void flushPackets() {
         if (isConnected()) channel.flush();
     }
 
-    public boolean isConnected(){
+    public boolean isConnected() {
         return channel.isActive();
     }
 
-    private void updateState(State state){
+    private void updateState(State state) {
         this.state = state;
         channel.pipeline().get(PacketDecoder.class).updateState(state);
         channel.pipeline().get(PacketEncoder.class).updateState(state);
     }
 
-    private void setAddress(String host){
+    private void setAddress(String host) {
         this.address = new InetSocketAddress(host, ((InetSocketAddress)this.address).getPort());
     }
 
@@ -272,7 +272,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         return true;
     }
 
-    public static void preInitPackets(LimboServer server){
+    public static void preInitPackets(LimboServer server) {
         final String username = server.getConfig().getPingData().getVersion();
         final UUID uuid = UuidUtil.getOfflineModeUuid(username);
 
@@ -325,7 +325,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         PACKET_PLAYER_INFO = PreEncodedPacket.of(info);
         PACKET_DECLARE_COMMANDS = PreEncodedPacket.of(declareCommands);
 
-        if (server.getConfig().isUseJoinMessage()){
+        if (server.getConfig().isUseJoinMessage()) {
             PacketChatMessage joinMessage = new PacketChatMessage();
             joinMessage.setJsonData(server.getConfig().getJoinMessage());
             joinMessage.setPosition(PacketChatMessage.Position.CHAT);
@@ -333,7 +333,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
             PACKET_JOIN_MESSAGE = PreEncodedPacket.of(joinMessage);
         }
 
-        if (server.getConfig().isUseBossBar()){
+        if (server.getConfig().isUseBossBar()) {
             PacketBossBar bossBar = new PacketBossBar();
             bossBar.setBossBar(server.getConfig().getBossBar());
             bossBar.setUuid(UUID.randomUUID());

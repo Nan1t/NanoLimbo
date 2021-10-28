@@ -18,7 +18,7 @@ public final class DimensionRegistry {
     private CompoundBinaryTag theEnd;
     private CompoundBinaryTag nether;
 
-    public CompoundBinaryTag getCodec(){
+    public CompoundBinaryTag getCodec() {
         return codec;
     }
 
@@ -47,7 +47,7 @@ public final class DimensionRegistry {
         nether = (CompoundBinaryTag) ((CompoundBinaryTag) dimensions.get(2)).get("element");
         theEnd = (CompoundBinaryTag) ((CompoundBinaryTag) dimensions.get(3)).get("element");
 
-        switch (def.toLowerCase()){
+        switch (def.toLowerCase()) {
             case "overworld":
                 defaultDimension = overWorld;
                 break;

@@ -17,7 +17,7 @@ public class SocketAddressSerializer implements TypeSerializer<SocketAddress> {
         int port = node.node("port").getInt();
         SocketAddress address;
 
-        if (ip == null || ip.isEmpty()){
+        if (ip == null || ip.isEmpty()) {
             address = new InetSocketAddress(port);
         } else {
             address = new InetSocketAddress(ip, port);

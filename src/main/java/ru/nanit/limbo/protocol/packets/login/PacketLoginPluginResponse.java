@@ -26,7 +26,7 @@ public class PacketLoginPluginResponse implements PacketIn {
         messageId = msg.readVarInt();
         successful = msg.readBoolean();
 
-        if (msg.readableBytes() > 0){
+        if (msg.readableBytes() > 0) {
             int i = msg.readableBytes();
             data = new ByteMessage(msg.readBytes(i));
         }

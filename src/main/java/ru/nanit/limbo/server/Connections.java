@@ -13,24 +13,24 @@ public final class Connections {
 
     private final Map<UUID, ClientConnection> connections;
 
-    public Connections(){
+    public Connections() {
         connections = new ConcurrentHashMap<>();
     }
 
-    public Collection<ClientConnection> getAllConnections(){
+    public Collection<ClientConnection> getAllConnections() {
         return Collections.unmodifiableCollection(connections.values());
     }
 
-    public int getCount(){
+    public int getCount() {
         return connections.size();
     }
 
-    public void addConnection(ClientConnection connection){
+    public void addConnection(ClientConnection connection) {
         connections.put(connection.getUuid(), connection);
         Logger.info("Player %s connected (%s)", connection.getUsername(), connection.getAddress());
     }
 
-    public void removeConnection(ClientConnection connection){
+    public void removeConnection(ClientConnection connection) {
         connections.remove(connection.getUuid());
         Logger.info("Player %s disconnected", connection.getUsername());
     }

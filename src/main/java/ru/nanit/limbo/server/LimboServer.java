@@ -30,11 +30,11 @@ public final class LimboServer {
     private EventLoopGroup bossGroup;
     private EventLoopGroup workerGroup;
 
-    public LimboConfig getConfig(){
+    public LimboConfig getConfig() {
         return config;
     }
 
-    public Connections getConnections(){
+    public Connections getConnections() {
         return connections;
     }
 
@@ -67,10 +67,10 @@ public final class LimboServer {
         Logger.info("Server started on %s", config.getAddress());
     }
 
-    private void startBootstrap(){
+    private void startBootstrap() {
         Class<? extends ServerChannel> channelClass;
 
-        if (config.isUseEpoll() && Epoll.isAvailable()){
+        if (config.isUseEpoll() && Epoll.isAvailable()) {
             bossGroup = new EpollEventLoopGroup(config.getBossGroupSize());
             workerGroup = new EpollEventLoopGroup(config.getWorkerGroupSize());
             channelClass = EpollServerSocketChannel.class;
@@ -91,20 +91,20 @@ public final class LimboServer {
                 .bind();
     }
 
-    private void broadcastKeepAlive(){
+    private void broadcastKeepAlive() {
         connections.getAllConnections().forEach(ClientConnection::sendKeepAlive);
     }
 
-    private void stop(){
-        if (keepAliveTask != null){
+    private void stop() {
+        if (keepAliveTask != null) {
             keepAliveTask.cancel(true);
         }
 
-        if (bossGroup != null){
+        if (bossGroup != null) {
             bossGroup.shutdownGracefully();
         }
 
-        if (workerGroup != null){
+        if (workerGroup != null) {
             workerGroup.shutdownGracefully();
         }
     }

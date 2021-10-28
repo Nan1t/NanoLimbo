@@ -13,7 +13,7 @@ public class PacketEncoder extends MessageToByteEncoder<Packet> {
 
     private State.PacketRegistry registry;
 
-    public PacketEncoder(){
+    public PacketEncoder() {
         updateState(State.HANDSHAKING);
     }
 
@@ -24,13 +24,13 @@ public class PacketEncoder extends MessageToByteEncoder<Packet> {
         ByteMessage msg = new ByteMessage(out);
         int packetId;
 
-        if (packet instanceof PreEncodedPacket){
+        if (packet instanceof PreEncodedPacket) {
             packetId = registry.getPacketId(((PreEncodedPacket)packet).getWrappedPacket().getClass());
         } else {
             packetId = registry.getPacketId(packet.getClass());
         }
 
-        if (packetId == -1){
+        if (packetId == -1) {
             Logger.warning("Undefined packet class: %s", packet.getClass().getName());
             return;
         }
@@ -39,12 +39,12 @@ public class PacketEncoder extends MessageToByteEncoder<Packet> {
 
         try {
             packet.encode(msg);
-        } catch (Exception e){
+        } catch (Exception e) {
             Logger.warning("Cannot encode packet 0x%s: %s", Integer.toHexString(packetId), e.getMessage());
         }
     }
 
-    public void updateState(State state){
+    public void updateState(State state) {
         this.registry = state.clientBound;
     }
 

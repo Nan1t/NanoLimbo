@@ -38,7 +38,7 @@ public class PacketChatMessage implements PacketOut {
 
         private final int index;
 
-        Position(int index){
+        Position(int index) {
             this.index = index;
         }
 

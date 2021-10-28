@@ -23,11 +23,11 @@ public class ByteMessage extends ByteBuf {
 
     private final ByteBuf buf;
 
-    public ByteMessage(ByteBuf buf){
+    public ByteMessage(ByteBuf buf) {
         this.buf = buf;
     }
 
-    public byte[] toByteArray(){
+    public byte[] toByteArray() {
         byte[] bytes = new byte[buf.readableBytes()];
         buf.readBytes(bytes);
         return bytes;
@@ -50,7 +50,7 @@ public class ByteMessage extends ByteBuf {
         throw new IllegalArgumentException("Cannot read VarInt");
     }
 
-    public void writeVarInt(int value){
+    public void writeVarInt(int value) {
         while (true) {
             if ((value & 0xFFFFFF80) == 0) {
                 buf.writeByte(value);
@@ -78,7 +78,7 @@ public class ByteMessage extends ByteBuf {
         buf.writeCharSequence(str, StandardCharsets.UTF_8);
     }
 
-    public byte[] readBytesArray(){
+    public byte[] readBytesArray() {
         int length = readVarInt();
         byte[] array = new byte[length];
         buf.readBytes(array);
@@ -146,7 +146,7 @@ public class ByteMessage extends ByteBuf {
 
             writeVarInt(compoundTags.length);
 
-            for (CompoundBinaryTag tag : compoundTags){
+            for (CompoundBinaryTag tag : compoundTags) {
                 BinaryTagIO.writeDataOutput(tag, stream);
             }
         } catch (IOException e) {
@@ -1139,7 +1139,7 @@ public class ByteMessage extends ByteBuf {
         return buf.release(decrement);
     }
 
-    public static ByteMessage create(){
+    public static ByteMessage create() {
         return new ByteMessage(Unpooled.buffer());
     }
 }

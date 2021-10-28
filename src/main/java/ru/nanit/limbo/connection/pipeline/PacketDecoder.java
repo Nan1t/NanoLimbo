@@ -13,7 +13,7 @@ public class PacketDecoder extends MessageToMessageDecoder<ByteBuf> {
 
     private State.PacketRegistry mappings;
 
-    public PacketDecoder(){
+    public PacketDecoder() {
         updateState(State.HANDSHAKING);
     }
 
@@ -25,10 +25,10 @@ public class PacketDecoder extends MessageToMessageDecoder<ByteBuf> {
         int packetId = msg.readVarInt();
         Packet packet = mappings.getPacket(packetId);
 
-        if (packet != null){
+        if (packet != null) {
             try {
                 packet.decode(msg);
-            } catch (Exception e){
+            } catch (Exception e) {
                 Logger.warning("Cannot decode packet 0x%s: %s", Integer.toHexString(packetId), e.getMessage());
             }
 
@@ -38,7 +38,7 @@ public class PacketDecoder extends MessageToMessageDecoder<ByteBuf> {
         }
     }
 
-    public void updateState(State state){
+    public void updateState(State state) {
         this.mappings = state.serverBound;
     }
 }

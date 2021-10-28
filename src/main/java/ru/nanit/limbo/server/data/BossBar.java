@@ -101,13 +101,13 @@ public class BossBar {
 
             try {
                 bossBar.setColor(Color.valueOf(node.node("color").getString("").toUpperCase()));
-            } catch (IllegalArgumentException e){
+            } catch (IllegalArgumentException e) {
                 throw new SerializationException("Invalid bossbar color");
             }
 
             try {
                 bossBar.setDivision(Division.valueOf(node.node("division").getString("").toUpperCase()));
-            } catch (IllegalArgumentException e){
+            } catch (IllegalArgumentException e) {
                 throw new SerializationException("Invalid bossbar division");
             }
 

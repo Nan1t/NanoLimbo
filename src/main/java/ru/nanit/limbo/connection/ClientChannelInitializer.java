@@ -16,7 +16,7 @@ public class ClientChannelInitializer extends ChannelInitializer<Channel> {
 
     private final LimboServer server;
 
-    public ClientChannelInitializer(LimboServer server){
+    public ClientChannelInitializer(LimboServer server) {
         this.server = server;
     }
 

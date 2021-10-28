@@ -10,9 +10,9 @@ public class PacketStatusResponse implements PacketOut {
 
     private LimboServer server;
 
-    public PacketStatusResponse(){ }
+    public PacketStatusResponse() { }
 
-    public PacketStatusResponse(LimboServer server){
+    public PacketStatusResponse(LimboServer server) {
         this.server = server;
     }
 
@@ -26,7 +26,7 @@ public class PacketStatusResponse implements PacketOut {
         msg.writeString(json);
     }
 
-    private String getResponseJson(String version, int protocol, int maxPlayers, int online, String description){
+    private String getResponseJson(String version, int protocol, int maxPlayers, int online, String description) {
         return String.format(TEMPLATE, version, protocol, maxPlayers, online, description);
     }
 }

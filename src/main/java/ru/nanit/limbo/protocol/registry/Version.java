@@ -38,26 +38,26 @@ public enum Version {
     static {
         VERSION_MAP = new HashMap<>();
 
-        for (Version version : values()){
+        for (Version version : values()) {
             VERSION_MAP.put(version.getProtocolNumber(), version);
         }
     }
 
-    public static Version getCurrentSupported(){
+    public static Version getCurrentSupported() {
         return V1_16_4;
     }
 
-    public static Version of(int protocolNumber){
+    public static Version of(int protocolNumber) {
         return VERSION_MAP.getOrDefault(protocolNumber, UNDEFINED);
     }
 
     private final int protocolNumber;
 
-    Version(int protocolNumber){
+    Version(int protocolNumber) {
         this.protocolNumber = protocolNumber;
     }
 
-    public int getProtocolNumber(){
+    public int getProtocolNumber() {
         return this.protocolNumber;
     }
 

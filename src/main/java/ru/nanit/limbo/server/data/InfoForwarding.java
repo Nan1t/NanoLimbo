@@ -20,15 +20,15 @@ public class InfoForwarding {
         return secretKey;
     }
 
-    public boolean isNone(){
+    public boolean isNone() {
         return type == Type.NONE;
     }
 
-    public boolean isLegacy(){
+    public boolean isLegacy() {
         return type == Type.LEGACY;
     }
 
-    public boolean isModern(){
+    public boolean isModern() {
         return type == Type.MODERN;
     }
 
@@ -46,11 +46,11 @@ public class InfoForwarding {
 
             try {
                 forwarding.type = Type.valueOf(node.node("type").getString("").toUpperCase());
-            } catch (IllegalArgumentException e){
+            } catch (IllegalArgumentException e) {
                 throw new SerializationException("Undefined info forwarding type");
             }
 
-            if (forwarding.type == Type.MODERN){
+            if (forwarding.type == Type.MODERN) {
                 forwarding.secretKey = node.node("secret").getString("").getBytes(StandardCharsets.UTF_8);
             }
 

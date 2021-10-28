@@ -22,14 +22,14 @@ public class PacketDeclareCommands implements PacketOut {
         msg.writeByte(0);
         msg.writeVarInt(commands.size());
 
-        for (int i = 1; i <= commands.size() * 2; i++){
+        for (int i = 1; i <= commands.size() * 2; i++) {
             msg.writeVarInt(i++);
         }
 
         // Declare other commands
 
         int i = 1;
-        for (String cmd : commands){
+        for (String cmd : commands) {
             msg.writeByte(1 | 0x04);
             msg.writeVarInt(1);
             msg.writeVarInt(i + 1);

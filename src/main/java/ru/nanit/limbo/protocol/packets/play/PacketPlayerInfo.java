@@ -18,11 +18,11 @@ public class PacketPlayerInfo implements PacketOut {
         this.gameMode = gameMode;
     }
 
-    public void setUsername(String username){
+    public void setUsername(String username) {
         this.username = username;
     }
 
-    public void setUuid(UUID uuid){
+    public void setUuid(UUID uuid) {
         this.uuid = uuid;
     }
 

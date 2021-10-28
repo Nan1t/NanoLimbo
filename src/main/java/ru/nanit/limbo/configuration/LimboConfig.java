@@ -38,7 +38,7 @@ public final class LimboConfig {
     private int bossGroupSize;
     private int workerGroupSize;
 
-    public LimboConfig(Path root){
+    public LimboConfig(Path root) {
         this.root = root;
     }
 
