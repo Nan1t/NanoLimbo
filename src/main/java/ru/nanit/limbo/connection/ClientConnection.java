@@ -234,10 +234,6 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         if (isConnected()) channel.write(packet, channel.voidPromise());
     }
 
-    public void flushPackets() {
-        if (isConnected()) channel.flush();
-    }
-
     public boolean isConnected() {
         return channel.isActive();
     }
