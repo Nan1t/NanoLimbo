@@ -64,6 +64,22 @@ public enum Version {
         return prev;
     }
 
+    public boolean more(Version another) {
+        return this.protocolNumber > another.protocolNumber;
+    }
+
+    public boolean moreOrEqual(Version another) {
+        return this.protocolNumber >= another.protocolNumber;
+    }
+
+    public boolean less(Version another) {
+        return this.protocolNumber < another.protocolNumber;
+    }
+
+    public boolean lessOrEqual(Version another) {
+        return this.protocolNumber <= another.protocolNumber;
+    }
+
     public static Version getMin() {
         return V1_9;
     }
