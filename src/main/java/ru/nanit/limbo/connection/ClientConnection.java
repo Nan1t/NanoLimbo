@@ -47,15 +47,20 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
     private final Channel channel;
     private final GameProfile gameProfile;
 
+    private final PacketDecoder decoder;
+    private final PacketEncoder encoder;
+
     private State state;
     private Version clientVersion;
     private SocketAddress address;
 
     private int velocityLoginMessageId = -1;
 
-    public ClientConnection(Channel channel, LimboServer server) {
+    public ClientConnection(Channel channel, LimboServer server, PacketDecoder decoder, PacketEncoder encoder) {
         this.server = server;
         this.channel = channel;
+        this.decoder = decoder;
+        this.encoder = encoder;
         this.address = channel.remoteAddress();
         this.gameProfile = new GameProfile();
     }
@@ -244,18 +249,12 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
 
     private void setPlayState() {
         this.state = State.PLAY;
-        channel.pipeline().get(PacketDecoder.class)
-                .updateState(this.state);
-        channel.pipeline().get(PacketEncoder.class)
-                .updateState(this.state);
+        decoder.updateState(this.state);
+        encoder.updateState(this.state);
     }
 
-    public void updateStateAndVersion(State state, Version version){
+    public void updateStateAndVersion(State state, Version version) {
         this.state = state;
-
-        PacketDecoder decoder = channel.pipeline().get(PacketDecoder.class);
-        PacketEncoder encoder = channel.pipeline().get(PacketEncoder.class);
-
         decoder.updateVersion(version);
         decoder.updateState(state);
         encoder.updateVersion(version);

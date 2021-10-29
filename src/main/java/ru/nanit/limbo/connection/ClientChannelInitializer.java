@@ -24,13 +24,16 @@ public class ClientChannelInitializer extends ChannelInitializer<Channel> {
     protected void initChannel(Channel channel) {
         ChannelPipeline pipeline = channel.pipeline();
 
+        PacketDecoder decoder = new PacketDecoder();
+        PacketEncoder encoder = new PacketEncoder();
+
         pipeline.addLast("timeout", new ReadTimeoutHandler(server.getConfig().getReadTimeout(),
                 TimeUnit.MILLISECONDS));
         pipeline.addLast("frame_decoder", new VarIntFrameDecoder());
         pipeline.addLast("frame_encoder", new VarIntLengthEncoder());
-        pipeline.addLast("decoder", new PacketDecoder());
-        pipeline.addLast("encoder", new PacketEncoder());
-        pipeline.addLast("handler", new ClientConnection(channel, server));
+        pipeline.addLast("decoder", decoder);
+        pipeline.addLast("encoder", encoder);
+        pipeline.addLast("handler", new ClientConnection(channel, server, decoder, encoder));
     }
 
 }
