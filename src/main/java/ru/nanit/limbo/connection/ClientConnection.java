@@ -194,9 +194,12 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         writePacket(PACKET_PLAYER_ABILITIES);
         writePacket(PACKET_PLAYER_POS);
         writePacket(PACKET_PLAYER_INFO);
-        writePacket(PACKET_DECLARE_COMMANDS);
 
-        if (PACKET_BOSS_BAR != null)
+        if (clientVersion.moreOrEqual(Version.V1_13)){
+            writePacket(PACKET_DECLARE_COMMANDS);
+        }
+
+        if (PACKET_BOSS_BAR != null && clientVersion.moreOrEqual(Version.V1_9))
             writePacket(PACKET_BOSS_BAR);
 
         if (PACKET_JOIN_MESSAGE != null)
