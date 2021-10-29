@@ -6,6 +6,8 @@ import java.util.Map;
 public enum Version {
 
     UNDEFINED(-1),
+    V1_8(47),
+    // 1.8-1.8.8 has same protocol numbers
     V1_9(107),
     V1_9_1(108),
     V1_9_2(109),
@@ -81,7 +83,7 @@ public enum Version {
     }
 
     public static Version getMin() {
-        return V1_9;
+        return V1_8;
     }
 
     public static Version getMax() {

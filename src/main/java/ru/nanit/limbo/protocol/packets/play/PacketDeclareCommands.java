@@ -6,6 +6,9 @@ import ru.nanit.limbo.protocol.registry.Version;
 
 import java.util.List;
 
+/**
+ * Packet for 1.13+
+ */
 public class PacketDeclareCommands implements PacketOut {
 
     private List<String> commands;

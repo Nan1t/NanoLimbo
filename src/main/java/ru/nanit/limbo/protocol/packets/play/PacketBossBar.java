@@ -7,6 +7,9 @@ import ru.nanit.limbo.server.data.BossBar;
 
 import java.util.UUID;
 
+/**
+ * Packet for 1.9+
+ */
 public class PacketBossBar implements PacketOut {
 
     private UUID uuid;
