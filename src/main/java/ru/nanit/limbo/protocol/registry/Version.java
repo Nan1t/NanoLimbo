@@ -13,6 +13,7 @@ public enum Version {
     V1_10(210),
     V1_11(315),
     V1_11_1(316),
+    // 1.11.2 has same protocol number
     V1_12(335),
     V1_12_1(338),
     V1_12_2(340),
@@ -36,25 +37,20 @@ public enum Version {
     V1_17(755),
     V1_17_1(756);
 
-    public static final Map<Integer, Version> VERSION_MAP;
+    private static final Map<Integer, Version> VERSION_MAP;
 
     static {
         VERSION_MAP = new HashMap<>();
-
+        Version last = null;
         for (Version version : values()) {
+            version.prev = last;
+            last = version;
             VERSION_MAP.put(version.getProtocolNumber(), version);
         }
     }
 
-    public static Version getMinimal() {
-        return V1_9;
-    }
-
-    public static Version of(int protocolNumber) {
-        return VERSION_MAP.getOrDefault(protocolNumber, UNDEFINED);
-    }
-
     private final int protocolNumber;
+    private Version prev;
 
     Version(int protocolNumber) {
         this.protocolNumber = protocolNumber;
@@ -64,4 +60,19 @@ public enum Version {
         return this.protocolNumber;
     }
 
+    public Version getPrev() {
+        return prev;
+    }
+
+    public static Version getMin() {
+        return V1_9;
+    }
+
+    public static Version getMax() {
+        return V1_17_1;
+    }
+
+    public static Version of(int protocolNumber) {
+        return VERSION_MAP.getOrDefault(protocolNumber, UNDEFINED);
+    }
 }

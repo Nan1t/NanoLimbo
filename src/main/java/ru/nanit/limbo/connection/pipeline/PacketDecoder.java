@@ -16,7 +16,7 @@ public class PacketDecoder extends MessageToMessageDecoder<ByteBuf> {
     private Version version;
 
     public PacketDecoder() {
-        updateVersion(Version.getMinimal());
+        updateVersion(Version.getMin());
         updateState(State.HANDSHAKING);
     }
 
@@ -46,6 +46,6 @@ public class PacketDecoder extends MessageToMessageDecoder<ByteBuf> {
     }
 
     public void updateState(State state) {
-        this.mappings = state.serverBound;
+        this.mappings = state.serverBound.getRegistry(version);
     }
 }

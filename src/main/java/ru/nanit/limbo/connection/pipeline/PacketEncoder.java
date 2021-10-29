@@ -16,7 +16,7 @@ public class PacketEncoder extends MessageToByteEncoder<Packet> {
     private Version version;
 
     public PacketEncoder() {
-        updateVersion(Version.getMinimal());
+        updateVersion(Version.getMin());
         updateState(State.HANDSHAKING);
     }
 
@@ -52,7 +52,7 @@ public class PacketEncoder extends MessageToByteEncoder<Packet> {
     }
 
     public void updateState(State state) {
-        this.registry = state.clientBound;
+        this.registry = state.clientBound.getRegistry(version);
     }
 
 }
