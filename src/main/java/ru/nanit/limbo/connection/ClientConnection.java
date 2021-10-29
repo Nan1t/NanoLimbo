@@ -186,7 +186,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         }
 
         writePacket(PACKET_LOGIN_SUCCESS);
-        updateState(State.PLAY);
+        setPlayState();
 
         server.getConnections().addConnection(this);
 
@@ -239,10 +239,12 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         return channel.isActive();
     }
 
-    private void updateState(State state) {
-        this.state = state;
-        channel.pipeline().get(PacketDecoder.class).updateState(state);
-        channel.pipeline().get(PacketEncoder.class).updateState(state);
+    private void setPlayState() {
+        this.state = State.PLAY;
+        channel.pipeline().get(PacketDecoder.class)
+                .updateState(this.state);
+        channel.pipeline().get(PacketEncoder.class)
+                .updateState(this.state);
     }
 
     public void updateStateAndVersion(State state, Version version){
