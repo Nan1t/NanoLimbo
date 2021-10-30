@@ -28,7 +28,9 @@ public class PacketChatMessage implements PacketOut {
     public void encode(ByteMessage msg, Version version) {
         msg.writeString(jsonData);
         msg.writeByte(position.index);
-        msg.writeUuid(sender);
+
+        if (version.moreOrEqual(Version.V1_16))
+            msg.writeUuid(sender);
     }
 
     public enum Position {
