@@ -11,7 +11,7 @@ The general features:
 * High performance. The server not saves and not cached any useless (for limbo) data.
 * Support for **BungeeCord** and **Velocity** info forwarding.
 * All necessary data are configurable.
-* Lightweight. App size less than **2MB.**
+* Lightweight. App size around **2MB.**
 
 ![](https://i.imgur.com/sT8p1Gz.png)
 
