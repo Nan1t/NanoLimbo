@@ -12,29 +12,34 @@ import java.util.stream.Collectors;
 
 public final class DimensionRegistry {
 
+    private final LimboServer server;
+
     private Dimension defaultDimension;
 
     private CompoundBinaryTag codec;
+    private CompoundBinaryTag oldCodec;
+
+    public DimensionRegistry(LimboServer server) {
+        this.server = server;
+    }
 
     public CompoundBinaryTag getCodec() {
         return codec;
+    }
+
+    public CompoundBinaryTag getOldCodec() {
+        return oldCodec;
     }
 
     public Dimension getDefaultDimension() {
         return defaultDimension;
     }
 
-    public void load(LimboServer server, String def) throws IOException {
-        InputStream in = server.getClass().getResourceAsStream("/dimension_codec.snbt");
+    public void load(String def) throws IOException {
+        codec = readCodecFile("/dimension/codec_new.snbt");
+        // On 1.16-1.16.1 different codec format
+        oldCodec = readCodecFile("/dimension/codec_old.snbt");
 
-        if(in == null)
-            throw new FileNotFoundException("Cannot find dimension registry file");
-
-        String data = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))
-                .lines()
-                .collect(Collectors.joining("\n"));
-
-        codec = TagStringIO.get().asCompound(data);
         ListBinaryTag dimensions = codec.getCompound("minecraft:dimension_type").getList("value");
 
         CompoundBinaryTag overWorld = (CompoundBinaryTag) ((CompoundBinaryTag) dimensions.get(0)).get("element");
@@ -43,18 +48,33 @@ public final class DimensionRegistry {
 
         switch (def.toLowerCase()) {
             case "overworld":
-                defaultDimension = new Dimension(0, overWorld);
+                defaultDimension = new Dimension(0, "minecraft:overworld", overWorld);
                 break;
             case "nether":
-                defaultDimension = new Dimension(-1, nether);
+                defaultDimension = new Dimension(-1, "minecraft:nether", nether);
                 break;
             case "the_end":
-                defaultDimension = new Dimension(1, theEnd);
+                defaultDimension = new Dimension(1, "minecraft:the_end", theEnd);
                 break;
             default:
-                defaultDimension = new Dimension(1, theEnd);
+                defaultDimension = new Dimension(1, "minecraft:the_end", theEnd);
                 Logger.warning("Undefined dimension type: '%s'. Using THE_END as default", def);
                 break;
         }
+    }
+
+    private CompoundBinaryTag readCodecFile(String resPath) throws IOException {
+        InputStream in = server.getClass().getResourceAsStream(resPath);
+
+        if(in == null)
+            throw new FileNotFoundException("Cannot find dimension registry file");
+
+        return TagStringIO.get().asCompound(streamToString(in));
+    }
+
+    private String streamToString(InputStream in) {
+        return new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))
+                .lines()
+                .collect(Collectors.joining("\n"));
     }
 }

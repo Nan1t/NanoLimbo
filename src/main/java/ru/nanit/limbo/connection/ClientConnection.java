@@ -308,8 +308,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         joinGame.setWorldName("minecraft:world");
         joinGame.setWorldNames("minecraft:world");
         joinGame.setHashedSeed(0);
-        joinGame.setDimensionCodec(server.getDimensionRegistry().getCodec());
-        joinGame.setDimension(server.getDimensionRegistry().getDefaultDimension());
+        joinGame.setDimensionRegistry(server.getDimensionRegistry());
 
         PacketPlayerAbilities playerAbilities = new PacketPlayerAbilities();
         playerAbilities.setFlyingSpeed(0.0F);
