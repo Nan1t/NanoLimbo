@@ -17,10 +17,20 @@ The general features:
 
 ### Protocol support
 
-The server written based on `1.16.4` minecraft protocol. You can use `ViaVersion` 
-or another protocol hack on your **proxy server** to achieve compatibility with other versions.
-However, compatibility with other versions is in the plans, but not the nearest ones, since there 
-is a way to do this using a plugin that is installed on most networks.
+Symbol `X` means all minor versions.
+
+| Client version | Tested |
+| -------------- | ------ |
+|    1.8.X | yes |
+|    1.9.X | yes |
+|    1.10.X | no |
+|    1.11.X | yes |
+|    1.12.X | yes |
+|    1.13.X | yes |
+|    1.14.X | yes |
+|    1.15.X | no |
+|    1.16.X | yes |
+|    1.17.X | yes |
 
 ### Commands
 
