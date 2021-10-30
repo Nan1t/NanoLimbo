@@ -18,12 +18,20 @@ public class PacketKeepAlive implements Packet {
 
     @Override
     public void encode(ByteMessage msg, Version version) {
-        msg.writeLong(id);
+        if (version.moreOrEqual(Version.V1_12_2)) {
+            msg.writeLong(id);
+        } else {
+            msg.writeVarInt((int) id);
+        }
     }
 
     @Override
     public void decode(ByteMessage msg, Version version) {
-        this.id = msg.readLong();
+        if (version.moreOrEqual(Version.V1_12_2)) {
+            this.id = msg.readLong();
+        } else {
+            this.id = msg.readVarInt();
+        }
     }
 
 }
