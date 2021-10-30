@@ -34,4 +34,8 @@ public class PacketKeepAlive implements Packet {
         }
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
+    }
 }

@@ -14,6 +14,10 @@ public final class Logger {
         debugLevel = level;
     }
 
+    public static int getLevel() {
+        return debugLevel;
+    }
+
     public static void info(Object msg, Object... args) {
         print(Level.INFO, msg, null, args);
     }

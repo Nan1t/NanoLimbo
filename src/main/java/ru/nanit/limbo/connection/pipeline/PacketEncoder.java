@@ -42,7 +42,10 @@ public class PacketEncoder extends MessageToByteEncoder<Packet> {
 
         try {
             packet.encode(msg, version);
-            Logger.debug("Sending %s packet", packet.toString());
+
+            if (Logger.getLevel() >= 3) {
+                Logger.debug("Sending %s packet (%d bytes)", packet.toString(), msg.readableBytes());
+            }
         } catch (Exception e) {
             Logger.warning("Cannot encode packet 0x%s: %s", Integer.toHexString(packetId), e.getMessage());
         }

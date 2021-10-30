@@ -21,7 +21,11 @@ public class PacketLoginSuccess implements PacketOut {
 
     @Override
     public void encode(ByteMessage msg, Version version) {
-        msg.writeUuid(uuid);
+        if (version.moreOrEqual(Version.V1_16)) {
+            msg.writeUuid(uuid);
+        } else {
+            msg.writeString(uuid.toString());
+        }
         msg.writeString(username);
     }
 

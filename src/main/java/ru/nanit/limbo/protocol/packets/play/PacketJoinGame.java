@@ -90,7 +90,7 @@ public class PacketJoinGame implements PacketOut {
 
         if (version.fromTo(Version.V1_8, Version.V1_13_2)) {
             msg.writeByte(gameMode);
-            msg.writeByte(dimension.getId());
+            msg.writeInt(dimension.getId());
             msg.writeByte(0); // Difficulty
             msg.writeByte(maxPlayers);
             msg.writeString("flat"); // Level type
@@ -99,7 +99,7 @@ public class PacketJoinGame implements PacketOut {
 
         if (version.fromTo(Version.V1_14, Version.V1_14_4)) {
             msg.writeByte(gameMode);
-            msg.writeByte(dimension.getId());
+            msg.writeInt(dimension.getId());
             msg.writeByte(maxPlayers);
             msg.writeString("flat"); // Level type
             msg.writeVarInt(viewDistance);
@@ -108,7 +108,7 @@ public class PacketJoinGame implements PacketOut {
 
         if (version.fromTo(Version.V1_15, Version.V1_15_2)) {
             msg.writeByte(gameMode);
-            msg.writeByte(dimension.getId());
+            msg.writeInt(dimension.getId());
             msg.writeLong(hashedSeed);
             msg.writeByte(maxPlayers);
             msg.writeString("flat"); // Level type
