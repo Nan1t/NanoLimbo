@@ -1,14 +1,14 @@
 package ru.nanit.limbo.world;
 
-import net.kyori.adventure.nbt.BinaryTagIO;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.kyori.adventure.nbt.ListBinaryTag;
+import net.kyori.adventure.nbt.TagStringIO;
 import ru.nanit.limbo.server.LimboServer;
 import ru.nanit.limbo.util.Logger;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.stream.Collectors;
 
 public final class DimensionRegistry {
 
@@ -25,12 +25,16 @@ public final class DimensionRegistry {
     }
 
     public void load(LimboServer server, String def) throws IOException {
-        InputStream in = server.getClass().getResourceAsStream("/dimension_registry.nbt");
+        InputStream in = server.getClass().getResourceAsStream("/dimension_codec.snbt");
 
         if(in == null)
             throw new FileNotFoundException("Cannot find dimension registry file");
 
-        codec = BinaryTagIO.readCompressedInputStream(in);
+        String data = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))
+                .lines()
+                .collect(Collectors.joining("\n"));
+
+        codec = TagStringIO.get().asCompound(data);
         ListBinaryTag dimensions = codec.getCompound("minecraft:dimension_type").getList("value");
 
         CompoundBinaryTag overWorld = (CompoundBinaryTag) ((CompoundBinaryTag) dimensions.get(0)).get("element");

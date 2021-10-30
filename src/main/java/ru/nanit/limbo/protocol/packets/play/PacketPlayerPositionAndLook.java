@@ -56,6 +56,10 @@ public class PacketPlayerPositionAndLook implements PacketOut {
             msg.writeByte(flags);
             msg.writeVarInt(teleportId);
         }
+
+        if (version.moreOrEqual(Version.V1_17)) {
+            msg.writeBoolean(false); // Dismount vehicle
+        }
     }
 
 }
