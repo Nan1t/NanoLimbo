@@ -38,7 +38,8 @@ joinMessage:
   enable: true
   text: '{"text": "&eWelcome to the Limbo!"}'
 
-# Bossbar sends when player join to server
+# BossBar displays when player join to server
+# Works on 1.9+ clients only
 bossBar:
   enable: true
   text: '{"text": "Welcome to the Limbo!"}'
@@ -48,7 +49,11 @@ bossBar:
   # Available divisions: SOLID, DASHES_6, DASHES_10, DASHES_12, DASHES_20
   division: SOLID
 
-# Player info forwarding support. Available types: NONE, LEGACY, MODERN
+# Player info forwarding support.
+# Available types:
+#  - NONE
+#  - LEGACY
+#  - MODERN
 # Don't use secret if you not use MODERN type
 infoForwarding:
   type: NONE
