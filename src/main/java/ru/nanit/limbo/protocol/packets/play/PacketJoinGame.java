@@ -88,7 +88,16 @@ public class PacketJoinGame implements PacketOut {
     public void encode(ByteMessage msg, Version version) {
         msg.writeInt(entityId);
 
-        if (version.fromTo(Version.V1_8, Version.V1_13_2)) {
+        if (version.fromTo(Version.V1_8, Version.V1_9_1)) {
+            msg.writeByte(gameMode);
+            msg.writeByte(dimension.getId());
+            msg.writeByte(0); // Difficulty
+            msg.writeByte(maxPlayers);
+            msg.writeString("flat"); // Level type
+            msg.writeBoolean(reducedDebugInfo);
+        }
+
+        if (version.fromTo(Version.V1_9_2, Version.V1_13_2)) {
             msg.writeByte(gameMode);
             msg.writeInt(dimension.getId());
             msg.writeByte(0); // Difficulty

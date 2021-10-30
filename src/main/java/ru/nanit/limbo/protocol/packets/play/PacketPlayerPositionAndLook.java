@@ -51,7 +51,7 @@ public class PacketPlayerPositionAndLook implements PacketOut {
         msg.writeFloat(pitch);
 
         if (version.less(Version.V1_9)) {
-            msg.writeBoolean(false); // On ground
+            msg.writeBoolean(true); // On ground
         } else {
             msg.writeByte(flags);
             msg.writeVarInt(teleportId);
