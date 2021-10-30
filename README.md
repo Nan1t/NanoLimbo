@@ -15,22 +15,21 @@ The general features:
 
 ![](https://i.imgur.com/sT8p1Gz.png)
 
-### Protocol support
+### Versions support
 
 Symbol `X` means all minor versions.
 
-| Client version | Tested |
-| -------------- | ------ |
-|    1.8.X | yes |
-|    1.9.X | yes |
-|    1.10.X | no |
-|    1.11.X | yes |
-|    1.12.X | yes |
-|    1.13.X | yes |
-|    1.14.X | yes |
-|    1.15.X | no |
-|    1.16.X | yes |
-|    1.17.X | yes |
+- [x] 1.8.X
+- [x] 1.9.X
+- [x] 1.10.X
+- [x] 1.11.X
+- [x] 1.12.X
+- [x] 1.13.X
+- [x] 1.14.X
+- [x] 1.15.X
+- [x] 1.16.X
+- [x] 1.17.X
+- [ ] 1.8.X
 
 ### Commands
 
