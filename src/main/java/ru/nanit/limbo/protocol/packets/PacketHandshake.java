@@ -40,4 +40,9 @@ public class PacketHandshake implements PacketIn {
         this.port = msg.readUnsignedShort();
         this.nextState = State.getById(msg.readVarInt());
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
+    }
 }
