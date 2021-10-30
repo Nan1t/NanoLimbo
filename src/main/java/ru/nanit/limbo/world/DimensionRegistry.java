@@ -12,7 +12,7 @@ import java.io.InputStream;
 
 public final class DimensionRegistry {
 
-    private CompoundBinaryTag defaultDimension;
+    private Dimension defaultDimension;
 
     private CompoundBinaryTag codec;
 
@@ -20,7 +20,7 @@ public final class DimensionRegistry {
         return codec;
     }
 
-    public CompoundBinaryTag getDefaultDimension() {
+    public Dimension getDefaultDimension() {
         return defaultDimension;
     }
 
@@ -39,16 +39,16 @@ public final class DimensionRegistry {
 
         switch (def.toLowerCase()) {
             case "overworld":
-                defaultDimension = overWorld;
+                defaultDimension = new Dimension(0, overWorld);
                 break;
             case "nether":
-                defaultDimension = nether;
+                defaultDimension = new Dimension(-1, nether);
                 break;
             case "the_end":
-                defaultDimension = theEnd;
+                defaultDimension = new Dimension(1, theEnd);
                 break;
             default:
-                defaultDimension = theEnd;
+                defaultDimension = new Dimension(1, theEnd);
                 Logger.warning("Undefined dimension type: '%s'. Using THE_END as default", def);
                 break;
         }

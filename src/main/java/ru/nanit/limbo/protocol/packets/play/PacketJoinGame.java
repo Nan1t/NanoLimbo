@@ -4,6 +4,7 @@ import net.kyori.adventure.nbt.CompoundBinaryTag;
 import ru.nanit.limbo.protocol.ByteMessage;
 import ru.nanit.limbo.protocol.PacketOut;
 import ru.nanit.limbo.protocol.registry.Version;
+import ru.nanit.limbo.world.Dimension;
 
 public class PacketJoinGame implements PacketOut {
 
@@ -13,7 +14,7 @@ public class PacketJoinGame implements PacketOut {
     private int previousGameMode = -1;
     private String[] worldNames;
     private CompoundBinaryTag dimensionCodec;
-    private CompoundBinaryTag dimension;
+    private Dimension dimension;
     private String worldName;
     private long hashedSeed;
     private int maxPlayers;
@@ -47,7 +48,7 @@ public class PacketJoinGame implements PacketOut {
         this.dimensionCodec = dimensionCodec;
     }
 
-    public void setDimension(CompoundBinaryTag dimension) {
+    public void setDimension(Dimension dimension) {
         this.dimension = dimension;
     }
 
@@ -86,20 +87,69 @@ public class PacketJoinGame implements PacketOut {
     @Override
     public void encode(ByteMessage msg, Version version) {
         msg.writeInt(entityId);
-        msg.writeBoolean(isHardcore);
-        msg.writeByte(gameMode);
-        msg.writeByte(previousGameMode);
-        msg.writeStringsArray(worldNames);
-        msg.writeCompoundTag(dimensionCodec);
-        msg.writeCompoundTag(dimension);
-        msg.writeString(worldName);
-        msg.writeLong(hashedSeed);
-        msg.writeVarInt(maxPlayers);
-        msg.writeVarInt(viewDistance);
-        msg.writeBoolean(reducedDebugInfo);
-        msg.writeBoolean(enableRespawnScreen);
-        msg.writeBoolean(isDebug);
-        msg.writeBoolean(isFlat);
+
+        if (version.fromTo(Version.V1_8, Version.V1_13_2)) {
+            msg.writeByte(gameMode);
+            msg.writeByte(dimension.getId());
+            msg.writeByte(0); // Difficulty
+            msg.writeByte(maxPlayers);
+            msg.writeString("flat"); // Level type
+            msg.writeBoolean(reducedDebugInfo);
+        }
+
+        if (version.fromTo(Version.V1_14, Version.V1_14_4)) {
+            msg.writeByte(gameMode);
+            msg.writeByte(dimension.getId());
+            msg.writeByte(maxPlayers);
+            msg.writeString("flat"); // Level type
+            msg.writeVarInt(viewDistance);
+            msg.writeBoolean(reducedDebugInfo);
+        }
+
+        if (version.fromTo(Version.V1_15, Version.V1_15_2)) {
+            msg.writeByte(gameMode);
+            msg.writeByte(dimension.getId());
+            msg.writeLong(hashedSeed);
+            msg.writeByte(maxPlayers);
+            msg.writeString("flat"); // Level type
+            msg.writeVarInt(viewDistance);
+            msg.writeBoolean(reducedDebugInfo);
+            msg.writeBoolean(enableRespawnScreen);
+        }
+
+        if (version.fromTo(Version.V1_16, Version.V1_16_1)) {
+            msg.writeBoolean(isHardcore);
+            msg.writeByte(gameMode);
+            msg.writeByte(previousGameMode);
+            msg.writeStringsArray(worldNames);
+            msg.writeCompoundTag(dimensionCodec);
+            msg.writeInt(dimension.getId());
+            msg.writeString(worldName);
+            msg.writeLong(hashedSeed);
+            msg.writeByte(maxPlayers);
+            msg.writeVarInt(viewDistance);
+            msg.writeBoolean(reducedDebugInfo);
+            msg.writeBoolean(enableRespawnScreen);
+            msg.writeBoolean(isDebug);
+            msg.writeBoolean(isFlat);
+        }
+
+        if (version.fromTo(Version.V1_16_2, Version.V1_17_1)) {
+            msg.writeBoolean(isHardcore);
+            msg.writeByte(gameMode);
+            msg.writeByte(previousGameMode);
+            msg.writeStringsArray(worldNames);
+            msg.writeCompoundTag(dimensionCodec);
+            msg.writeCompoundTag(dimension.getData());
+            msg.writeString(worldName);
+            msg.writeLong(hashedSeed);
+            msg.writeVarInt(maxPlayers);
+            msg.writeVarInt(viewDistance);
+            msg.writeBoolean(reducedDebugInfo);
+            msg.writeBoolean(enableRespawnScreen);
+            msg.writeBoolean(isDebug);
+            msg.writeBoolean(isFlat);
+        }
     }
 
 }

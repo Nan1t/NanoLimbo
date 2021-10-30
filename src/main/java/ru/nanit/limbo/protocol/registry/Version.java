@@ -13,6 +13,7 @@ public enum Version {
     V1_9_2(109),
     V1_9_4(110),
     V1_10(210),
+    // 1.10-1.10.2 has same protocol numbers
     V1_11(315),
     V1_11_1(316),
     // 1.11.2 has same protocol number
@@ -80,6 +81,14 @@ public enum Version {
 
     public boolean lessOrEqual(Version another) {
         return this.protocolNumber <= another.protocolNumber;
+    }
+
+    public boolean between(Version min, Version max) {
+        return this.protocolNumber > min.protocolNumber && this.protocolNumber < max.protocolNumber;
+    }
+
+    public boolean fromTo(Version min, Version max) {
+        return this.protocolNumber >= min.protocolNumber && this.protocolNumber <= max.protocolNumber;
     }
 
     public static Version getMin() {
