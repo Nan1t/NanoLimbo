@@ -16,4 +16,8 @@ public class PacketLoginStart implements PacketIn {
         this.username = msg.readString();
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
+    }
 }

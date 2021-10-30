@@ -17,4 +17,9 @@ public class PacketDisconnect implements PacketOut {
         msg.writeString(String.format("{\"text\": \"%s\"}", reason));
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
+    }
+
 }

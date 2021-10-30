@@ -33,4 +33,9 @@ public class PacketLoginPluginResponse implements PacketIn {
         }
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
+    }
+
 }

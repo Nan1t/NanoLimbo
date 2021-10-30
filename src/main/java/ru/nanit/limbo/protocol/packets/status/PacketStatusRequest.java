@@ -10,4 +10,8 @@ public class PacketStatusRequest implements PacketIn {
 
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
+    }
 }

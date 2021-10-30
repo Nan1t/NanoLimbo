@@ -26,6 +26,11 @@ public class PacketStatusResponse implements PacketOut {
         msg.writeString(json);
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
+    }
+
     private String getResponseJson(String version, int protocol, int maxPlayers, int online, String description) {
         return String.format(TEMPLATE, version, protocol, maxPlayers, online, description);
     }

@@ -18,4 +18,9 @@ public class PacketStatusPing implements Packet {
         this.randomId = msg.readLong();
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
+    }
+
 }

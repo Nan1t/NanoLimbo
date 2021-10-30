@@ -25,4 +25,9 @@ public class PacketLoginSuccess implements PacketOut {
         msg.writeString(username);
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
+    }
+
 }

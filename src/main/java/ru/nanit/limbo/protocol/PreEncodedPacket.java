@@ -40,6 +40,11 @@ public class PreEncodedPacket implements PacketOut {
         }
     }
 
+    @Override
+    public String toString() {
+        return packet.getClass().getSimpleName();
+    }
+
     public static PreEncodedPacket of(PacketOut packet) {
         return new PreEncodedPacket(packet).encodePacket();
     }

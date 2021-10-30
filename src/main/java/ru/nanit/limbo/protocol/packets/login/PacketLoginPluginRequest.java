@@ -30,4 +30,9 @@ public class PacketLoginPluginRequest implements PacketOut {
         msg.writeBytes(data);
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
+    }
+
 }
