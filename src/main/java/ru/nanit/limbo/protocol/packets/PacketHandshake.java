@@ -1,7 +1,6 @@
 package ru.nanit.limbo.protocol.packets;
 
 import ru.nanit.limbo.protocol.ByteMessage;
-import ru.nanit.limbo.protocol.Packet;
 import ru.nanit.limbo.protocol.PacketIn;
 import ru.nanit.limbo.protocol.registry.State;
 import ru.nanit.limbo.protocol.registry.Version;
@@ -31,7 +30,12 @@ public class PacketHandshake implements PacketIn {
 
     @Override
     public void decode(ByteMessage msg, Version version) {
-        this.version = Version.of(msg.readVarInt());
+        try {
+            this.version = Version.of(msg.readVarInt());
+        } catch (IllegalArgumentException e) {
+            this.version = Version.UNDEFINED;
+        }
+
         this.host = msg.readString();
         this.port = msg.readUnsignedShort();
         this.nextState = State.getById(msg.readVarInt());

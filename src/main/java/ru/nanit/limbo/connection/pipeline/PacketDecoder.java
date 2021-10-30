@@ -30,6 +30,7 @@ public class PacketDecoder extends MessageToMessageDecoder<ByteBuf> {
 
         if (packet != null) {
             try {
+                Logger.debug("Received packet %s", packet.toString());
                 packet.decode(msg, version);
             } catch (Exception e) {
                 Logger.warning("Cannot decode packet 0x%s: %s", Integer.toHexString(packetId), e.getMessage());

@@ -172,7 +172,7 @@ public enum State {
         private final Map<Version, PacketRegistry> registry = new HashMap<>();
 
         public PacketRegistry getRegistry(Version version) {
-            return registry.get(version);
+            return registry.getOrDefault(version, registry.get(getMin()));
         }
 
         public void register(Supplier<?> packet, Mapping... mappings) {

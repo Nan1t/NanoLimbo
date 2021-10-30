@@ -83,12 +83,12 @@ public enum Version {
         return this.protocolNumber <= another.protocolNumber;
     }
 
-    public boolean between(Version min, Version max) {
-        return this.protocolNumber > min.protocolNumber && this.protocolNumber < max.protocolNumber;
-    }
-
     public boolean fromTo(Version min, Version max) {
         return this.protocolNumber >= min.protocolNumber && this.protocolNumber <= max.protocolNumber;
+    }
+
+    public boolean isSupported() {
+        return this != UNDEFINED;
     }
 
     public static Version getMin() {
