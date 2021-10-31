@@ -144,6 +144,24 @@ public enum State {
                     map(0x32, V1_16_2, V1_16_4),
                     map(0x36, V1_17, V1_17_1)
             );
+            clientBound.register(PacketTitleLegacy::new,
+                    map(0x45, V1_8, V1_11_1),
+                    map(0x47, V1_12, V1_12),
+                    map(0x48, V1_12_1, V1_12_2),
+                    map(0x4B, V1_13, V1_13_2),
+                    map(0x4F, V1_14, V1_14_4),
+                    map(0x50, V1_15, V1_15_2),
+                    map(0x4F, V1_16, V1_16_4)
+            );
+            clientBound.register(PacketTitleSetTitle::new,
+                    map(0x59, V1_17, V1_17_1)
+            );
+            clientBound.register(PacketTitleSetSubTitle::new,
+                    map(0x57, V1_17, V1_17_1)
+            );
+            clientBound.register(PacketTitleTimes::new,
+                    map(0x5A, V1_17, V1_17_1)
+            );
         }
     };
 

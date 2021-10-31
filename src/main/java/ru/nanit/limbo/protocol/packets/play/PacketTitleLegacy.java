@@ -50,16 +50,22 @@ public class PacketTitleLegacy implements PacketOut {
     public enum Action {
         SET_TITLE(0),
         SET_SUBTITLE(1),
-        SET_TIMES_AND_DISPLAY(3);
+        SET_TIMES_AND_DISPLAY(3, 2);
 
         private final int id;
+        private final int legacyId;
+
+        Action(int id, int legacyId) {
+            this.id = id;
+            this.legacyId = legacyId;
+        }
 
         Action(int id) {
-            this.id = id;
+            this(id, id);
         }
 
         public int getId(Version version) {
-            return version.moreOrEqual(Version.V1_11) && id > 2 ? id - 1 : id;
+            return version.less(Version.V1_11) ? legacyId : id;
         }
     }
 }

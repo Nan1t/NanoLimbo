@@ -221,7 +221,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
             writePacket(PACKET_JOIN_MESSAGE);
 
         if (PACKET_TITLE_TITLE != null)
-            sendTitle();
+            writeTitle();
 
         sendKeepAlive();
     }
@@ -234,15 +234,15 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         }
     }
 
-    public void sendTitle() {
+    public void writeTitle() {
         if (clientVersion.moreOrEqual(Version.V1_17)) {
             writePacket(PACKET_TITLE_TITLE);
             writePacket(PACKET_TITLE_SUBTITLE);
-            sendPacket(PACKET_TITLE_TIMES);
+            writePacket(PACKET_TITLE_TIMES);
         } else {
             writePacket(PACKET_TITLE_LEGACY_TITLE);
             writePacket(PACKET_TITLE_LEGACY_SUBTITLE);
-            sendPacket(PACKET_TITLE_LEGACY_TIMES);
+            writePacket(PACKET_TITLE_LEGACY_TIMES);
         }
     }
 
@@ -265,7 +265,8 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
     }
 
     public void writePacket(Object packet) {
-        if (isConnected()) channel.write(packet, channel.voidPromise());
+        if (isConnected())
+            channel.write(packet, channel.voidPromise());
     }
 
     public boolean isConnected() {
@@ -395,8 +396,13 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
             packetTimes.setFadeOut(title.getFadeOut());
 
             legacyTitle.setTitle(title);
+            legacyTitle.setAction(PacketTitleLegacy.Action.SET_TITLE);
+
             legacySubtitle.setTitle(title);
+            legacySubtitle.setAction(PacketTitleLegacy.Action.SET_SUBTITLE);
+
             legacyTimes.setTitle(title);
+            legacyTimes.setAction(PacketTitleLegacy.Action.SET_TIMES_AND_DISPLAY);
 
             PACKET_TITLE_TITLE = PreEncodedPacket.of(packetTitle);
             PACKET_TITLE_SUBTITLE = PreEncodedPacket.of(packetSubtitle);
