@@ -53,9 +53,9 @@ bossBar:
 title:
   enable: true
   # Set title text value empty, if you need only subtitle
-  title: '{"text": "&6&lWelcome to the Limbo!"}'
+  title: '{"text": "&9&lWelcome!"}'
   # Set subtitle text value empty, if you need only title
-  subtitle: '{"text": ""}'
+  subtitle: '{"text": "&6NanoLimbo"}'
   # Fade in time in ticks (1 sec = 20 ticks)
   fadeIn: 10
   # Stay time in ticks
