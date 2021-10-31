@@ -8,6 +8,7 @@ public final class Colors {
     private Colors() {}
 
     public static String of(String text) {
+        if (text == null) return null;
         return text.replace(CHAR_FROM, CHAR_TO);
     }
 

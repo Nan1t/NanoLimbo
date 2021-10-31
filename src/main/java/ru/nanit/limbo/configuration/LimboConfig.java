@@ -27,8 +27,10 @@ public final class LimboConfig {
 
     private boolean useJoinMessage;
     private boolean useBossBar;
+    private boolean useTitle;
     private String joinMessage;
     private BossBar bossBar;
+    private Title title;
 
     private InfoForwarding infoForwarding;
     private long readTimeout;
@@ -59,12 +61,16 @@ public final class LimboConfig {
         gameMode = conf.node("gameMode").getInt();
         useJoinMessage = conf.node("joinMessage", "enable").getBoolean();
         useBossBar = conf.node("bossBar", "enable").getBoolean();
+        useTitle = conf.node("title", "enable").getBoolean();
 
         if (useJoinMessage)
             joinMessage = Colors.of(conf.node("joinMessage", "text").getString(""));
 
         if (useBossBar)
             bossBar = conf.node("bossBar").get(BossBar.class);
+
+        if (useTitle)
+            title = conf.node("title").get(Title.class);
 
         infoForwarding = conf.node("infoForwarding").get(InfoForwarding.class);
         readTimeout = conf.node("readTimeout").getLong();
@@ -97,6 +103,7 @@ public final class LimboConfig {
                 .register(InfoForwarding.class, new InfoForwarding.Serializer())
                 .register(PingData.class, new PingData.Serializer())
                 .register(BossBar.class, new BossBar.Serializer())
+                .register(Title.class, new Title.Serializer())
                 .register(Position.class, new Position.Serializer())
                 .build();
     }
@@ -145,12 +152,20 @@ public final class LimboConfig {
         return useBossBar;
     }
 
+    public boolean isUseTitle() {
+        return useTitle;
+    }
+
     public String getJoinMessage() {
         return joinMessage;
     }
 
     public BossBar getBossBar() {
         return bossBar;
+    }
+
+    public Title getTitle() {
+        return title;
     }
 
     public boolean isUseEpoll() {

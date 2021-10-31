@@ -19,6 +19,7 @@ import ru.nanit.limbo.protocol.packets.status.PacketStatusResponse;
 import ru.nanit.limbo.protocol.registry.State;
 import ru.nanit.limbo.protocol.registry.Version;
 import ru.nanit.limbo.server.LimboServer;
+import ru.nanit.limbo.server.data.Title;
 import ru.nanit.limbo.util.Logger;
 import ru.nanit.limbo.util.UuidUtil;
 
@@ -42,6 +43,14 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
     private static PreEncodedPacket PACKET_PLAYER_POS;
     private static PreEncodedPacket PACKET_JOIN_MESSAGE;
     private static PreEncodedPacket PACKET_BOSS_BAR;
+
+    private static PreEncodedPacket PACKET_TITLE_TITLE;
+    private static PreEncodedPacket PACKET_TITLE_SUBTITLE;
+    private static PreEncodedPacket PACKET_TITLE_TIMES;
+
+    private static PreEncodedPacket PACKET_TITLE_LEGACY_TITLE;
+    private static PreEncodedPacket PACKET_TITLE_LEGACY_SUBTITLE;
+    private static PreEncodedPacket PACKET_TITLE_LEGACY_TIMES;
 
     private final LimboServer server;
     private final Channel channel;
@@ -211,6 +220,9 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         if (PACKET_JOIN_MESSAGE != null)
             writePacket(PACKET_JOIN_MESSAGE);
 
+        if (PACKET_TITLE_TITLE != null)
+            sendTitle();
+
         sendKeepAlive();
     }
 
@@ -219,6 +231,18 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
             PacketDisconnect disconnect = new PacketDisconnect();
             disconnect.setReason(reason);
             sendPacketAndClose(disconnect);
+        }
+    }
+
+    public void sendTitle() {
+        if (clientVersion.moreOrEqual(Version.V1_17)) {
+            writePacket(PACKET_TITLE_TITLE);
+            writePacket(PACKET_TITLE_SUBTITLE);
+            sendPacket(PACKET_TITLE_TIMES);
+        } else {
+            writePacket(PACKET_TITLE_LEGACY_TITLE);
+            writePacket(PACKET_TITLE_LEGACY_SUBTITLE);
+            sendPacket(PACKET_TITLE_LEGACY_TIMES);
         }
     }
 
@@ -351,6 +375,36 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
             bossBar.setBossBar(server.getConfig().getBossBar());
             bossBar.setUuid(UUID.randomUUID());
             PACKET_BOSS_BAR = PreEncodedPacket.of(bossBar);
+        }
+
+        if (server.getConfig().isUseTitle()) {
+            Title title = server.getConfig().getTitle();
+
+            PacketTitleSetTitle packetTitle = new PacketTitleSetTitle();
+            PacketTitleSetSubTitle packetSubtitle = new PacketTitleSetSubTitle();
+            PacketTitleTimes packetTimes = new PacketTitleTimes();
+
+            PacketTitleLegacy legacyTitle = new PacketTitleLegacy();
+            PacketTitleLegacy legacySubtitle = new PacketTitleLegacy();
+            PacketTitleLegacy legacyTimes = new PacketTitleLegacy();
+
+            packetTitle.setTitle(title.getTitle());
+            packetSubtitle.setSubtitle(title.getSubtitle());
+            packetTimes.setFadeIn(title.getFadeIn());
+            packetTimes.setStay(title.getStay());
+            packetTimes.setFadeOut(title.getFadeOut());
+
+            legacyTitle.setTitle(title);
+            legacySubtitle.setTitle(title);
+            legacyTimes.setTitle(title);
+
+            PACKET_TITLE_TITLE = PreEncodedPacket.of(packetTitle);
+            PACKET_TITLE_SUBTITLE = PreEncodedPacket.of(packetSubtitle);
+            PACKET_TITLE_TIMES = PreEncodedPacket.of(packetTimes);
+
+            PACKET_TITLE_LEGACY_TITLE = PreEncodedPacket.of(legacyTitle);
+            PACKET_TITLE_LEGACY_SUBTITLE = PreEncodedPacket.of(legacySubtitle);
+            PACKET_TITLE_LEGACY_TIMES = PreEncodedPacket.of(legacyTimes);
         }
     }
 }
