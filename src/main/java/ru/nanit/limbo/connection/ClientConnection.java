@@ -139,7 +139,8 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         }
 
         if (packet instanceof PacketLoginStart) {
-            if (server.getConnections().getCount() >= server.getConfig().getMaxPlayers()) {
+            if (server.getConfig().getMaxPlayers() > 0 &&
+                    server.getConnections().getCount() >= server.getConfig().getMaxPlayers()) {
                 disconnectLogin("Too many players connected");
                 return;
             }

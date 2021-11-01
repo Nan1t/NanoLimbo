@@ -8,6 +8,7 @@ bind:
   port: 65535
 
 # Max amount of players can join to server
+# Set -1 to make it infinite
 maxPlayers: 100
 
 # Server's data in servers list
