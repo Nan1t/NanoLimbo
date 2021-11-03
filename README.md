@@ -50,7 +50,7 @@ The installation process is simple.
 5. Configure it as you want and restart server.
 
 I recommend you to set parameter `debugLevel` to `0` when you finish testing server and run it into production.
-This will disable some useless for production information in the console.
+This will disable some useless for production information in the console. For example, warnings about undefined packets.
 
 ### About player info forwarding
 
