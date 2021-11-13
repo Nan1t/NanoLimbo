@@ -335,6 +335,8 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         setAddress(socketAddressHostname);
         gameProfile.setUuid(uuid);
 
+        Logger.debug("Successfully verified BungeeGuard token");
+
         return true;
     }
 
