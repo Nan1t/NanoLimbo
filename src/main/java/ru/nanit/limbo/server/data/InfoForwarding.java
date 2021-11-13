@@ -6,11 +6,13 @@ import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 public class InfoForwarding {
 
     private Type type;
     private byte[] secretKey;
+    private List<String> tokens;
 
     public Type getType() {
         return type;
@@ -18,6 +20,14 @@ public class InfoForwarding {
 
     public byte[] getSecretKey() {
         return secretKey;
+    }
+
+    public List<String> getTokens() {
+        return tokens;
+    }
+
+    public boolean hasToken(String token) {
+        return tokens != null && token != null && tokens.contains(token);
     }
 
     public boolean isNone() {
@@ -32,10 +42,15 @@ public class InfoForwarding {
         return type == Type.MODERN;
     }
 
+    public boolean isBungeeGuard() {
+        return type == Type.BUNGEE_GUARD;
+    }
+
     public enum Type {
         NONE,
         LEGACY,
-        MODERN
+        MODERN,
+        BUNGEE_GUARD
     }
 
     public static class Serializer implements TypeSerializer<InfoForwarding> {
@@ -52,6 +67,10 @@ public class InfoForwarding {
 
             if (forwarding.type == Type.MODERN) {
                 forwarding.secretKey = node.node("secret").getString("").getBytes(StandardCharsets.UTF_8);
+            }
+
+            if (forwarding.type == Type.BUNGEE_GUARD) {
+                forwarding.tokens = node.node("tokens").getList(String.class);
             }
 
             return forwarding;

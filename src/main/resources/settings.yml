@@ -69,10 +69,13 @@ title:
 #  - NONE
 #  - LEGACY
 #  - MODERN
+#  - BUNGEE_GUARD
 # Don't use secret if you not use MODERN type
 infoForwarding:
   type: NONE
   secret: '<YOUR_SECRET_HERE>'
+  tokens:
+    - '<BUNGEE_GUARD_TOKEN>'
 
 # Read timeout for connections in milliseconds
 readTimeout: 30000

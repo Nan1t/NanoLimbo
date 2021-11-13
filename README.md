@@ -58,10 +58,13 @@ The server supports player info forwarding from the proxy. There are two type of
 
 * `LEGACY` - The **BungeeCord** IP forwarding.
 * `MODERN` - **Velocity** native info forwarding type.
+* `BUNGEE_GUARD` - **BungeeGuard** forwarding type.
 
 If you use BungeeCord, or Velocity with `LEGACY` forwarding, just set this type in the config.  
 If you use Velocity with `MODERN` info forwarding, set this type and paste secret key from Velocity 
 config into `secret` field.
+If you installed BungeeGuard on your proxy, then use `BUNGEE_GUARD` forwarding type. 
+Then add your tokens to `tokens` list.
 
 ### Contributing
 

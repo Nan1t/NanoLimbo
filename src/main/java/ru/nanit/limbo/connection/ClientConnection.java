@@ -1,5 +1,9 @@
 package ru.nanit.limbo.connection;
 
+import com.grack.nanojson.JsonArray;
+import com.grack.nanojson.JsonObject;
+import com.grack.nanojson.JsonParser;
+import com.grack.nanojson.JsonParserException;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
@@ -29,6 +33,7 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
@@ -123,6 +128,10 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
                     gameProfile.setUuid(UuidUtil.fromString(split[2]));
                 } else {
                     disconnectLogin("You've enabled player info forwarding. You need to connect with proxy");
+                }
+            } else if (server.getConfig().getInfoForwarding().isBungeeGuard()) {
+                if (!checkBungeeGuardHandshake(handshake.getHost())) {
+                    disconnectLogin("Invalid BungeeGuard token or handshake format");
                 }
             }
             return;
@@ -290,6 +299,43 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
 
     private void setAddress(String host) {
         this.address = new InetSocketAddress(host, ((InetSocketAddress)this.address).getPort());
+    }
+
+    private boolean checkBungeeGuardHandshake(String handshake) {
+        String[] split = handshake.split("\00");
+
+        if (split.length != 4)
+            return false;
+
+        String socketAddressHostname = split[1];
+        UUID uuid = UuidUtil.fromString(split[2]);
+        JsonArray arr;
+
+        try {
+            arr = JsonParser.array().from(split[3]);
+        } catch (JsonParserException e) {
+            return false;
+        }
+
+        String token = null;
+
+        for (Object obj : arr) {
+            if (obj instanceof JsonObject) {
+                JsonObject prop = (JsonObject) obj;
+                if (prop.getString("name").equals("bungeeguard-token")) {
+                    token = prop.getString("value");
+                    break;
+                }
+            }
+        }
+
+        if (!server.getConfig().getInfoForwarding().hasToken(token))
+            return false;
+
+        setAddress(socketAddressHostname);
+        gameProfile.setUuid(uuid);
+
+        return true;
     }
 
     private boolean checkVelocityKeyIntegrity(ByteMessage buf) {
