@@ -152,6 +152,24 @@ public class PacketJoinGame implements PacketOut {
             msg.writeBoolean(isDebug);
             msg.writeBoolean(isFlat);
         }
+
+        if (version.moreOrEqual(Version.V1_18)) {
+            msg.writeBoolean(isHardcore);
+            msg.writeByte(gameMode);
+            msg.writeByte(previousGameMode);
+            msg.writeStringsArray(worldNames);
+            msg.writeCompoundTag(dimensionRegistry.getCodec());
+            msg.writeCompoundTag(dimensionRegistry.getDefaultDimension().getData());
+            msg.writeString(worldName);
+            msg.writeLong(hashedSeed);
+            msg.writeVarInt(maxPlayers);
+            msg.writeVarInt(viewDistance);
+            msg.writeVarInt(viewDistance); // Simulation Distance
+            msg.writeBoolean(reducedDebugInfo);
+            msg.writeBoolean(enableRespawnScreen);
+            msg.writeBoolean(isDebug);
+            msg.writeBoolean(isFlat);
+        }
     }
 
 }

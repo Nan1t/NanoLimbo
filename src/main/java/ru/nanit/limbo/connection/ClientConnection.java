@@ -377,7 +377,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         joinGame.setPreviousGameMode(-1);
         joinGame.setReducedDebugInfo(true);
         joinGame.setDebug(false);
-        joinGame.setViewDistance(2);
+        joinGame.setViewDistance(0);
         joinGame.setWorldName("minecraft:world");
         joinGame.setWorldNames("minecraft:world");
         joinGame.setHashedSeed(0);

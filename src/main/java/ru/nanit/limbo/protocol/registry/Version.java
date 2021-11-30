@@ -38,7 +38,8 @@ public enum Version {
     V1_16_4(754),
     // 1.16.5 has same protocol number
     V1_17(755),
-    V1_17_1(756);
+    V1_17_1(756),
+    V1_18(757);
 
     private static final Map<Integer, Version> VERSION_MAP;
 
@@ -96,7 +97,8 @@ public enum Version {
     }
 
     public static Version getMax() {
-        return V1_17_1;
+        Version[] values = Version.values();
+        return values[values.length - 1];
     }
 
     public static Version of(int protocolNumber) {

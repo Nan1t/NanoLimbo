@@ -67,7 +67,7 @@ public enum State {
                     map(0x0E, V1_13, V1_13_2),
                     map(0x0F, V1_14, V1_15_2),
                     map(0x10, V1_16, V1_16_4),
-                    map(0x0F, V1_17, V1_17_1)
+                    map(0x0F, V1_17, V1_18)
             );
 
             clientBound.register(PacketDeclareCommands::new,
@@ -75,7 +75,7 @@ public enum State {
                     map(0x12, V1_15, V1_15_2),
                     map(0x11, V1_16, V1_16_1),
                     map(0x10, V1_16_2, V1_16_4),
-                    map(0x12, V1_17, V1_17_1)
+                    map(0x12, V1_17, V1_18)
             );
             clientBound.register(PacketJoinGame::new,
                     map(0x01, V1_8, V1_8),
@@ -85,7 +85,7 @@ public enum State {
                     map(0x26, V1_15, V1_15_2),
                     map(0x25, V1_16, V1_16_1),
                     map(0x24, V1_16_2, V1_16_4),
-                    map(0x26, V1_17, V1_17_1)
+                    map(0x26, V1_17, V1_18)
             );
             clientBound.register(PacketPlayerAbilities::new,
                     map(0x39, V1_8, V1_8),
@@ -96,7 +96,7 @@ public enum State {
                     map(0x32, V1_15, V1_15_2),
                     map(0x31, V1_16, V1_16_1),
                     map(0x30, V1_16_2, V1_16_4),
-                    map(0x32, V1_17, V1_17_1)
+                    map(0x32, V1_17, V1_18)
             );
             clientBound.register(PacketPlayerPositionAndLook::new,
                     map(0x08, V1_8, V1_8),
@@ -107,7 +107,7 @@ public enum State {
                     map(0x36, V1_15, V1_15_2),
                     map(0x35, V1_16, V1_16_1),
                     map(0x34, V1_16_2, V1_16_4),
-                    map(0x38, V1_17, V1_17_1)
+                    map(0x38, V1_17, V1_18)
             );
             clientBound.register(PacketKeepAlive::new,
                     map(0x00, V1_8, V1_8),
@@ -117,7 +117,7 @@ public enum State {
                     map(0x21, V1_15, V1_15_2),
                     map(0x20, V1_16, V1_16_1),
                     map(0x1F, V1_16_2, V1_16_4),
-                    map(0x21, V1_17, V1_17_1)
+                    map(0x21, V1_17, V1_18)
             );
             clientBound.register(PacketChatMessage::new,
                     map(0x02, V1_8, V1_8),
@@ -125,13 +125,13 @@ public enum State {
                     map(0x0E, V1_13, V1_14_4),
                     map(0x0F, V1_15, V1_15_2),
                     map(0x0E, V1_16, V1_16_4),
-                    map(0x0F, V1_17, V1_17_1)
+                    map(0x0F, V1_17, V1_18)
             );
             clientBound.register(PacketBossBar::new,
                     map(0x0C, V1_9, V1_14_4),
                     map(0x0D, V1_15, V1_15_2),
                     map(0x0C, V1_16, V1_16_4),
-                    map(0x0D, V1_17, V1_17_1)
+                    map(0x0D, V1_17, V1_18)
             );
             clientBound.register(PacketPlayerInfo::new,
                     map(0x38, V1_8, V1_8),
@@ -142,7 +142,7 @@ public enum State {
                     map(0x34, V1_15, V1_15_2),
                     map(0x33, V1_16, V1_16_1),
                     map(0x32, V1_16_2, V1_16_4),
-                    map(0x36, V1_17, V1_17_1)
+                    map(0x36, V1_17, V1_18)
             );
             clientBound.register(PacketTitleLegacy::new,
                     map(0x45, V1_8, V1_11_1),
@@ -154,13 +154,16 @@ public enum State {
                     map(0x4F, V1_16, V1_16_4)
             );
             clientBound.register(PacketTitleSetTitle::new,
-                    map(0x59, V1_17, V1_17_1)
+                    map(0x59, V1_17, V1_17_1),
+                    map(0x5A, V1_18, V1_18)
             );
             clientBound.register(PacketTitleSetSubTitle::new,
-                    map(0x57, V1_17, V1_17_1)
+                    map(0x57, V1_17, V1_17_1),
+                    map(0x58, V1_18, V1_18)
             );
             clientBound.register(PacketTitleTimes::new,
-                    map(0x5A, V1_17, V1_17_1)
+                    map(0x5A, V1_17, V1_17_1),
+                    map(0x5B, V1_18, V1_18)
             );
         }
     };
