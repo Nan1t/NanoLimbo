@@ -10,6 +10,7 @@ No plugins, no logs. The server is fully clear. It only able keep a lot of playe
 The general features:
 * High performance. The server not saves and not cached any useless (for limbo) data.
 * Support for **BungeeCord** and **Velocity** info forwarding.
+* Support for [BungeeGuard](https://www.spigotmc.org/resources/79601/) handshake format.
 * Multiple versions support.
 * All necessary data are configurable.
 * Lightweight. App size around **2MB.**
