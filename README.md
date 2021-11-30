@@ -30,7 +30,7 @@ Symbol `X` means all minor versions.
 - [x] 1.15.X
 - [x] 1.16.X
 - [x] 1.17.X
-- [ ] 1.18
+- [x] 1.18
 
 The server **doesn't** support snapshots.
 
