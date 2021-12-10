@@ -112,8 +112,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
     }
 
     public void handlePacket(Object packet) {
-        if (packet instanceof PacketHandshake) {
-            PacketHandshake handshake = (PacketHandshake) packet;
+        if (packet instanceof PacketHandshake handshake) {
             clientVersion = handshake.getVersion();
 
             updateStateAndVersion(handshake.getNextState(), clientVersion);
@@ -178,8 +177,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
             return;
         }
 
-        if (packet instanceof PacketLoginPluginResponse) {
-            PacketLoginPluginResponse response = (PacketLoginPluginResponse) packet;
+        if (packet instanceof PacketLoginPluginResponse response) {
 
             if (server.getConfig().getInfoForwarding().isModern()
                     && response.getMessageId() == velocityLoginMessageId) {
@@ -321,8 +319,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         String token = null;
 
         for (Object obj : arr) {
-            if (obj instanceof JsonObject) {
-                JsonObject prop = (JsonObject) obj;
+            if (obj instanceof JsonObject prop) {
                 if (prop.getString("name").equals("bungeeguard-token")) {
                     token = prop.getString("value");
                     break;
