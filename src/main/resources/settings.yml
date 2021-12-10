@@ -11,6 +11,9 @@ bind:
 # Set -1 to make it infinite
 maxPlayers: 100
 
+# Server name which is shown under F3
+brandName: 'NanoLimbo'
+
 # Server's data in servers list
 ping:
   description: '{"text": "&9NanoLimbo"}'

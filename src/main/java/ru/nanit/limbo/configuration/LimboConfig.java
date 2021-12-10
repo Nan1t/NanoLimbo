@@ -19,6 +19,7 @@ public final class LimboConfig {
 
     private SocketAddress address;
     private int maxPlayers;
+    private String brandName;
     private PingData pingData;
 
     private String dimensionType;
@@ -55,6 +56,7 @@ public final class LimboConfig {
 
         address = conf.node("bind").get(SocketAddress.class);
         maxPlayers = conf.node("maxPlayers").getInt();
+        brandName = conf.node("brandName").getString();
         pingData = conf.node("ping").get(PingData.class);
         dimensionType = conf.node("dimension").getString();
         spawnPosition = conf.node("spawnPosition").get(Position.class);
@@ -114,6 +116,10 @@ public final class LimboConfig {
 
     public int getMaxPlayers() {
         return maxPlayers;
+    }
+
+    public String getBrandName() {
+        return brandName;
     }
 
     public PingData getPingData() {
