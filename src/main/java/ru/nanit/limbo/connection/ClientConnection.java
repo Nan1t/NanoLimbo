@@ -353,11 +353,10 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
     }
 
     public static void initPackets(LimboServer server) {
-        final String username = server.getConfig().getPingData().getVersion();
-        final UUID uuid = UuidUtil.getOfflineModeUuid(username);
+        final UUID uuid = UuidUtil.getOfflineModeUuid("");
 
         PacketLoginSuccess loginSuccess = new PacketLoginSuccess();
-        loginSuccess.setUsername(username);
+        loginSuccess.setUsername("");
         loginSuccess.setUuid(uuid);
 
         PacketJoinGame joinGame = new PacketJoinGame();
@@ -394,7 +393,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         positionAndLook.setTeleportId(ThreadLocalRandom.current().nextInt());
 
         PacketPlayerInfo info = new PacketPlayerInfo();
-        info.setUsername(username);
+        info.setUsername("");
         info.setGameMode(server.getConfig().getGameMode());
         info.setUuid(uuid);
 
