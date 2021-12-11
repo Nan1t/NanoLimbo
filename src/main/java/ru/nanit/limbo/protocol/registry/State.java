@@ -82,7 +82,9 @@ public enum State {
             );
             // to do
             clientBound.register(PacketPluginMessage::new,
-                    map(0x18, V1_18, V1_18)
+                    map(0x19, V1_13, V1_13_2),
+                    map(0x18, V1_14, V1_14_4),
+                    map(0x19, V1_15, V1_18)
             );
             clientBound.register(PacketPlayerAbilities::new,
                     map(0x39, V1_8, V1_8),
