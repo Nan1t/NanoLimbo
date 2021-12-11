@@ -10,13 +10,13 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import ru.nanit.limbo.LimboConstants;
-import ru.nanit.limbo.connection.pipeline.PacketDecoder;
-import ru.nanit.limbo.connection.pipeline.PacketEncoder;
 import ru.nanit.limbo.protocol.ByteMessage;
 import ru.nanit.limbo.protocol.PreEncodedPacket;
-import ru.nanit.limbo.protocol.packets.PacketHandshake;
 import ru.nanit.limbo.protocol.packets.login.*;
 import ru.nanit.limbo.protocol.packets.play.*;
+import ru.nanit.limbo.connection.pipeline.PacketDecoder;
+import ru.nanit.limbo.connection.pipeline.PacketEncoder;
+import ru.nanit.limbo.protocol.packets.PacketHandshake;
 import ru.nanit.limbo.protocol.packets.status.PacketStatusPing;
 import ru.nanit.limbo.protocol.packets.status.PacketStatusRequest;
 import ru.nanit.limbo.protocol.packets.status.PacketStatusResponse;
@@ -33,6 +33,7 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
+import java.util.Collections;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -399,11 +400,15 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         info.setGameMode(server.getConfig().getGameMode());
         info.setUuid(uuid);
 
+        PacketDeclareCommands declareCommands = new PacketDeclareCommands();
+        declareCommands.setCommands(Collections.singletonList("limbo"));
+
         PACKET_LOGIN_SUCCESS = PreEncodedPacket.of(loginSuccess);
         PACKET_JOIN_GAME = PreEncodedPacket.of(joinGame);
         PACKET_PLAYER_ABILITIES = PreEncodedPacket.of(playerAbilities);
         PACKET_PLAYER_POS = PreEncodedPacket.of(positionAndLook);
         PACKET_PLAYER_INFO = PreEncodedPacket.of(info);
+        PACKET_DECLARE_COMMANDS = PreEncodedPacket.of(declareCommands);
 
         if (server.getConfig().isUseBrandName()){
             PacketPluginMessage pluginMessage = new PacketPluginMessage();
