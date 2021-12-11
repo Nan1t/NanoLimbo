@@ -1,17 +1,17 @@
 package ru.nanit.limbo.protocol.registry;
 
 import ru.nanit.limbo.protocol.Packet;
-import ru.nanit.limbo.protocol.packets.*;
+import ru.nanit.limbo.protocol.packets.PacketHandshake;
 import ru.nanit.limbo.protocol.packets.login.*;
 import ru.nanit.limbo.protocol.packets.play.*;
 import ru.nanit.limbo.protocol.packets.status.PacketStatusPing;
 import ru.nanit.limbo.protocol.packets.status.PacketStatusRequest;
 import ru.nanit.limbo.protocol.packets.status.PacketStatusResponse;
 
-import static ru.nanit.limbo.protocol.registry.Version.*;
-
 import java.util.*;
 import java.util.function.Supplier;
+
+import static ru.nanit.limbo.protocol.registry.Version.*;
 
 public enum State {
 
