@@ -375,10 +375,6 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         joinGame.setHashedSeed(0);
         joinGame.setDimensionRegistry(server.getDimensionRegistry());
 
-        PacketPluginMessage pluginMessage = new PacketPluginMessage();
-        pluginMessage.setChannel("minecraft:brand");
-        pluginMessage.setMessage(server.getConfig().getBrandName());
-
         PacketPlayerAbilities playerAbilities = new PacketPlayerAbilities();
         playerAbilities.setFlyingSpeed(0.0F);
         playerAbilities.setFlags(0x02);
@@ -399,10 +395,16 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
 
         PACKET_LOGIN_SUCCESS = PreEncodedPacket.of(loginSuccess);
         PACKET_JOIN_GAME = PreEncodedPacket.of(joinGame);
-        PACKET_PLUGIN_MESSAGE = PreEncodedPacket.of(pluginMessage);
         PACKET_PLAYER_ABILITIES = PreEncodedPacket.of(playerAbilities);
         PACKET_PLAYER_POS = PreEncodedPacket.of(positionAndLook);
         PACKET_PLAYER_INFO = PreEncodedPacket.of(info);
+
+        if (server.getConfig().isUseBrandName()){
+            PacketPluginMessage pluginMessage = new PacketPluginMessage();
+            pluginMessage.setChannel("minecraft:brand");
+            pluginMessage.setMessage(server.getConfig().getBrandName());
+            PACKET_PLUGIN_MESSAGE = PreEncodedPacket.of(pluginMessage);
+        }
 
         if (server.getConfig().isUseJoinMessage()) {
             PacketChatMessage joinMessage = new PacketChatMessage();

@@ -22,16 +22,17 @@ public final class LimboConfig {
 
     private SocketAddress address;
     private int maxPlayers;
-    private String brandName;
     private PingData pingData;
 
     private String dimensionType;
     private Position spawnPosition;
     private int gameMode;
 
+    private boolean useBrandName;
     private boolean useJoinMessage;
     private boolean useBossBar;
     private boolean useTitle;
+    private String brandName;
     private String joinMessage;
     private BossBar bossBar;
     private Title title;
@@ -59,14 +60,17 @@ public final class LimboConfig {
 
         address = conf.node("bind").get(SocketAddress.class);
         maxPlayers = conf.node("maxPlayers").getInt();
-        brandName = conf.node("brandName").getString();
         pingData = conf.node("ping").get(PingData.class);
         dimensionType = conf.node("dimension").getString();
         spawnPosition = conf.node("spawnPosition").get(Position.class);
         gameMode = conf.node("gameMode").getInt();
+        useBrandName = conf.node("brandName", "enable").getBoolean();
         useJoinMessage = conf.node("joinMessage", "enable").getBoolean();
         useBossBar = conf.node("bossBar", "enable").getBoolean();
         useTitle = conf.node("title", "enable").getBoolean();
+
+        if(useBrandName)
+            brandName = conf.node("brandName", "content").getString();
 
         if (useJoinMessage)
             joinMessage = Colors.of(conf.node("joinMessage", "text").getString(""));
@@ -121,10 +125,6 @@ public final class LimboConfig {
         return maxPlayers;
     }
 
-    public String getBrandName() {
-        return brandName;
-    }
-
     public PingData getPingData() {
         return pingData;
     }
@@ -153,6 +153,10 @@ public final class LimboConfig {
         return debugLevel;
     }
 
+    public boolean isUseBrandName() {
+        return useBrandName;
+    }
+
     public boolean isUseJoinMessage() {
         return useJoinMessage;
     }
@@ -163,6 +167,10 @@ public final class LimboConfig {
 
     public boolean isUseTitle() {
         return useTitle;
+    }
+
+    public String getBrandName() {
+        return brandName;
     }
 
     public String getJoinMessage() {

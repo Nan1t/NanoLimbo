@@ -11,9 +11,6 @@ bind:
 # Set -1 to make it infinite
 maxPlayers: 100
 
-# Server name which is shown under F3
-brandName: 'NanoLimbo'
-
 # Server's data in servers list
 ping:
   description: '{"text": "&9NanoLimbo"}'
@@ -36,6 +33,11 @@ spawnPosition:
 # 2 - Adventure
 # 3 - Spectator (hide all UI bars)
 gameMode: 3
+
+# Server name which is shown under F3
+brandName:
+  enable: true
+  content: 'NanoLimbo'
 
 # Message sends when player join to server
 joinMessage:
