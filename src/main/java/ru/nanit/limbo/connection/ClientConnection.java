@@ -40,6 +40,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
 
     private static PreEncodedPacket PACKET_LOGIN_SUCCESS;
     private static PreEncodedPacket PACKET_JOIN_GAME;
+    private static PreEncodedPacket PACKET_PLUGIN_MESSAGE;
     private static PreEncodedPacket PACKET_PLAYER_ABILITIES;
     private static PreEncodedPacket PACKET_PLAYER_INFO;
     private static PreEncodedPacket PACKET_PLAYER_POS;
@@ -211,6 +212,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         server.getConnections().addConnection(this);
 
         writePacket(PACKET_JOIN_GAME);
+        writePacket(PACKET_PLUGIN_MESSAGE);
         writePacket(PACKET_PLAYER_ABILITIES);
         writePacket(PACKET_PLAYER_POS);
         writePacket(PACKET_PLAYER_INFO);
