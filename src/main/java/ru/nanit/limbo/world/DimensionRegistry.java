@@ -47,13 +47,19 @@ public final class DimensionRegistry {
         CompoundBinaryTag theEnd = (CompoundBinaryTag) ((CompoundBinaryTag) dimensions.get(3)).get("element");
 
         switch (def.toLowerCase()) {
-            case "overworld" -> defaultDimension = new Dimension(0, "minecraft:overworld", overWorld);
-            case "nether" -> defaultDimension = new Dimension(-1, "minecraft:nether", nether);
-            case "the_end" -> defaultDimension = new Dimension(1, "minecraft:the_end", theEnd);
-            default -> {
+            case "overworld":
+                defaultDimension = new Dimension(0, "minecraft:overworld", overWorld);
+                break;
+            case "nether":
+                defaultDimension = new Dimension(-1, "minecraft:nether", nether);
+                break;
+            case "the_end":
+                defaultDimension = new Dimension(1, "minecraft:the_end", theEnd);
+                break;
+            default:
                 defaultDimension = new Dimension(1, "minecraft:the_end", theEnd);
                 Logger.warning("Undefined dimension type: '%s'. Using THE_END as default", def);
-            }
+                break;
         }
     }
 
