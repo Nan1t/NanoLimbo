@@ -1,17 +1,17 @@
 package ru.nanit.limbo.protocol.registry;
 
 import ru.nanit.limbo.protocol.Packet;
-import ru.nanit.limbo.protocol.packets.PacketHandshake;
+import ru.nanit.limbo.protocol.packets.*;
 import ru.nanit.limbo.protocol.packets.login.*;
 import ru.nanit.limbo.protocol.packets.play.*;
 import ru.nanit.limbo.protocol.packets.status.PacketStatusPing;
 import ru.nanit.limbo.protocol.packets.status.PacketStatusRequest;
 import ru.nanit.limbo.protocol.packets.status.PacketStatusResponse;
 
+import static ru.nanit.limbo.protocol.registry.Version.*;
+
 import java.util.*;
 import java.util.function.Supplier;
-
-import static ru.nanit.limbo.protocol.registry.Version.*;
 
 public enum State {
 
@@ -70,6 +70,13 @@ public enum State {
                     map(0x0F, V1_17, V1_18)
             );
 
+            clientBound.register(PacketDeclareCommands::new,
+                    map(0x11, V1_13, V1_14_4),
+                    map(0x12, V1_15, V1_15_2),
+                    map(0x11, V1_16, V1_16_1),
+                    map(0x10, V1_16_2, V1_16_4),
+                    map(0x12, V1_17, V1_18)
+            );
             clientBound.register(PacketJoinGame::new,
                     map(0x01, V1_8, V1_8),
                     map(0x23, V1_9, V1_12_2),
@@ -82,9 +89,7 @@ public enum State {
             );
             // to do
             clientBound.register(PacketPluginMessage::new,
-                    map(0x19, V1_13, V1_13_2),
-                    map(0x18, V1_14, V1_14_4),
-                    map(0x19, V1_15, V1_18)
+                    map(0x18, V1_18, V1_18)
             );
             clientBound.register(PacketPlayerAbilities::new,
                     map(0x39, V1_8, V1_8),
