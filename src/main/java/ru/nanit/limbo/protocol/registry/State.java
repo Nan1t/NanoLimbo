@@ -87,10 +87,6 @@ public enum State {
                     map(0x24, V1_16_2, V1_16_4),
                     map(0x26, V1_17, V1_18)
             );
-            // to do
-            clientBound.register(PacketPluginMessage::new,
-                    map(0x18, V1_18, V1_18)
-            );
             clientBound.register(PacketPlayerAbilities::new,
                     map(0x39, V1_8, V1_8),
                     map(0x2B, V1_9, V1_12),
