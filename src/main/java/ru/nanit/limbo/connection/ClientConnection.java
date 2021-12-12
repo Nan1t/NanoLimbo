@@ -216,13 +216,15 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         server.getConnections().addConnection(this);
 
         writePacket(PACKET_JOIN_GAME);
-        writePacket(PACKET_PLUGIN_MESSAGE);
         writePacket(PACKET_PLAYER_ABILITIES);
         writePacket(PACKET_PLAYER_POS);
         writePacket(PACKET_PLAYER_INFO);
 
         if (clientVersion.moreOrEqual(Version.V1_13)){
             writePacket(PACKET_DECLARE_COMMANDS);
+
+            if(PACKET_PLUGIN_MESSAGE != null)
+                writePacket(PACKET_PLUGIN_MESSAGE);
         }
 
         if (PACKET_BOSS_BAR != null && clientVersion.moreOrEqual(Version.V1_9))
