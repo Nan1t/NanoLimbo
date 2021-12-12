@@ -1,6 +1,7 @@
 package ru.nanit.limbo.protocol.packets.login;
 
-import ru.nanit.limbo.protocol.*;
+import ru.nanit.limbo.protocol.ByteMessage;
+import ru.nanit.limbo.protocol.PacketIn;
 import ru.nanit.limbo.protocol.registry.Version;
 
 public class PacketLoginStart implements PacketIn {

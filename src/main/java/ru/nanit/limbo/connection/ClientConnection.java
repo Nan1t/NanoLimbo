@@ -10,13 +10,13 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import ru.nanit.limbo.LimboConstants;
-import ru.nanit.limbo.protocol.ByteMessage;
-import ru.nanit.limbo.protocol.PreEncodedPacket;
-import ru.nanit.limbo.protocol.packets.login.*;
-import ru.nanit.limbo.protocol.packets.play.*;
 import ru.nanit.limbo.connection.pipeline.PacketDecoder;
 import ru.nanit.limbo.connection.pipeline.PacketEncoder;
+import ru.nanit.limbo.protocol.ByteMessage;
+import ru.nanit.limbo.protocol.PreEncodedPacket;
 import ru.nanit.limbo.protocol.packets.PacketHandshake;
+import ru.nanit.limbo.protocol.packets.login.*;
+import ru.nanit.limbo.protocol.packets.play.*;
 import ru.nanit.limbo.protocol.packets.status.PacketStatusPing;
 import ru.nanit.limbo.protocol.packets.status.PacketStatusRequest;
 import ru.nanit.limbo.protocol.packets.status.PacketStatusResponse;
@@ -41,6 +41,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
 
     private static PreEncodedPacket PACKET_LOGIN_SUCCESS;
     private static PreEncodedPacket PACKET_JOIN_GAME;
+    private static PreEncodedPacket PACKET_PLUGIN_MESSAGE;
     private static PreEncodedPacket PACKET_PLAYER_ABILITIES;
     private static PreEncodedPacket PACKET_PLAYER_INFO;
     private static PreEncodedPacket PACKET_DECLARE_COMMANDS;
@@ -221,6 +222,9 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
 
         if (clientVersion.moreOrEqual(Version.V1_13)){
             writePacket(PACKET_DECLARE_COMMANDS);
+
+            if(PACKET_PLUGIN_MESSAGE != null)
+                writePacket(PACKET_PLUGIN_MESSAGE);
         }
 
         if (PACKET_BOSS_BAR != null && clientVersion.moreOrEqual(Version.V1_9))
@@ -410,6 +414,13 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         PACKET_PLAYER_POS = PreEncodedPacket.of(positionAndLook);
         PACKET_PLAYER_INFO = PreEncodedPacket.of(info);
         PACKET_DECLARE_COMMANDS = PreEncodedPacket.of(declareCommands);
+
+        if (server.getConfig().isUseBrandName()){
+            PacketPluginMessage pluginMessage = new PacketPluginMessage();
+            pluginMessage.setChannel("minecraft:brand");
+            pluginMessage.setMessage(server.getConfig().getBrandName());
+            PACKET_PLUGIN_MESSAGE = PreEncodedPacket.of(pluginMessage);
+        }
 
         if (server.getConfig().isUseJoinMessage()) {
             PacketChatMessage joinMessage = new PacketChatMessage();

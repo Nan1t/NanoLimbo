@@ -7,7 +7,10 @@ import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 import ru.nanit.limbo.server.data.*;
 import ru.nanit.limbo.util.Colors;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.SocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -25,9 +28,11 @@ public final class LimboConfig {
     private Position spawnPosition;
     private int gameMode;
 
+    private boolean useBrandName;
     private boolean useJoinMessage;
     private boolean useBossBar;
     private boolean useTitle;
+    private String brandName;
     private String joinMessage;
     private BossBar bossBar;
     private Title title;
@@ -59,9 +64,13 @@ public final class LimboConfig {
         dimensionType = conf.node("dimension").getString();
         spawnPosition = conf.node("spawnPosition").get(Position.class);
         gameMode = conf.node("gameMode").getInt();
+        useBrandName = conf.node("brandName", "enable").getBoolean();
         useJoinMessage = conf.node("joinMessage", "enable").getBoolean();
         useBossBar = conf.node("bossBar", "enable").getBoolean();
         useTitle = conf.node("title", "enable").getBoolean();
+
+        if(useBrandName)
+            brandName = conf.node("brandName", "content").getString();
 
         if (useJoinMessage)
             joinMessage = Colors.of(conf.node("joinMessage", "text").getString(""));
@@ -144,6 +153,10 @@ public final class LimboConfig {
         return debugLevel;
     }
 
+    public boolean isUseBrandName() {
+        return useBrandName;
+    }
+
     public boolean isUseJoinMessage() {
         return useJoinMessage;
     }
@@ -154,6 +167,10 @@ public final class LimboConfig {
 
     public boolean isUseTitle() {
         return useTitle;
+    }
+
+    public String getBrandName() {
+        return brandName;
     }
 
     public String getJoinMessage() {

@@ -34,6 +34,11 @@ spawnPosition:
 # 3 - Spectator (hide all UI bars)
 gameMode: 3
 
+# Server name which is shown under F3
+brandName:
+  enable: true
+  content: 'NanoLimbo'
+
 # Message sends when player join to server
 joinMessage:
   enable: true
