@@ -23,6 +23,7 @@ import ru.nanit.limbo.protocol.packets.status.PacketStatusResponse;
 import ru.nanit.limbo.protocol.registry.State;
 import ru.nanit.limbo.protocol.registry.Version;
 import ru.nanit.limbo.server.LimboServer;
+import ru.nanit.limbo.server.data.InfoForwarding;
 import ru.nanit.limbo.server.data.Title;
 import ru.nanit.limbo.util.Logger;
 import ru.nanit.limbo.util.UuidUtil;
@@ -405,15 +406,17 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         info.setGameMode(server.getConfig().getGameMode());
         info.setUuid(uuid);
 
-        PacketDeclareCommands declareCommands = new PacketDeclareCommands();
-        declareCommands.setCommands(Collections.singletonList("limbo"));
-
         PACKET_LOGIN_SUCCESS = PreEncodedPacket.of(loginSuccess);
         PACKET_JOIN_GAME = PreEncodedPacket.of(joinGame);
         PACKET_PLAYER_ABILITIES = PreEncodedPacket.of(playerAbilities);
         PACKET_PLAYER_POS = PreEncodedPacket.of(positionAndLook);
         PACKET_PLAYER_INFO = PreEncodedPacket.of(info);
-        PACKET_DECLARE_COMMANDS = PreEncodedPacket.of(declareCommands);
+
+        if (!server.getConfig().getInfoForwarding().isNone()){// or server.getConfig().getInfoForwarding().getType() != InfoForwarding.Type.NONE
+            PacketDeclareCommands declareCommands = new PacketDeclareCommands();
+            declareCommands.setCommands(Collections.emptyList());
+            PACKET_DECLARE_COMMANDS = PreEncodedPacket.of(declareCommands);
+        }
 
         if (server.getConfig().isUseBrandName()){
             PacketPluginMessage pluginMessage = new PacketPluginMessage();
