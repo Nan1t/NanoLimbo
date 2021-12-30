@@ -223,7 +223,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         if (clientVersion.moreOrEqual(Version.V1_13)){
             writePacket(PACKET_DECLARE_COMMANDS);
 
-            if(PACKET_PLUGIN_MESSAGE != null)
+            if (PACKET_PLUGIN_MESSAGE != null)
                 writePacket(PACKET_PLUGIN_MESSAGE);
         }
 
@@ -406,7 +406,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         info.setUuid(uuid);
 
         PacketDeclareCommands declareCommands = new PacketDeclareCommands();
-        declareCommands.setCommands(Collections.singletonList("limbo"));
+        declareCommands.setCommands(Collections.emptyList());
 
         PACKET_LOGIN_SUCCESS = PreEncodedPacket.of(loginSuccess);
         PACKET_JOIN_GAME = PreEncodedPacket.of(joinGame);
