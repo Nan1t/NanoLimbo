@@ -1,5 +1,7 @@
 ## NanoLimbo
 
+**Current dev branch: [dev/1.4](https://github.com/Nan1t/NanoLimbo/tree/dev/1.4)**
+
 This is lightweight minecraft limbo server, written on Java with Netty.
 The main goal of the project is maximum simplicity with a minimum number of sent and processed packets.
 This limbo is empty, there are no ability to set schematic building since 
@@ -9,10 +11,11 @@ No plugins, no logs. The server is fully clear. It only able keep a lot of playe
 
 The general features:
 * High performance. The server not saves and not cached any useless (for limbo) data.
+* Doesn't spawn threads per player. Uses fixed threads pool.
 * Support for **BungeeCord** and **Velocity** info forwarding.
 * Support for [BungeeGuard](https://www.spigotmc.org/resources/79601/) handshake format.
 * Multiple versions support.
-* All necessary data are configurable.
+* Fully configurable.
 * Lightweight. App size around **2MB.**
 
 ![](https://i.imgur.com/sT8p1Gz.png)
