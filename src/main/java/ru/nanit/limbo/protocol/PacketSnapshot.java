@@ -5,12 +5,12 @@ import ru.nanit.limbo.protocol.registry.Version;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PreEncodedPacket implements PacketOut {
+public class PacketSnapshot implements PacketOut {
 
     private final PacketOut packet;
     private final Map<Version, byte[]> versionMessages;
 
-    public PreEncodedPacket(PacketOut packet) {
+    public PacketSnapshot(PacketOut packet) {
         this.packet = packet;
         this.versionMessages = new HashMap<>();
     }
@@ -19,7 +19,7 @@ public class PreEncodedPacket implements PacketOut {
         return packet;
     }
 
-    public PreEncodedPacket encodePacket() {
+    public PacketSnapshot encodePacket() {
         for (Version version : Version.values()) {
             ByteMessage encodedMessage = ByteMessage.create();
             packet.encode(encodedMessage, version);
@@ -45,7 +45,7 @@ public class PreEncodedPacket implements PacketOut {
         return packet.getClass().getSimpleName();
     }
 
-    public static PreEncodedPacket of(PacketOut packet) {
-        return new PreEncodedPacket(packet).encodePacket();
+    public static PacketSnapshot of(PacketOut packet) {
+        return new PacketSnapshot(packet).encodePacket();
     }
 }

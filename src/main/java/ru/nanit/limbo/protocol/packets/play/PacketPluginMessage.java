@@ -5,6 +5,7 @@ import ru.nanit.limbo.protocol.PacketOut;
 import ru.nanit.limbo.protocol.registry.Version;
 
 public class PacketPluginMessage implements PacketOut {
+
     private String channel;
     private String message;
 

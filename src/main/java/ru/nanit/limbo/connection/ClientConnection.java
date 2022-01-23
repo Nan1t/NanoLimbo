@@ -13,7 +13,7 @@ import ru.nanit.limbo.LimboConstants;
 import ru.nanit.limbo.connection.pipeline.PacketDecoder;
 import ru.nanit.limbo.connection.pipeline.PacketEncoder;
 import ru.nanit.limbo.protocol.ByteMessage;
-import ru.nanit.limbo.protocol.PreEncodedPacket;
+import ru.nanit.limbo.protocol.PacketSnapshot;
 import ru.nanit.limbo.protocol.packets.PacketHandshake;
 import ru.nanit.limbo.protocol.packets.login.*;
 import ru.nanit.limbo.protocol.packets.play.*;
@@ -39,23 +39,23 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class ClientConnection extends ChannelInboundHandlerAdapter {
 
-    private static PreEncodedPacket PACKET_LOGIN_SUCCESS;
-    private static PreEncodedPacket PACKET_JOIN_GAME;
-    private static PreEncodedPacket PACKET_PLUGIN_MESSAGE;
-    private static PreEncodedPacket PACKET_PLAYER_ABILITIES;
-    private static PreEncodedPacket PACKET_PLAYER_INFO;
-    private static PreEncodedPacket PACKET_DECLARE_COMMANDS;
-    private static PreEncodedPacket PACKET_PLAYER_POS;
-    private static PreEncodedPacket PACKET_JOIN_MESSAGE;
-    private static PreEncodedPacket PACKET_BOSS_BAR;
+    private static PacketSnapshot PACKET_LOGIN_SUCCESS;
+    private static PacketSnapshot PACKET_JOIN_GAME;
+    private static PacketSnapshot PACKET_PLUGIN_MESSAGE;
+    private static PacketSnapshot PACKET_PLAYER_ABILITIES;
+    private static PacketSnapshot PACKET_PLAYER_INFO;
+    private static PacketSnapshot PACKET_DECLARE_COMMANDS;
+    private static PacketSnapshot PACKET_PLAYER_POS;
+    private static PacketSnapshot PACKET_JOIN_MESSAGE;
+    private static PacketSnapshot PACKET_BOSS_BAR;
 
-    private static PreEncodedPacket PACKET_TITLE_TITLE;
-    private static PreEncodedPacket PACKET_TITLE_SUBTITLE;
-    private static PreEncodedPacket PACKET_TITLE_TIMES;
+    private static PacketSnapshot PACKET_TITLE_TITLE;
+    private static PacketSnapshot PACKET_TITLE_SUBTITLE;
+    private static PacketSnapshot PACKET_TITLE_TIMES;
 
-    private static PreEncodedPacket PACKET_TITLE_LEGACY_TITLE;
-    private static PreEncodedPacket PACKET_TITLE_LEGACY_SUBTITLE;
-    private static PreEncodedPacket PACKET_TITLE_LEGACY_TIMES;
+    private static PacketSnapshot PACKET_TITLE_LEGACY_TITLE;
+    private static PacketSnapshot PACKET_TITLE_LEGACY_SUBTITLE;
+    private static PacketSnapshot PACKET_TITLE_LEGACY_TIMES;
 
     private final LimboServer server;
     private final Channel channel;
@@ -408,18 +408,18 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         PacketDeclareCommands declareCommands = new PacketDeclareCommands();
         declareCommands.setCommands(Collections.emptyList());
 
-        PACKET_LOGIN_SUCCESS = PreEncodedPacket.of(loginSuccess);
-        PACKET_JOIN_GAME = PreEncodedPacket.of(joinGame);
-        PACKET_PLAYER_ABILITIES = PreEncodedPacket.of(playerAbilities);
-        PACKET_PLAYER_POS = PreEncodedPacket.of(positionAndLook);
-        PACKET_PLAYER_INFO = PreEncodedPacket.of(info);
-        PACKET_DECLARE_COMMANDS = PreEncodedPacket.of(declareCommands);
+        PACKET_LOGIN_SUCCESS = PacketSnapshot.of(loginSuccess);
+        PACKET_JOIN_GAME = PacketSnapshot.of(joinGame);
+        PACKET_PLAYER_ABILITIES = PacketSnapshot.of(playerAbilities);
+        PACKET_PLAYER_POS = PacketSnapshot.of(positionAndLook);
+        PACKET_PLAYER_INFO = PacketSnapshot.of(info);
+        PACKET_DECLARE_COMMANDS = PacketSnapshot.of(declareCommands);
 
         if (server.getConfig().isUseBrandName()){
             PacketPluginMessage pluginMessage = new PacketPluginMessage();
             pluginMessage.setChannel("minecraft:brand");
             pluginMessage.setMessage(server.getConfig().getBrandName());
-            PACKET_PLUGIN_MESSAGE = PreEncodedPacket.of(pluginMessage);
+            PACKET_PLUGIN_MESSAGE = PacketSnapshot.of(pluginMessage);
         }
 
         if (server.getConfig().isUseJoinMessage()) {
@@ -427,14 +427,14 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
             joinMessage.setJsonData(server.getConfig().getJoinMessage());
             joinMessage.setPosition(PacketChatMessage.Position.CHAT);
             joinMessage.setSender(UUID.randomUUID());
-            PACKET_JOIN_MESSAGE = PreEncodedPacket.of(joinMessage);
+            PACKET_JOIN_MESSAGE = PacketSnapshot.of(joinMessage);
         }
 
         if (server.getConfig().isUseBossBar()) {
             PacketBossBar bossBar = new PacketBossBar();
             bossBar.setBossBar(server.getConfig().getBossBar());
             bossBar.setUuid(UUID.randomUUID());
-            PACKET_BOSS_BAR = PreEncodedPacket.of(bossBar);
+            PACKET_BOSS_BAR = PacketSnapshot.of(bossBar);
         }
 
         if (server.getConfig().isUseTitle()) {
@@ -463,13 +463,13 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
             legacyTimes.setTitle(title);
             legacyTimes.setAction(PacketTitleLegacy.Action.SET_TIMES_AND_DISPLAY);
 
-            PACKET_TITLE_TITLE = PreEncodedPacket.of(packetTitle);
-            PACKET_TITLE_SUBTITLE = PreEncodedPacket.of(packetSubtitle);
-            PACKET_TITLE_TIMES = PreEncodedPacket.of(packetTimes);
+            PACKET_TITLE_TITLE = PacketSnapshot.of(packetTitle);
+            PACKET_TITLE_SUBTITLE = PacketSnapshot.of(packetSubtitle);
+            PACKET_TITLE_TIMES = PacketSnapshot.of(packetTimes);
 
-            PACKET_TITLE_LEGACY_TITLE = PreEncodedPacket.of(legacyTitle);
-            PACKET_TITLE_LEGACY_SUBTITLE = PreEncodedPacket.of(legacySubtitle);
-            PACKET_TITLE_LEGACY_TIMES = PreEncodedPacket.of(legacyTimes);
+            PACKET_TITLE_LEGACY_TITLE = PacketSnapshot.of(legacyTitle);
+            PACKET_TITLE_LEGACY_SUBTITLE = PacketSnapshot.of(legacySubtitle);
+            PACKET_TITLE_LEGACY_TIMES = PacketSnapshot.of(legacyTimes);
         }
     }
 }
