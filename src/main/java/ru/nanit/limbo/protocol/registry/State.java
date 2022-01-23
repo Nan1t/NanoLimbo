@@ -89,7 +89,7 @@ public enum State {
             clientBound.register(PacketPluginMessage::new,
                     map(0x19, V1_13, V1_13_2),
                     map(0x18, V1_14, V1_14_4),
-                    map(0x19, V1_15,V1_15_2),
+                    map(0x19, V1_15, V1_15_2),
                     map(0x18, V1_16, V1_16_1),
                     map(0x17, V1_16_2, V1_16_4),
                     map(0x18, V1_17, V1_18)
