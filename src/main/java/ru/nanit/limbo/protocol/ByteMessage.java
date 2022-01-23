@@ -33,7 +33,7 @@ public class ByteMessage extends ByteBuf {
         return bytes;
     }
 
-    /* Minecraft protocol methods */
+    /* Minecraft's protocol methods */
 
     public int readVarInt() {
         int i = 0;
@@ -149,7 +149,7 @@ public class ByteMessage extends ByteBuf {
             writeVarInt(compoundTags.length);
 
             for (CompoundBinaryTag tag : compoundTags) {
-                BinaryTagIO.writeDataOutput(tag, stream);
+                BinaryTagIO.writer().write(tag, (OutputStream) stream);
             }
         } catch (IOException e) {
             throw new EncoderException("Cannot write NBT CompoundTag");
@@ -158,7 +158,7 @@ public class ByteMessage extends ByteBuf {
 
     public CompoundBinaryTag readCompoundTag() {
         try {
-            return BinaryTagIO.readDataInput(new ByteBufInputStream(buf));
+            return BinaryTagIO.reader().read((InputStream) new ByteBufInputStream(buf));
         } catch (IOException thrown) {
             throw new DecoderException("Cannot read NBT CompoundTag");
         }
@@ -166,7 +166,7 @@ public class ByteMessage extends ByteBuf {
 
     public void writeCompoundTag(CompoundBinaryTag compoundTag) {
         try {
-            BinaryTagIO.writeDataOutput(compoundTag, new ByteBufOutputStream(buf));
+            BinaryTagIO.writer().write(compoundTag, (OutputStream) new ByteBufOutputStream(buf));
         } catch (IOException e) {
             throw new EncoderException("Cannot write NBT CompoundTag");
         }
