@@ -76,7 +76,7 @@ which will not significantly load the server.
 
 Required software:
 
-* JDK 1.8
+* JDK 1.8+
 * Gradle 7+
 
 To build minimized .jar, go to project root and write in terminal:
