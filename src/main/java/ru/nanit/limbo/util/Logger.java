@@ -59,10 +59,10 @@ public final class Logger {
 
     public enum Level {
 
-        INFO ("INFO", 0),
-        DEBUG ("DEBUG", 1),
+        ERROR("ERROR", 1),
         WARNING("WARNING", 2),
-        ERROR("ERROR", 3);
+        INFO ("INFO", 3),
+        DEBUG ("DEBUG", 4);
 
         private final String display;
         private final int index;

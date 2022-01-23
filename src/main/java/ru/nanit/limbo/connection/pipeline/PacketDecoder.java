@@ -39,7 +39,7 @@ public class PacketDecoder extends MessageToMessageDecoder<ByteBuf> {
 
             ctx.fireChannelRead(packet);
         } else {
-            Logger.warning("Undefined incoming packet: 0x" + Integer.toHexString(packetId));
+            Logger.debug("Undefined incoming packet: 0x" + Integer.toHexString(packetId));
         }
     }
 

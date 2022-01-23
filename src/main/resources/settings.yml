@@ -85,13 +85,13 @@ infoForwarding:
 # Read timeout for connections in milliseconds
 readTimeout: 30000
 
-# Define debug level. On release, i recommend to use 0 level, since
-# there are many useless for release information about ping, received packets, etc.
-# Levels:
-# 0 - Display only useful info
-# 1 - Display info and some debug
-# 2 - Display info and warnings
-# 3 - Display info, warnings, errors
+# Define log level. On release, I'd recommend to use level 3
+# Log levels:
+# 0 - Display nothing
+# 1 - Display only errors
+# 2 - Display errors, warnings
+# 3 - Display errors, warnings, info
+# 4 - Display errors, warnings, info, debug
 debugLevel: 3
 
 # Warning! Do not touch params of this block, if you not completely sure what is this!
