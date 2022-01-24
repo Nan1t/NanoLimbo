@@ -55,11 +55,11 @@ public class PacketSnapshot implements PacketOut {
 
             if (hashed != null) {
                 mappings.put(version, hashed);
-                continue;
+            } else {
+                hashes.put(hash, version);
+                versionMessages.put(version, encodedMessage.toByteArray());
             }
 
-            hashes.put(hash, version);
-            versionMessages.put(version, encodedMessage.toByteArray());
             encodedMessage.release();
         }
 
