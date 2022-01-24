@@ -20,7 +20,6 @@ package ru.nanit.limbo.world.schematic;
 import ru.nanit.limbo.protocol.registry.Version;
 import ru.nanit.limbo.world.BlockData;
 import ru.nanit.limbo.world.BlockEntity;
-import ru.nanit.limbo.world.BlockMap;
 import ru.nanit.limbo.world.Location;
 
 import java.util.List;
@@ -35,6 +34,6 @@ public interface Schematic {
 
     List<BlockEntity> getBlockEntities();
 
-    BlockData getBlock(Location loc, Version version, BlockMap mappings);
+    BlockData getBlock(Location loc, Version version);
 
 }

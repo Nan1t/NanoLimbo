@@ -19,66 +19,31 @@ package ru.nanit.limbo.world.schematic.versions;
 
 import ru.nanit.limbo.protocol.registry.Version;
 import ru.nanit.limbo.world.BlockData;
-import ru.nanit.limbo.world.BlockEntity;
-import ru.nanit.limbo.world.BlockMap;
+import ru.nanit.limbo.world.BlockMappings;
 import ru.nanit.limbo.world.Location;
-import ru.nanit.limbo.world.schematic.Schematic;
-
-import java.util.List;
+import ru.nanit.limbo.world.schematic.AbstractSchematic;
 
 /**
  * Legacy schematic format (1.12-)
  */
-public class LegacySchematic implements Schematic {
+public class LegacySchematic extends AbstractSchematic {
 
-    private short width;
-    private short height;
-    private short length;
     private Materials materials;
     private byte[] blocks;
     private byte[] addBlocks;
     private byte[] data;
-    private List<BlockEntity> blockEntities;
 
-    @Override
-    public int getWidth() {
-        return width;
+    public LegacySchematic(BlockMappings mappings) {
+        super(mappings);
     }
 
     @Override
-    public int getHeight() {
-        return height;
-    }
-
-    @Override
-    public int getLength() {
-        return length;
-    }
-
-    @Override
-    public List<BlockEntity> getBlockEntities() {
-        return blockEntities;
-    }
-
-    @Override
-    public BlockData getBlock(Location loc, Version version, BlockMap mappings) {
-        int index = (loc.getBlockY() * length + loc.getBlockZ()) * width + loc.getBlockX();
+    public BlockData getBlock(Location loc, Version version) {
+        int index = (loc.getBlockY() * getLength() + loc.getBlockZ()) * getWidth() + loc.getBlockX();
         byte id = this.blocks[index];
         byte data = this.data[index];
 
         return mappings.convert(id, data, version);
-    }
-
-    public void setWidth(short width) {
-        this.width = width;
-    }
-
-    public void setHeight(short height) {
-        this.height = height;
-    }
-
-    public void setLength(short length) {
-        this.length = length;
     }
 
     public void setMaterials(Materials materials) {
@@ -97,21 +62,17 @@ public class LegacySchematic implements Schematic {
         this.data = data;
     }
 
-    public void setBlockEntities(List<BlockEntity> blockEntities) {
-        this.blockEntities = blockEntities;
-    }
-
     @Override
     public String toString() {
         return "Schematic{" +
-                "width=" + width +
-                ", height=" + height +
-                ", length=" + length +
+                "width=" + getWidth() +
+                ", height=" + getHeight() +
+                ", length=" + getLength() +
                 ", materials=" + materials +
                 ", blocks length=" + blocks.length +
                 ", addBlocks length=" + addBlocks.length +
                 ", data length=" + data.length +
-                ", blockEntities=" + blockEntities +
+                ", blockEntities=" + getBlockEntities() +
                 '}';
     }
 

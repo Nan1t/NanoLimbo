@@ -21,6 +21,7 @@ import net.kyori.adventure.nbt.BinaryTag;
 import net.kyori.adventure.nbt.BinaryTagIO;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
 import ru.nanit.limbo.world.BlockEntity;
+import ru.nanit.limbo.world.BlockMappings;
 import ru.nanit.limbo.world.Location;
 import ru.nanit.limbo.world.schematic.versions.LegacySchematic;
 import ru.nanit.limbo.world.schematic.versions.SpongeSchematic;
@@ -36,6 +37,12 @@ import java.util.Map;
 
 public class SchematicLoader {
 
+    private final BlockMappings mappings;
+
+    public SchematicLoader(BlockMappings mappings) {
+        this.mappings = mappings;
+    }
+
     public Schematic load(Path file) throws IOException {
         return load(Files.newInputStream(file));
     }
@@ -43,16 +50,16 @@ public class SchematicLoader {
     public Schematic load(InputStream stream) throws IOException {
         CompoundBinaryTag nbt = BinaryTagIO.unlimitedReader().read(stream, BinaryTagIO.Compression.GZIP);
 
-        if (nbt.getCompound("BlockData") == CompoundBinaryTag.empty()) {
-            return loadLegacy(nbt);
-        } else {
+        if (nbt.keySet().contains("BlockData")) {
             return loadSponge(nbt);
+        } else {
+            return loadLegacy(nbt);
         }
     }
 
     // Specification: https://github.com/SpongePowered/Schematic-Specification/blob/master/versions/schematic-2.md
     private Schematic loadSponge(CompoundBinaryTag nbt) {
-        SpongeSchematic schematic = new SpongeSchematic();
+        SpongeSchematic schematic = new SpongeSchematic(mappings);
 
         schematic.setDataVersion(nbt.getInt("DataVersion"));
 
@@ -93,7 +100,7 @@ public class SchematicLoader {
     }
 
     private Schematic loadLegacy(CompoundBinaryTag nbt) {
-        LegacySchematic schematic = new LegacySchematic();
+        LegacySchematic schematic = new LegacySchematic(mappings);
 
         schematic.setWidth(nbt.getShort("Width"));
         schematic.setHeight(nbt.getShort("Height"));

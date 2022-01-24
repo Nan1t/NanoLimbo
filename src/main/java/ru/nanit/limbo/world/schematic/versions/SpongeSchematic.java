@@ -19,51 +19,29 @@ package ru.nanit.limbo.world.schematic.versions;
 
 import ru.nanit.limbo.protocol.registry.Version;
 import ru.nanit.limbo.world.BlockData;
-import ru.nanit.limbo.world.BlockEntity;
-import ru.nanit.limbo.world.BlockMap;
+import ru.nanit.limbo.world.BlockMappings;
 import ru.nanit.limbo.world.Location;
-import ru.nanit.limbo.world.schematic.Schematic;
+import ru.nanit.limbo.world.schematic.AbstractSchematic;
 
-import java.util.List;
 import java.util.Map;
 
 /**
  * Modern schematic format (Sponge second specification)
  */
-public class SpongeSchematic implements Schematic {
+public class SpongeSchematic extends AbstractSchematic {
 
     private int dataVersion;
-    private int width;
-    private int height;
-    private int length;
     private int paletteMax;
     private Map<Integer, String> palette;
     private byte[] blockData;
-    private List<BlockEntity> blockEntities;
 
-    @Override
-    public int getWidth() {
-        return width;
+    public SpongeSchematic(BlockMappings mappings) {
+        super(mappings);
     }
 
     @Override
-    public int getHeight() {
-        return height;
-    }
-
-    @Override
-    public int getLength() {
-        return length;
-    }
-
-    @Override
-    public List<BlockEntity> getBlockEntities() {
-        return blockEntities;
-    }
-
-    @Override
-    public BlockData getBlock(Location loc, Version version, BlockMap mappings) {
-        int index = loc.getBlockX() + loc.getBlockZ() * width + loc.getBlockY() * width * length;
+    public BlockData getBlock(Location loc, Version version) {
+        int index = loc.getBlockX() + loc.getBlockZ() * getWidth() + loc.getBlockY() * getWidth() * getLength();
         int id = blockData[index];
         String state = palette.get(id);
         return mappings.convert(state, version);
@@ -71,18 +49,6 @@ public class SpongeSchematic implements Schematic {
 
     public void setDataVersion(int dataVersion) {
         this.dataVersion = dataVersion;
-    }
-
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
-    }
-
-    public void setLength(int length) {
-        this.length = length;
     }
 
     public void setPaletteMax(int paletteMax) {
@@ -97,7 +63,17 @@ public class SpongeSchematic implements Schematic {
         this.blockData = blockData;
     }
 
-    public void setBlockEntities(List<BlockEntity> blockEntities) {
-        this.blockEntities = blockEntities;
+    @Override
+    public String toString() {
+        return "SpongeSchematic{" +
+                "dataVersion=" + dataVersion +
+                ", width=" + getWidth() +
+                ", height=" + getHeight() +
+                ", length=" + getLength() +
+                ", paletteMax=" + paletteMax +
+                ", palette=" + palette +
+                ", blockData bytes=" + blockData.length +
+                ", blockEntities=" + getBlockEntities() +
+                '}';
     }
 }

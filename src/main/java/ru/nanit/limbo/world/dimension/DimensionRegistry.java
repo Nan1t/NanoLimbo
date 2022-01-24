@@ -89,9 +89,15 @@ public final class DimensionRegistry {
         return TagStringIO.get().asCompound(streamToString(in));
     }
 
-    private String streamToString(InputStream in) {
-        return new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))
-                .lines()
+    private String streamToString(InputStream in) throws IOException {
+        InputStreamReader isReader = new InputStreamReader(in, StandardCharsets.UTF_8);
+        BufferedReader bufReader = new BufferedReader(isReader);
+        String content = bufReader.lines()
                 .collect(Collectors.joining("\n"));
+
+        isReader.close();
+        bufReader.close();
+
+        return content;
     }
 }

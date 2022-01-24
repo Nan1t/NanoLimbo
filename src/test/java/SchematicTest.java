@@ -16,6 +16,7 @@
  */
 
 import org.junit.jupiter.api.Test;
+import ru.nanit.limbo.world.BlockMappings;
 import ru.nanit.limbo.world.schematic.SchematicLoader;
 
 import java.io.IOException;
@@ -25,10 +26,10 @@ public class SchematicTest {
 
     @Test
     public void testLoading() throws IOException {
-        SchematicLoader loader = new SchematicLoader();
-        InputStream stream = getClass().getResourceAsStream("test.schematic");
+        BlockMappings mappings = new BlockMappings();
+        SchematicLoader loader = new SchematicLoader(mappings);
+        InputStream stream = getClass().getResourceAsStream("spawn.schem");
 
         System.out.println(loader.load(stream));
     }
-
 }
