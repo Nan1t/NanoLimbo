@@ -15,13 +15,31 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ru.nanit.limbo;
+package ru.nanit.limbo.world.dimension;
 
-public final class LimboConstants {
+import net.kyori.adventure.nbt.CompoundBinaryTag;
 
-    public static final String VELOCITY_INFO_CHANNEL = "velocity:player_info";
-    public static final String BRAND_CHANNEL = "minecraft:brand";
+public class Dimension {
 
-    private LimboConstants() {}
+    private final int id;
+    private final String name;
+    private final CompoundBinaryTag data;
 
+    public Dimension(int id, String name, CompoundBinaryTag data) {
+        this.id = id;
+        this.name = name;
+        this.data = data;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public CompoundBinaryTag getData() {
+        return data;
+    }
 }

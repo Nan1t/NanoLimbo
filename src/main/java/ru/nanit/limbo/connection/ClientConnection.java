@@ -434,7 +434,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
 
         if (server.getConfig().isUseBrandName()){
             PacketPluginMessage pluginMessage = new PacketPluginMessage();
-            pluginMessage.setChannel("minecraft:brand");
+            pluginMessage.setChannel(LimboConstants.BRAND_CHANNEL);
             pluginMessage.setMessage(server.getConfig().getBrandName());
             PACKET_PLUGIN_MESSAGE = PacketSnapshot.of(pluginMessage);
         }

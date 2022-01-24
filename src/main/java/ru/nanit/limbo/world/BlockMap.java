@@ -15,13 +15,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ru.nanit.limbo;
+package ru.nanit.limbo.world;
 
-public final class LimboConstants {
+import ru.nanit.limbo.protocol.registry.Version;
 
-    public static final String VELOCITY_INFO_CHANNEL = "velocity:player_info";
-    public static final String BRAND_CHANNEL = "minecraft:brand";
+public final class BlockMap {
 
-    private LimboConstants() {}
+    public BlockData convert(int id, byte data, Version version) {
+        // TODO
+        return null;
+    }
+
+    public BlockData convert(String state, Version version) {
+        // TODO
+        return null;
+    }
 
 }

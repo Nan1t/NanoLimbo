@@ -15,13 +15,37 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ru.nanit.limbo;
+package ru.nanit.limbo.world;
 
-public final class LimboConstants {
+public class BlockData {
 
-    public static final String VELOCITY_INFO_CHANNEL = "velocity:player_info";
-    public static final String BRAND_CHANNEL = "minecraft:brand";
+    private final String state;
+    private final int id;
+    private final byte data;
 
-    private LimboConstants() {}
+    public BlockData(String state, int id, byte data) {
+        this.state = state;
+        this.id = id;
+        this.data = data;
+    }
 
+    public BlockData(String state) {
+        this(state, 0, (byte) 0);
+    }
+
+    public BlockData(int id, byte data) {
+        this(null, id, data);
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public byte getData() {
+        return data;
+    }
 }

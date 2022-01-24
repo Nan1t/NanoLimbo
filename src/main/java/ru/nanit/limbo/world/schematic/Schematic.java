@@ -15,13 +15,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ru.nanit.limbo;
+package ru.nanit.limbo.world.schematic;
 
-public final class LimboConstants {
+import ru.nanit.limbo.protocol.registry.Version;
+import ru.nanit.limbo.world.BlockData;
+import ru.nanit.limbo.world.BlockEntity;
+import ru.nanit.limbo.world.BlockMap;
+import ru.nanit.limbo.world.Location;
 
-    public static final String VELOCITY_INFO_CHANNEL = "velocity:player_info";
-    public static final String BRAND_CHANNEL = "minecraft:brand";
+import java.util.List;
 
-    private LimboConstants() {}
+public interface Schematic {
+
+    int getWidth();
+
+    int getHeight();
+
+    int getLength();
+
+    List<BlockEntity> getBlockEntities();
+
+    BlockData getBlock(Location loc, Version version, BlockMap mappings);
 
 }

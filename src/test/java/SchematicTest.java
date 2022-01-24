@@ -15,13 +15,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ru.nanit.limbo;
+import org.junit.jupiter.api.Test;
+import ru.nanit.limbo.world.schematic.SchematicLoader;
 
-public final class LimboConstants {
+import java.io.IOException;
+import java.io.InputStream;
 
-    public static final String VELOCITY_INFO_CHANNEL = "velocity:player_info";
-    public static final String BRAND_CHANNEL = "minecraft:brand";
+public class SchematicTest {
 
-    private LimboConstants() {}
+    @Test
+    public void testLoading() throws IOException {
+        SchematicLoader loader = new SchematicLoader();
+        InputStream stream = getClass().getResourceAsStream("test.schematic");
+
+        System.out.println(loader.load(stream));
+    }
 
 }

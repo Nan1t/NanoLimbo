@@ -19,24 +19,24 @@ package ru.nanit.limbo.world;
 
 import net.kyori.adventure.nbt.CompoundBinaryTag;
 
-public class Dimension {
+public class BlockEntity {
 
-    private final int id;
-    private final String name;
+    private final Location pos;
+    private final String id;
     private final CompoundBinaryTag data;
 
-    public Dimension(int id, String name, CompoundBinaryTag data) {
+    public BlockEntity(Location pos, String id, CompoundBinaryTag data) {
+        this.pos = pos;
         this.id = id;
-        this.name = name;
         this.data = data;
     }
 
-    public int getId() {
-        return id;
+    public Location getPos() {
+        return pos;
     }
 
-    public String getName() {
-        return name;
+    public String getId() {
+        return id;
     }
 
     public CompoundBinaryTag getData() {
