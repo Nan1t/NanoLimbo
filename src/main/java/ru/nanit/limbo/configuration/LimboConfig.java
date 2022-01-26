@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2020 Nan1t
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package ru.nanit.limbo.configuration;
 
 import org.spongepowered.configurate.ConfigurationNode;
@@ -6,6 +23,7 @@ import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 import ru.nanit.limbo.server.data.*;
 import ru.nanit.limbo.util.Colors;
+import ru.nanit.limbo.world.Location;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -24,8 +42,11 @@ public final class LimboConfig {
     private int maxPlayers;
     private PingData pingData;
 
+    private boolean useSchematic;
+    private Path schematicPath;
+
     private String dimensionType;
-    private Position spawnPosition;
+    private Location spawnPosition;
     private int gameMode;
 
     private boolean useBrandName;
@@ -61,13 +82,17 @@ public final class LimboConfig {
         address = conf.node("bind").get(SocketAddress.class);
         maxPlayers = conf.node("maxPlayers").getInt();
         pingData = conf.node("ping").get(PingData.class);
+        //useSchematic = conf.node("world", "enable").getBoolean(false);
         dimensionType = conf.node("dimension").getString();
-        spawnPosition = conf.node("spawnPosition").get(Position.class);
+        spawnPosition = conf.node("spawnPosition").get(Location.class);
         gameMode = conf.node("gameMode").getInt();
         useBrandName = conf.node("brandName", "enable").getBoolean();
         useJoinMessage = conf.node("joinMessage", "enable").getBoolean();
         useBossBar = conf.node("bossBar", "enable").getBoolean();
         useTitle = conf.node("title", "enable").getBoolean();
+
+        /*if (useSchematic)
+            schematicPath = Paths.get(conf.node("world", "path").getString("./spawn.schem"));*/
 
         if(useBrandName)
             brandName = conf.node("brandName", "content").getString();
@@ -113,7 +138,7 @@ public final class LimboConfig {
                 .register(PingData.class, new PingData.Serializer())
                 .register(BossBar.class, new BossBar.Serializer())
                 .register(Title.class, new Title.Serializer())
-                .register(Position.class, new Position.Serializer())
+                .register(Location.class, new Location.Serializer())
                 .build();
     }
 
@@ -129,11 +154,19 @@ public final class LimboConfig {
         return pingData;
     }
 
+    public boolean isUseSchematic() {
+        return useSchematic;
+    }
+
+    public Path getSchematicPath() {
+        return schematicPath;
+    }
+
     public String getDimensionType() {
         return dimensionType;
     }
 
-    public Position getSpawnPosition() {
+    public Location getSpawnPosition() {
         return spawnPosition;
     }
 

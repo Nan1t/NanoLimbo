@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2020 Nan1t
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package ru.nanit.limbo.server;
 
 import io.netty.bootstrap.ServerBootstrap;
@@ -14,7 +31,7 @@ import ru.nanit.limbo.configuration.LimboConfig;
 import ru.nanit.limbo.connection.ClientChannelInitializer;
 import ru.nanit.limbo.connection.ClientConnection;
 import ru.nanit.limbo.util.Logger;
-import ru.nanit.limbo.world.DimensionRegistry;
+import ru.nanit.limbo.world.dimension.DimensionRegistry;
 
 import java.nio.file.Paths;
 import java.util.concurrent.ScheduledFuture;
