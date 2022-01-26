@@ -91,6 +91,10 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         return address;
     }
 
+    public Version getClientVersion() {
+        return clientVersion;
+    }
+
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         if (state.equals(State.PLAY)) {
