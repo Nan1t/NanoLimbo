@@ -82,7 +82,7 @@ public final class LimboConfig {
         address = conf.node("bind").get(SocketAddress.class);
         maxPlayers = conf.node("maxPlayers").getInt();
         pingData = conf.node("ping").get(PingData.class);
-        useSchematic = conf.node("world", "enable").getBoolean(false);
+        //useSchematic = conf.node("world", "enable").getBoolean(false);
         dimensionType = conf.node("dimension").getString();
         spawnPosition = conf.node("spawnPosition").get(Location.class);
         gameMode = conf.node("gameMode").getInt();
@@ -91,8 +91,8 @@ public final class LimboConfig {
         useBossBar = conf.node("bossBar", "enable").getBoolean();
         useTitle = conf.node("title", "enable").getBoolean();
 
-        if (useSchematic)
-            schematicPath = Paths.get(conf.node("world", "path").getString("./spawn.schem"));
+        /*if (useSchematic)
+            schematicPath = Paths.get(conf.node("world", "path").getString("./spawn.schem"));*/
 
         if(useBrandName)
             brandName = conf.node("brandName", "content").getString();

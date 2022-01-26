@@ -16,14 +16,6 @@ ping:
   description: '{"text": "&9NanoLimbo"}'
   version: 'NanoLimbo'
 
-# World settings
-world:
-  # Enable schematic loading.
-  # If false, then player will be spawned in the void
-  enable: false
-  # Relative path to schematic file
-  path: "./spawn.schem"
-
 # Available dimensions: OVERWORLD, NETHER, THE_END
 dimension: THE_END
 
