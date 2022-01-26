@@ -1,7 +1,5 @@
 ## NanoLimbo
 
-**Current dev branch: [dev/1.4](https://github.com/Nan1t/NanoLimbo/tree/dev/1.4)**
-
 This is lightweight minecraft limbo server, written on Java with Netty.
 The main goal of the project is maximum simplicity with a minimum number of sent and processed packets.
 This limbo is empty, there are no ability to set schematic building since 
@@ -48,8 +46,8 @@ The installation process is simple.
 
 1. Download the latest version of program **[here](https://github.com/Nan1t/NanoLimbo/releases)**
 2. Put jar file in the folder you want.
-3. Create a start script as you did it for Bukkit/Spigot/etc. with command like this:
-`java -jar <FileName>.jar`
+3. Create a start script as you did it for Bukkit or BungeeCord with command like this:
+`java -jar NanoLimbo-<version>.jar`
 4. The server will create `settings.yml` file. It's a server configuration.
 5. Configure it as you want and restart server.
 
@@ -73,7 +71,7 @@ Then add your tokens to `tokens` list.
 ### Contributing
 
 You can create pull request, if you found some bug, optimization ability, or you want to add some functional, 
-which will not significantly load the server.
+which is suitable for limbo server and won't significantly load the server.
 
 ### Building
 
