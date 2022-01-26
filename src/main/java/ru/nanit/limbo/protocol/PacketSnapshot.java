@@ -24,8 +24,8 @@ import java.util.Map;
 
 /**
  * PacketSnapshot encodes packet to byt array for each MC version.
- * Some versions have same bytes snapshot, so there are mappings
- * to avoid storing same byte array for different versions
+ * Some versions have same snapshot, so there are mappings
+ * to avoid storing same bytes array for different versions
  */
 public class PacketSnapshot implements PacketOut {
 
