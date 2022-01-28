@@ -41,7 +41,7 @@ public class PacketSnapshot implements PacketOut {
         return packet;
     }
 
-    public PacketSnapshot encodePacket() {
+    public void encode() {
         Map<Integer, Version> hashes = new HashMap<>();
 
         for (Version version : Version.values()) {
@@ -63,8 +63,6 @@ public class PacketSnapshot implements PacketOut {
 
             encodedMessage.release();
         }
-
-        return this;
     }
 
     @Override
@@ -84,6 +82,8 @@ public class PacketSnapshot implements PacketOut {
     }
 
     public static PacketSnapshot of(PacketOut packet) {
-        return new PacketSnapshot(packet).encodePacket();
+        PacketSnapshot snapshot = new PacketSnapshot(packet);
+        snapshot.encode();
+        return snapshot;
     }
 }
