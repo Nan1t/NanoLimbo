@@ -70,14 +70,12 @@ public class PacketSnapshot implements PacketOut {
     @Override
     public void encode(ByteMessage msg, Version version) {
         Version mapped = mappings.get(version);
-
-        if (mapped == null)
-            throw new IllegalArgumentException("No mapped version is for " + version);
-
         byte[] message = versionMessages.get(mapped);
 
         if (message != null)
             msg.writeBytes(message);
+        else
+            throw new IllegalArgumentException("No mappings for version " + version);
     }
 
     @Override
