@@ -42,9 +42,6 @@ public final class LimboConfig {
     private int maxPlayers;
     private PingData pingData;
 
-    private boolean useSchematic;
-    private Path schematicPath;
-
     private String dimensionType;
     private Location spawnPosition;
     private int gameMode;
@@ -82,7 +79,6 @@ public final class LimboConfig {
         address = conf.node("bind").get(SocketAddress.class);
         maxPlayers = conf.node("maxPlayers").getInt();
         pingData = conf.node("ping").get(PingData.class);
-        //useSchematic = conf.node("world", "enable").getBoolean(false);
         dimensionType = conf.node("dimension").getString();
         spawnPosition = conf.node("spawnPosition").get(Location.class);
         gameMode = conf.node("gameMode").getInt();
@@ -90,9 +86,6 @@ public final class LimboConfig {
         useJoinMessage = conf.node("joinMessage", "enable").getBoolean();
         useBossBar = conf.node("bossBar", "enable").getBoolean();
         useTitle = conf.node("title", "enable").getBoolean();
-
-        /*if (useSchematic)
-            schematicPath = Paths.get(conf.node("world", "path").getString("./spawn.schem"));*/
 
         if(useBrandName)
             brandName = conf.node("brandName", "content").getString();
@@ -152,14 +145,6 @@ public final class LimboConfig {
 
     public PingData getPingData() {
         return pingData;
-    }
-
-    public boolean isUseSchematic() {
-        return useSchematic;
-    }
-
-    public Path getSchematicPath() {
-        return schematicPath;
     }
 
     public String getDimensionType() {
