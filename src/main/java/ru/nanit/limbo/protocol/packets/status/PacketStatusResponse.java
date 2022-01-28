@@ -42,10 +42,10 @@ public class PacketStatusResponse implements PacketOut {
 
         String ver = server.getConfig().getPingData().getVersion();
         String desc = server.getConfig().getPingData().getDescription();
-        String json = getResponseJson(ver, protocol,
-                server.getConfig().getMaxPlayers(), server.getConnections().getCount(), desc);
 
-        msg.writeString(json);
+        msg.writeString(getResponseJson(ver, protocol,
+                server.getConfig().getMaxPlayers(),
+                server.getConnections().getCount(), desc));
     }
 
     @Override
