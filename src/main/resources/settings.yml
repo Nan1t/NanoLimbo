@@ -19,6 +19,15 @@ ping:
 # Available dimensions: OVERWORLD, NETHER, THE_END
 dimension: THE_END
 
+# Sending prepared tabcomplete commands to the player
+declareCommands:
+  enable: true
+  commands:
+    - 'NanoLimbo'
+
+# Whether to display the player in the player list
+playerList: true
+
 # Spawn position in the world
 spawnPosition:
   x: 0.0

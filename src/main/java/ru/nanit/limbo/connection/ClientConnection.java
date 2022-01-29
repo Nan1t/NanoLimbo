@@ -50,7 +50,6 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
-import java.util.Collections;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -239,10 +238,14 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         writePacket(PACKET_JOIN_GAME);
         writePacket(PACKET_PLAYER_ABILITIES);
         writePacket(PACKET_PLAYER_POS);
-        writePacket(PACKET_PLAYER_INFO);
+        if (PACKET_PLAYER_INFO != null) {
+            writePacket(PACKET_PLAYER_INFO);
+        }
 
         if (clientVersion.moreOrEqual(Version.V1_13)){
-            writePacket(PACKET_DECLARE_COMMANDS);
+            if (PACKET_DECLARE_COMMANDS != null)
+                writePacket(PACKET_DECLARE_COMMANDS);
+
 
             if (PACKET_PLUGIN_MESSAGE != null)
                 writePacket(PACKET_PLUGIN_MESSAGE);
@@ -426,15 +429,21 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         info.setGameMode(server.getConfig().getGameMode());
         info.setUuid(uuid);
 
-        PacketDeclareCommands declareCommands = new PacketDeclareCommands();
-        declareCommands.setCommands(Collections.emptyList());
-
         PACKET_LOGIN_SUCCESS = PacketSnapshot.of(loginSuccess);
         PACKET_JOIN_GAME = PacketSnapshot.of(joinGame);
         PACKET_PLAYER_ABILITIES = PacketSnapshot.of(playerAbilities);
         PACKET_PLAYER_POS = PacketSnapshot.of(positionAndLook);
-        PACKET_PLAYER_INFO = PacketSnapshot.of(info);
-        PACKET_DECLARE_COMMANDS = PacketSnapshot.of(declareCommands);
+
+        if (server.getConfig().isUsePlayerList()) {
+            PACKET_PLAYER_INFO = PacketSnapshot.of(info);
+        }
+
+        if (server.getConfig().isUseDeclareCommands()) {
+            PacketDeclareCommands declareCommands = new PacketDeclareCommands();
+            declareCommands.setCommands(server.getConfig().getDeclareCommands());
+
+            PACKET_DECLARE_COMMANDS = PacketSnapshot.of(declareCommands);
+        }
 
         if (server.getConfig().isUseBrandName()){
             PacketPluginMessage pluginMessage = new PacketPluginMessage();
