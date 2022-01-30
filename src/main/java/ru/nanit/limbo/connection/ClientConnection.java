@@ -50,6 +50,7 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
+import java.util.Collections;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -243,8 +244,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         }
 
         if (clientVersion.moreOrEqual(Version.V1_13)){
-            if (PACKET_DECLARE_COMMANDS != null)
-                writePacket(PACKET_DECLARE_COMMANDS);
+            writePacket(PACKET_DECLARE_COMMANDS);
 
 
             if (PACKET_PLUGIN_MESSAGE != null)
@@ -429,6 +429,9 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         info.setGameMode(server.getConfig().getGameMode());
         info.setUuid(uuid);
 
+        PacketDeclareCommands declareCommands = new PacketDeclareCommands();
+        declareCommands.setCommands(Collections.emptyList());
+
         PACKET_LOGIN_SUCCESS = PacketSnapshot.of(loginSuccess);
         PACKET_JOIN_GAME = PacketSnapshot.of(joinGame);
         PACKET_PLAYER_ABILITIES = PacketSnapshot.of(playerAbilities);
@@ -438,12 +441,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
             PACKET_PLAYER_INFO = PacketSnapshot.of(info);
         }
 
-        if (server.getConfig().isUseDeclareCommands()) {
-            PacketDeclareCommands declareCommands = new PacketDeclareCommands();
-            declareCommands.setCommands(server.getConfig().getDeclareCommands());
-
-            PACKET_DECLARE_COMMANDS = PacketSnapshot.of(declareCommands);
-        }
+        PACKET_DECLARE_COMMANDS = PacketSnapshot.of(declareCommands);
 
         if (server.getConfig().isUseBrandName()){
             PacketPluginMessage pluginMessage = new PacketPluginMessage();

@@ -33,7 +33,6 @@ import java.net.SocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 
 public final class LimboConfig {
 
@@ -51,13 +50,11 @@ public final class LimboConfig {
     private boolean useJoinMessage;
     private boolean useBossBar;
     private boolean useTitle;
-    private boolean useDeclareCommands;
     private boolean usePlayerList;
     private String brandName;
     private String joinMessage;
     private BossBar bossBar;
     private Title title;
-    private List<String> declareCommands;
 
     private InfoForwarding infoForwarding;
     private long readTimeout;
@@ -90,7 +87,6 @@ public final class LimboConfig {
         useJoinMessage = conf.node("joinMessage", "enable").getBoolean();
         useBossBar = conf.node("bossBar", "enable").getBoolean();
         useTitle = conf.node("title", "enable").getBoolean();
-        useDeclareCommands = conf.node("declareCommands", "enable").getBoolean();
         usePlayerList = conf.node("playerList").getBoolean();
 
         if (useBrandName)
@@ -104,9 +100,6 @@ public final class LimboConfig {
 
         if (useTitle)
             title = conf.node("title").get(Title.class);
-
-        if (useDeclareCommands)
-            declareCommands = conf.node("declareCommands", "commands").getList(String.class);
 
         infoForwarding = conf.node("infoForwarding").get(InfoForwarding.class);
         readTimeout = conf.node("readTimeout").getLong();
@@ -196,10 +189,6 @@ public final class LimboConfig {
         return useTitle;
     }
 
-    public boolean isUseDeclareCommands() {
-        return useDeclareCommands;
-    }
-
     public boolean isUsePlayerList() {
         return usePlayerList;
     }
@@ -218,10 +207,6 @@ public final class LimboConfig {
 
     public Title getTitle() {
         return title;
-    }
-
-    public List<String> getDeclareCommands() {
-        return declareCommands;
     }
 
     public boolean isUseEpoll() {
