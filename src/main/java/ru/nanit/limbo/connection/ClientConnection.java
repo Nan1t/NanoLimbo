@@ -239,7 +239,13 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         writePacket(PACKET_JOIN_GAME);
         writePacket(PACKET_PLAYER_ABILITIES);
         writePacket(PACKET_PLAYER_POS);
-        if (PACKET_PLAYER_INFO != null) {
+
+        if (clientVersion.moreOrEqual(Version.V1_17)) {
+            if (server.getConfig().isUsePlayerList()) {
+                writePacket(PACKET_PLAYER_INFO);
+            }
+        }
+        else {
             writePacket(PACKET_PLAYER_INFO);
         }
 
@@ -437,9 +443,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         PACKET_PLAYER_ABILITIES = PacketSnapshot.of(playerAbilities);
         PACKET_PLAYER_POS = PacketSnapshot.of(positionAndLook);
 
-        if (server.getConfig().isUsePlayerList()) {
-            PACKET_PLAYER_INFO = PacketSnapshot.of(info);
-        }
+        PACKET_PLAYER_INFO = PacketSnapshot.of(info);
 
         PACKET_DECLARE_COMMANDS = PacketSnapshot.of(declareCommands);
 
