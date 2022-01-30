@@ -67,8 +67,6 @@ public final class LimboServer {
         config = new LimboConfig(Paths.get("./"));
         config.load();
 
-        Logger.setLevel(config.getDebugLevel());
-
         dimensionRegistry = new DimensionRegistry(this);
         dimensionRegistry.load(config.getDimensionType());
         connections = new Connections();
@@ -82,6 +80,8 @@ public final class LimboServer {
         Runtime.getRuntime().addShutdownHook(new Thread(this::stop, "NanoLimbo shutdown thread"));
 
         Logger.info("Server started on %s", config.getAddress());
+
+        Logger.setLevel(config.getDebugLevel());
     }
 
     private void startBootstrap() {

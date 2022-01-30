@@ -50,6 +50,7 @@ public final class LimboConfig {
     private boolean useJoinMessage;
     private boolean useBossBar;
     private boolean useTitle;
+    private boolean usePlayerList;
     private String brandName;
     private String joinMessage;
     private BossBar bossBar;
@@ -86,8 +87,9 @@ public final class LimboConfig {
         useJoinMessage = conf.node("joinMessage", "enable").getBoolean();
         useBossBar = conf.node("bossBar", "enable").getBoolean();
         useTitle = conf.node("title", "enable").getBoolean();
+        usePlayerList = conf.node("playerList").getBoolean();
 
-        if(useBrandName)
+        if (useBrandName)
             brandName = conf.node("brandName", "content").getString();
 
         if (useJoinMessage)
@@ -185,6 +187,10 @@ public final class LimboConfig {
 
     public boolean isUseTitle() {
         return useTitle;
+    }
+
+    public boolean isUsePlayerList() {
+        return usePlayerList;
     }
 
     public String getBrandName() {
