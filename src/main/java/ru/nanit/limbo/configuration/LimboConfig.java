@@ -112,8 +112,8 @@ public final class LimboConfig {
             playerListUsername = conf.node("playerList", "username").getString();
 
         if (useHeaderAndFooter) {
-            playerListHeader = conf.node("headerAndFooter", "header").getString();
-            playerListFooter = conf.node("headerAndFooter", "footer").getString();
+            playerListHeader = Colors.of(conf.node("headerAndFooter", "header").getString());
+            playerListFooter = Colors.of(conf.node("headerAndFooter", "footer").getString());
         }
 
         infoForwarding = conf.node("infoForwarding").get(InfoForwarding.class);
