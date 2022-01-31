@@ -51,10 +51,16 @@ public final class LimboConfig {
     private boolean useBossBar;
     private boolean useTitle;
     private boolean usePlayerList;
+    private boolean useHeaderAndFooter;
+
     private String brandName;
     private String joinMessage;
     private BossBar bossBar;
     private Title title;
+
+    private String playerListUsername;
+    private String playerListHeader;
+    private String playerListFooter;
 
     private InfoForwarding infoForwarding;
     private long readTimeout;
@@ -87,7 +93,8 @@ public final class LimboConfig {
         useJoinMessage = conf.node("joinMessage", "enable").getBoolean();
         useBossBar = conf.node("bossBar", "enable").getBoolean();
         useTitle = conf.node("title", "enable").getBoolean();
-        usePlayerList = conf.node("playerList").getBoolean();
+        usePlayerList = conf.node("playerList", "enable").getBoolean();
+        useHeaderAndFooter = conf.node("headerAndFooter", "enable").getBoolean();
 
         if (useBrandName)
             brandName = conf.node("brandName", "content").getString();
@@ -100,6 +107,14 @@ public final class LimboConfig {
 
         if (useTitle)
             title = conf.node("title").get(Title.class);
+
+        if (usePlayerList)
+            playerListUsername = conf.node("playerList", "username").getString();
+
+        if (useHeaderAndFooter) {
+            playerListHeader = conf.node("headerAndFooter", "header").getString();
+            playerListFooter = conf.node("headerAndFooter", "footer").getString();
+        }
 
         infoForwarding = conf.node("infoForwarding").get(InfoForwarding.class);
         readTimeout = conf.node("readTimeout").getLong();
@@ -193,6 +208,10 @@ public final class LimboConfig {
         return usePlayerList;
     }
 
+    public boolean isUseHeaderAndFooter() {
+        return useHeaderAndFooter;
+    }
+
     public String getBrandName() {
         return brandName;
     }
@@ -207,6 +226,18 @@ public final class LimboConfig {
 
     public Title getTitle() {
         return title;
+    }
+
+    public String getPlayerListUsername() {
+        return playerListUsername;
+    }
+
+    public String getPlayerListHeader() {
+        return playerListHeader;
+    }
+
+    public String getPlayerListFooter() {
+        return playerListFooter;
     }
 
     public boolean isUseEpoll() {

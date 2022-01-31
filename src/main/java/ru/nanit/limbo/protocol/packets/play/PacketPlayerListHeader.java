@@ -21,22 +21,22 @@ import ru.nanit.limbo.protocol.ByteMessage;
 import ru.nanit.limbo.protocol.PacketOut;
 import ru.nanit.limbo.protocol.registry.Version;
 
-public class PacketPluginMessage implements PacketOut {
+public class PacketPlayerListHeader implements PacketOut {
 
-    private String channel;
-    private String message;
+    private String header;
+    private String footer;
 
-    public void setChannel(String channel) {
-        this.channel = channel;
+    public void setHeader(String header) {
+        this.header = header;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setFooter(String footer) {
+        this.footer = footer;
     }
 
     @Override
     public void encode(ByteMessage msg, Version version) {
-        msg.writeString(channel);
-        msg.writeString(message);
+        msg.writeString(header);
+        msg.writeString(footer);
     }
 }

@@ -65,6 +65,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
     private static PacketSnapshot PACKET_PLAYER_POS;
     private static PacketSnapshot PACKET_JOIN_MESSAGE;
     private static PacketSnapshot PACKET_BOSS_BAR;
+    private static PacketSnapshot PACKET_HEADER_AND_FOOTER;
 
     private static PacketSnapshot PACKET_TITLE_TITLE;
     private static PacketSnapshot PACKET_TITLE_SUBTITLE;
@@ -240,18 +241,11 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         writePacket(PACKET_PLAYER_ABILITIES);
         writePacket(PACKET_PLAYER_POS);
 
-        if (clientVersion.moreOrEqual(Version.V1_17)) {
-            if (server.getConfig().isUsePlayerList()) {
-                writePacket(PACKET_PLAYER_INFO);
-            }
-        }
-        else {
+        if (PACKET_PLAYER_INFO != null && !clientVersion.equals(Version.V1_16_4))
             writePacket(PACKET_PLAYER_INFO);
-        }
 
         if (clientVersion.moreOrEqual(Version.V1_13)){
             writePacket(PACKET_DECLARE_COMMANDS);
-
 
             if (PACKET_PLUGIN_MESSAGE != null)
                 writePacket(PACKET_PLUGIN_MESSAGE);
@@ -265,6 +259,9 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
 
         if (PACKET_TITLE_TITLE != null)
             writeTitle();
+
+        if (PACKET_HEADER_AND_FOOTER != null)
+            writePacket(PACKET_HEADER_AND_FOOTER);
 
         sendKeepAlive();
     }
@@ -430,11 +427,6 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         positionAndLook.setPitch(server.getConfig().getSpawnPosition().getPitch());
         positionAndLook.setTeleportId(ThreadLocalRandom.current().nextInt());
 
-        PacketPlayerInfo info = new PacketPlayerInfo();
-        info.setUsername(username);
-        info.setGameMode(server.getConfig().getGameMode());
-        info.setUuid(uuid);
-
         PacketDeclareCommands declareCommands = new PacketDeclareCommands();
         declareCommands.setCommands(Collections.emptyList());
 
@@ -443,9 +435,22 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         PACKET_PLAYER_ABILITIES = PacketSnapshot.of(playerAbilities);
         PACKET_PLAYER_POS = PacketSnapshot.of(positionAndLook);
 
-        PACKET_PLAYER_INFO = PacketSnapshot.of(info);
-
         PACKET_DECLARE_COMMANDS = PacketSnapshot.of(declareCommands);
+
+        if (server.getConfig().isUsePlayerList()) {
+            PacketPlayerInfo info = new PacketPlayerInfo();
+            info.setUsername(server.getConfig().getPlayerListUsername());
+            info.setGameMode(server.getConfig().getGameMode());
+            info.setUuid(uuid);
+            PACKET_PLAYER_INFO = PacketSnapshot.of(info);
+
+            if (server.getConfig().isUseHeaderAndFooter()) {
+                PacketPlayerListHeader header = new PacketPlayerListHeader();
+                header.setHeader(server.getConfig().getPlayerListHeader());
+                header.setFooter(server.getConfig().getPlayerListFooter());
+                PACKET_HEADER_AND_FOOTER = PacketSnapshot.of(header);
+            }
+        }
 
         if (server.getConfig().isUseBrandName()){
             PacketPluginMessage pluginMessage = new PacketPluginMessage();
