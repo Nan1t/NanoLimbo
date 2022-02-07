@@ -51,9 +51,6 @@ The installation process is simple.
 4. The server will create `settings.yml` file. It's a server configuration.
 5. Configure it as you want and restart server.
 
-I recommend you to set parameter `debugLevel` to `0` when you finish testing server and run it into production.
-This will disable some useless for production information in the console. For example, warnings about undefined packets.
-
 ### About player info forwarding
 
 The server supports player info forwarding from the proxy. There are several types of info forwarding:
