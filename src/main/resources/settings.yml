@@ -20,12 +20,12 @@ ping:
 dimension: THE_END
 
 # Whether to display the player in the player list
+# For 1.16.5 clients player list will be sent even if disabled, to avoid crash
 playerList:
   enable: false
   username: 'NanoLimbo'
 
 # Whether to display header and footer in player list
-# Enable it only if you enabled playerList
 headerAndFooter:
   enable: false
   header: '{"text": "&eWelcome!"}'

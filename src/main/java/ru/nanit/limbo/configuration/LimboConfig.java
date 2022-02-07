@@ -94,6 +94,7 @@ public final class LimboConfig {
         useBossBar = conf.node("bossBar", "enable").getBoolean();
         useTitle = conf.node("title", "enable").getBoolean();
         usePlayerList = conf.node("playerList", "enable").getBoolean();
+        playerListUsername = conf.node("playerList", "username").getString();
         useHeaderAndFooter = conf.node("headerAndFooter", "enable").getBoolean();
 
         if (useBrandName)
@@ -107,9 +108,6 @@ public final class LimboConfig {
 
         if (useTitle)
             title = conf.node("title").get(Title.class);
-
-        if (usePlayerList)
-            playerListUsername = conf.node("playerList", "username").getString();
 
         if (useHeaderAndFooter) {
             playerListHeader = Colors.of(conf.node("headerAndFooter", "header").getString());
