@@ -64,7 +64,7 @@ public final class LimboConfig {
 
     private InfoForwarding infoForwarding;
     private long readTimeout;
-    private int debugLevel = 3;
+    private int debugLevel;
 
     private boolean useEpoll;
     private int bossGroupSize;

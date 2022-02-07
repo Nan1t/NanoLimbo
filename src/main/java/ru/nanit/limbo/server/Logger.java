@@ -23,7 +23,7 @@ import java.time.format.DateTimeFormatter;
 public final class Logger {
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("hh:mm:ss");
-    private static int debugLevel = Level.ERROR.getIndex();
+    private static int debugLevel = Level.INFO.getIndex();
 
     private Logger() {}
 
@@ -78,8 +78,8 @@ public final class Logger {
 
         ERROR("ERROR", 0),
         WARNING("WARNING", 1),
-        INFO ("INFO", 2),
-        DEBUG ("DEBUG", 3);
+        INFO("INFO", 2),
+        DEBUG("DEBUG", 3);
 
         private final String display;
         private final int index;
