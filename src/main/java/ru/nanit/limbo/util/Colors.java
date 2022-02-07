@@ -19,8 +19,8 @@ package ru.nanit.limbo.util;
 
 public final class Colors {
 
-    private static final char CHAR_FROM = '\u0026';
-    private static final char CHAR_TO = '\u00A7';
+    private static final char CHAR_FROM = '&';
+    private static final char CHAR_TO = '§';
 
     private Colors() {}
 

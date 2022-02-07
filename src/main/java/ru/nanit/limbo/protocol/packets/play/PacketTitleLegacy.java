@@ -61,6 +61,8 @@ public class PacketTitleLegacy implements PacketOut {
             case SET_TIMES_AND_DISPLAY:
                 times.encode(msg, version);
                 break;
+            default:
+                throw new IllegalArgumentException("Invalid title action: " + action);
         }
     }
 
