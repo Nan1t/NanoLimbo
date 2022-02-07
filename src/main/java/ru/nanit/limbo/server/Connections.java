@@ -18,7 +18,6 @@
 package ru.nanit.limbo.server;
 
 import ru.nanit.limbo.connection.ClientConnection;
-import ru.nanit.limbo.util.Logger;
 
 import java.util.Collection;
 import java.util.Collections;

@@ -18,7 +18,7 @@
 package ru.nanit.limbo;
 
 import ru.nanit.limbo.server.LimboServer;
-import ru.nanit.limbo.util.Logger;
+import ru.nanit.limbo.server.Logger;
 
 public final class NanoLimbo {
 

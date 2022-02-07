@@ -20,7 +20,7 @@ package ru.nanit.limbo.connection.pipeline;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
-import ru.nanit.limbo.util.Logger;
+import ru.nanit.limbo.server.Logger;
 
 import java.util.List;
 

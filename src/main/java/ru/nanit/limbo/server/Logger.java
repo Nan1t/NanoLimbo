@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ru.nanit.limbo.util;
+package ru.nanit.limbo.server;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -23,13 +23,9 @@ import java.time.format.DateTimeFormatter;
 public final class Logger {
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("hh:mm:ss");
-    private static int debugLevel = 3;
+    private static int debugLevel = Level.ERROR.getIndex();
 
     private Logger() {}
-
-    public static void setLevel(int level) {
-        debugLevel = level;
-    }
 
     public static int getLevel() {
         return debugLevel;
@@ -74,12 +70,16 @@ public final class Logger {
         return LocalTime.now().format(FORMATTER);
     }
 
+    static void setLevel(int level) {
+        debugLevel = level;
+    }
+
     public enum Level {
 
-        ERROR("ERROR", 1),
-        WARNING("WARNING", 2),
-        INFO ("INFO", 3),
-        DEBUG ("DEBUG", 4);
+        ERROR("ERROR", 0),
+        WARNING("WARNING", 1),
+        INFO ("INFO", 2),
+        DEBUG ("DEBUG", 3);
 
         private final String display;
         private final int index;

@@ -30,7 +30,6 @@ import io.netty.util.ResourceLeakDetector;
 import ru.nanit.limbo.configuration.LimboConfig;
 import ru.nanit.limbo.connection.ClientChannelInitializer;
 import ru.nanit.limbo.connection.ClientConnection;
-import ru.nanit.limbo.util.Logger;
 import ru.nanit.limbo.world.dimension.DimensionRegistry;
 
 import java.nio.file.Paths;

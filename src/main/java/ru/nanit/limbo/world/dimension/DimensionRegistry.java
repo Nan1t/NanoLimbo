@@ -21,7 +21,7 @@ import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.kyori.adventure.nbt.ListBinaryTag;
 import net.kyori.adventure.nbt.TagStringIO;
 import ru.nanit.limbo.server.LimboServer;
-import ru.nanit.limbo.util.Logger;
+import ru.nanit.limbo.server.Logger;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;

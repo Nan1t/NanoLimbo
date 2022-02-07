@@ -97,14 +97,13 @@ infoForwarding:
 # Read timeout for connections in milliseconds
 readTimeout: 30000
 
-# Define log level. On release, I'd recommend to use level 3
+# Define log level. For production, I'd recommend to use level 2
 # Log levels:
-# 0 - Display nothing
-# 1 - Display only errors
-# 2 - Display errors, warnings
-# 3 - Display errors, warnings, info
-# 4 - Display errors, warnings, info, debug
-debugLevel: 3
+# 0 - Display only errors
+# 1 - Display errors, warnings
+# 2 - Display errors, warnings, info
+# 3 - Display errors, warnings, info, debug
+debugLevel: 2
 
 # Warning! Do not touch params of this block, if you not completely sure what is this!
 netty:

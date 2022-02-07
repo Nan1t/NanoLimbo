@@ -25,7 +25,7 @@ import ru.nanit.limbo.protocol.Packet;
 import ru.nanit.limbo.protocol.PacketSnapshot;
 import ru.nanit.limbo.protocol.registry.State;
 import ru.nanit.limbo.protocol.registry.Version;
-import ru.nanit.limbo.util.Logger;
+import ru.nanit.limbo.server.Logger;
 
 public class PacketEncoder extends MessageToByteEncoder<Packet> {
 

@@ -41,7 +41,7 @@ import ru.nanit.limbo.protocol.registry.State;
 import ru.nanit.limbo.protocol.registry.Version;
 import ru.nanit.limbo.server.LimboServer;
 import ru.nanit.limbo.server.data.Title;
-import ru.nanit.limbo.util.Logger;
+import ru.nanit.limbo.server.Logger;
 import ru.nanit.limbo.util.UuidUtil;
 
 import javax.crypto.Mac;
