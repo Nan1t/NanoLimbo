@@ -21,11 +21,13 @@ dimension: THE_END
 
 # Whether to display the player in the player list
 playerList:
-  enable: false
+  # 0 - Disable
+  # 1 - Enable only for old clients <1.17 (Older clients may crash when trying to use Social Interactions Screen with "p" key)
+  # 2 - Enable for all clients
+  mode: 1
   username: 'NanoLimbo'
 
 # Whether to display header and footer in player list
-# Enable it only if you enabled playerList
 headerAndFooter:
   enable: false
   header: '{"text": "&eWelcome!"}'

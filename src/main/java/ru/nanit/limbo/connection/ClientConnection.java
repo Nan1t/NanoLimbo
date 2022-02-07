@@ -241,10 +241,22 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         writePacket(PACKET_PLAYER_ABILITIES);
         writePacket(PACKET_PLAYER_POS);
 
-        if (PACKET_PLAYER_INFO != null && !clientVersion.equals(Version.V1_16_4))
-            writePacket(PACKET_PLAYER_INFO);
+        if (PACKET_PLAYER_INFO != null) {
+            switch (server.getConfig().getPlayerListMode()) {
+                case 1: {
+                    if (clientVersion.less(Version.V1_17)) {
+                        writePacket(PACKET_PLAYER_INFO);
+                    }
+                    break;
+                }
+                case 2: {
+                    writePacket(PACKET_PLAYER_INFO);
+                    break;
+                }
+            }
+        }
 
-        if (clientVersion.moreOrEqual(Version.V1_13)){
+        if (clientVersion.moreOrEqual(Version.V1_13)) {
             writePacket(PACKET_DECLARE_COMMANDS);
 
             if (PACKET_PLUGIN_MESSAGE != null)
@@ -437,19 +449,20 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
 
         PACKET_DECLARE_COMMANDS = PacketSnapshot.of(declareCommands);
 
-        if (server.getConfig().isUsePlayerList()) {
+
+        if (server.getConfig().getPlayerListMode() > 0) {
             PacketPlayerInfo info = new PacketPlayerInfo();
             info.setUsername(server.getConfig().getPlayerListUsername());
             info.setGameMode(server.getConfig().getGameMode());
             info.setUuid(uuid);
             PACKET_PLAYER_INFO = PacketSnapshot.of(info);
+        }
 
-            if (server.getConfig().isUseHeaderAndFooter()) {
-                PacketPlayerListHeader header = new PacketPlayerListHeader();
-                header.setHeader(server.getConfig().getPlayerListHeader());
-                header.setFooter(server.getConfig().getPlayerListFooter());
-                PACKET_HEADER_AND_FOOTER = PacketSnapshot.of(header);
-            }
+        if (server.getConfig().isUseHeaderAndFooter()) {
+            PacketPlayerListHeader header = new PacketPlayerListHeader();
+            header.setHeader(server.getConfig().getPlayerListHeader());
+            header.setFooter(server.getConfig().getPlayerListFooter());
+            PACKET_HEADER_AND_FOOTER = PacketSnapshot.of(header);
         }
 
         if (server.getConfig().isUseBrandName()){

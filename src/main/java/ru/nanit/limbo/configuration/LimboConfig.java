@@ -50,7 +50,7 @@ public final class LimboConfig {
     private boolean useJoinMessage;
     private boolean useBossBar;
     private boolean useTitle;
-    private boolean usePlayerList;
+    private int playerListMode;
     private boolean useHeaderAndFooter;
 
     private String brandName;
@@ -93,7 +93,7 @@ public final class LimboConfig {
         useJoinMessage = conf.node("joinMessage", "enable").getBoolean();
         useBossBar = conf.node("bossBar", "enable").getBoolean();
         useTitle = conf.node("title", "enable").getBoolean();
-        usePlayerList = conf.node("playerList", "enable").getBoolean();
+        playerListMode = conf.node("playerList", "mode").getInt();
         useHeaderAndFooter = conf.node("headerAndFooter", "enable").getBoolean();
 
         if (useBrandName)
@@ -108,7 +108,7 @@ public final class LimboConfig {
         if (useTitle)
             title = conf.node("title").get(Title.class);
 
-        if (usePlayerList)
+        if (playerListMode > 0)
             playerListUsername = conf.node("playerList", "username").getString();
 
         if (useHeaderAndFooter) {
@@ -204,8 +204,8 @@ public final class LimboConfig {
         return useTitle;
     }
 
-    public boolean isUsePlayerList() {
-        return usePlayerList;
+    public int getPlayerListMode() {
+        return playerListMode;
     }
 
     public boolean isUseHeaderAndFooter() {
