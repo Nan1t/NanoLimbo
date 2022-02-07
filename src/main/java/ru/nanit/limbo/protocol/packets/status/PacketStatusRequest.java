@@ -17,15 +17,22 @@
 
 package ru.nanit.limbo.protocol.packets.status;
 
+import ru.nanit.limbo.connection.ClientConnection;
 import ru.nanit.limbo.protocol.ByteMessage;
 import ru.nanit.limbo.protocol.PacketIn;
 import ru.nanit.limbo.protocol.registry.Version;
+import ru.nanit.limbo.server.LimboServer;
 
 public class PacketStatusRequest implements PacketIn {
 
     @Override
     public void decode(ByteMessage msg, Version version) {
 
+    }
+
+    @Override
+    public void handle(ClientConnection conn, LimboServer server) {
+        server.getPacketHandler().handle(conn, this);
     }
 
     @Override

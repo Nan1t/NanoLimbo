@@ -17,12 +17,18 @@
 
 package ru.nanit.limbo.protocol;
 
+import ru.nanit.limbo.connection.ClientConnection;
 import ru.nanit.limbo.protocol.registry.Version;
+import ru.nanit.limbo.server.LimboServer;
 
 public interface Packet {
 
     void encode(ByteMessage msg, Version version);
 
     void decode(ByteMessage msg, Version version);
+
+    default void handle(ClientConnection conn, LimboServer server) {
+        // Ignored by default
+    }
 
 }

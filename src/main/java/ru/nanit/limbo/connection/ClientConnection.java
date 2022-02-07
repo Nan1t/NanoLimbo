@@ -21,26 +21,20 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import ru.nanit.limbo.LimboConstants;
+import org.jetbrains.annotations.NotNull;
 import ru.nanit.limbo.connection.pipeline.PacketDecoder;
 import ru.nanit.limbo.connection.pipeline.PacketEncoder;
 import ru.nanit.limbo.protocol.ByteMessage;
-import ru.nanit.limbo.protocol.PacketSnapshot;
-import ru.nanit.limbo.protocol.packets.PacketHandshake;
+import ru.nanit.limbo.protocol.Packet;
 import ru.nanit.limbo.protocol.packets.login.*;
 import ru.nanit.limbo.protocol.packets.play.*;
-import ru.nanit.limbo.protocol.packets.status.PacketStatusPing;
-import ru.nanit.limbo.protocol.packets.status.PacketStatusRequest;
-import ru.nanit.limbo.protocol.packets.status.PacketStatusResponse;
 import ru.nanit.limbo.protocol.registry.State;
 import ru.nanit.limbo.protocol.registry.Version;
 import ru.nanit.limbo.server.LimboServer;
-import ru.nanit.limbo.server.data.Title;
 import ru.nanit.limbo.server.Logger;
 import ru.nanit.limbo.util.UuidUtil;
 
@@ -50,30 +44,10 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
-import java.util.Collections;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class ClientConnection extends ChannelInboundHandlerAdapter {
-
-    private static PacketSnapshot PACKET_LOGIN_SUCCESS;
-    private static PacketSnapshot PACKET_JOIN_GAME;
-    private static PacketSnapshot PACKET_PLUGIN_MESSAGE;
-    private static PacketSnapshot PACKET_PLAYER_ABILITIES;
-    private static PacketSnapshot PACKET_PLAYER_INFO;
-    private static PacketSnapshot PACKET_DECLARE_COMMANDS;
-    private static PacketSnapshot PACKET_PLAYER_POS;
-    private static PacketSnapshot PACKET_JOIN_MESSAGE;
-    private static PacketSnapshot PACKET_BOSS_BAR;
-    private static PacketSnapshot PACKET_HEADER_AND_FOOTER;
-
-    private static PacketSnapshot PACKET_TITLE_TITLE;
-    private static PacketSnapshot PACKET_TITLE_SUBTITLE;
-    private static PacketSnapshot PACKET_TITLE_TIMES;
-
-    private static PacketSnapshot PACKET_TITLE_LEGACY_TITLE;
-    private static PacketSnapshot PACKET_TITLE_LEGACY_SUBTITLE;
-    private static PacketSnapshot PACKET_TITLE_LEGACY_TIMES;
 
     private final LimboServer server;
     private final Channel channel;
@@ -113,8 +87,12 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         return clientVersion;
     }
 
+    public GameProfile getGameProfile() {
+        return gameProfile;
+    }
+
     @Override
-    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+    public void channelInactive(@NotNull ChannelHandlerContext ctx) throws Exception {
         if (state.equals(State.PLAY)) {
             server.getConnections().removeConnection(this);
         }
@@ -129,139 +107,52 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
     }
 
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) {
+    public void channelRead(@NotNull ChannelHandlerContext ctx, @NotNull Object msg) {
         handlePacket(msg);
     }
 
     public void handlePacket(Object packet) {
-        if (packet instanceof PacketHandshake) {
-            PacketHandshake handshake = (PacketHandshake) packet;
-            clientVersion = handshake.getVersion();
-
-            updateStateAndVersion(handshake.getNextState(), clientVersion);
-
-            Logger.debug("Pinged from %s [%s]", address, clientVersion.toString());
-
-            if (server.getConfig().getInfoForwarding().isLegacy()) {
-                String[] split = handshake.getHost().split("\00");
-
-                if (split.length == 3 || split.length == 4) {
-                    setAddress(split[1]);
-                    gameProfile.setUuid(UuidUtil.fromString(split[2]));
-                } else {
-                    disconnectLogin("You've enabled player info forwarding. You need to connect with proxy");
-                }
-            } else if (server.getConfig().getInfoForwarding().isBungeeGuard()) {
-                if (!checkBungeeGuardHandshake(handshake.getHost())) {
-                    disconnectLogin("Invalid BungeeGuard token or handshake format");
-                }
-            }
-            return;
-        }
-
-        if (packet instanceof PacketStatusRequest) {
-            sendPacket(new PacketStatusResponse(server));
-            return;
-        }
-
-        if (packet instanceof PacketStatusPing) {
-            sendPacketAndClose(packet);
-            return;
-        }
-
-        if (packet instanceof PacketLoginStart) {
-            if (server.getConfig().getMaxPlayers() > 0 &&
-                    server.getConnections().getCount() >= server.getConfig().getMaxPlayers()) {
-                disconnectLogin("Too many players connected");
-                return;
-            }
-
-            if (!clientVersion.isSupported()) {
-                disconnectLogin("Unsupported client version");
-                return;
-            }
-
-            if (server.getConfig().getInfoForwarding().isModern()) {
-                velocityLoginMessageId = ThreadLocalRandom.current().nextInt(0, Integer.MAX_VALUE);
-                PacketLoginPluginRequest request = new PacketLoginPluginRequest();
-                request.setMessageId(velocityLoginMessageId);
-                request.setChannel(LimboConstants.VELOCITY_INFO_CHANNEL);
-                request.setData(Unpooled.EMPTY_BUFFER);
-                sendPacket(request);
-                return;
-            }
-
-            if (!server.getConfig().getInfoForwarding().isModern()) {
-                gameProfile.setUsername(((PacketLoginStart)packet).getUsername());
-                gameProfile.setUuid(UuidUtil.getOfflineModeUuid(getUsername()));
-            }
-
-            fireLoginSuccess();
-            return;
-        }
-
-        if (packet instanceof PacketLoginPluginResponse) {
-            PacketLoginPluginResponse response = (PacketLoginPluginResponse) packet;
-
-            if (server.getConfig().getInfoForwarding().isModern()
-                    && response.getMessageId() == velocityLoginMessageId) {
-
-                if (!response.isSuccessful() || response.getData() == null) {
-                    disconnectLogin("You need to connect with Velocity");
-                    return;
-                }
-
-                if (!checkVelocityKeyIntegrity(response.getData())) {
-                    disconnectLogin("Can't verify forwarded player info");
-                    return;
-                }
-
-                // Order is important
-                setAddress(response.getData().readString());
-                gameProfile.setUuid(response.getData().readUuid());
-                gameProfile.setUsername(response.getData().readString());
-
-                fireLoginSuccess();
-            }
+        if (packet instanceof Packet) {
+            ((Packet)packet).handle(this, server);
         }
     }
 
-    private void fireLoginSuccess() {
+    public void fireLoginSuccess() {
         if (server.getConfig().getInfoForwarding().isModern() && velocityLoginMessageId == -1) {
             disconnectLogin("You need to connect with Velocity");
             return;
         }
 
-        writePacket(PACKET_LOGIN_SUCCESS);
-        setPlayState();
+        writePacket(PacketSnapshots.PACKET_LOGIN_SUCCESS);
+        updateState(State.PLAY);
 
         server.getConnections().addConnection(this);
 
-        writePacket(PACKET_JOIN_GAME);
-        writePacket(PACKET_PLAYER_ABILITIES);
-        writePacket(PACKET_PLAYER_POS);
+        writePacket(PacketSnapshots.PACKET_JOIN_GAME);
+        writePacket(PacketSnapshots.PACKET_PLAYER_ABILITIES);
+        writePacket(PacketSnapshots.PACKET_PLAYER_POS);
 
         if (server.getConfig().isUsePlayerList() || clientVersion.equals(Version.V1_16_4))
-            writePacket(PACKET_PLAYER_INFO);
+            writePacket(PacketSnapshots.PACKET_PLAYER_INFO);
 
         if (clientVersion.moreOrEqual(Version.V1_13)) {
-            writePacket(PACKET_DECLARE_COMMANDS);
+            writePacket(PacketSnapshots.PACKET_DECLARE_COMMANDS);
 
-            if (PACKET_PLUGIN_MESSAGE != null)
-                writePacket(PACKET_PLUGIN_MESSAGE);
+            if (PacketSnapshots.PACKET_PLUGIN_MESSAGE != null)
+                writePacket(PacketSnapshots.PACKET_PLUGIN_MESSAGE);
         }
 
-        if (PACKET_BOSS_BAR != null && clientVersion.moreOrEqual(Version.V1_9))
-            writePacket(PACKET_BOSS_BAR);
+        if (PacketSnapshots.PACKET_BOSS_BAR != null && clientVersion.moreOrEqual(Version.V1_9))
+            writePacket(PacketSnapshots.PACKET_BOSS_BAR);
 
-        if (PACKET_JOIN_MESSAGE != null)
-            writePacket(PACKET_JOIN_MESSAGE);
+        if (PacketSnapshots.PACKET_JOIN_MESSAGE != null)
+            writePacket(PacketSnapshots.PACKET_JOIN_MESSAGE);
 
-        if (PACKET_TITLE_TITLE != null)
+        if (PacketSnapshots.PACKET_TITLE_TITLE != null)
             writeTitle();
 
-        if (PACKET_HEADER_AND_FOOTER != null)
-            writePacket(PACKET_HEADER_AND_FOOTER);
+        if (PacketSnapshots.PACKET_HEADER_AND_FOOTER != null)
+            writePacket(PacketSnapshots.PACKET_HEADER_AND_FOOTER);
 
         sendKeepAlive();
     }
@@ -276,13 +167,13 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
 
     public void writeTitle() {
         if (clientVersion.moreOrEqual(Version.V1_17)) {
-            writePacket(PACKET_TITLE_TITLE);
-            writePacket(PACKET_TITLE_SUBTITLE);
-            writePacket(PACKET_TITLE_TIMES);
+            writePacket(PacketSnapshots.PACKET_TITLE_TITLE);
+            writePacket(PacketSnapshots.PACKET_TITLE_SUBTITLE);
+            writePacket(PacketSnapshots.PACKET_TITLE_TIMES);
         } else {
-            writePacket(PACKET_TITLE_LEGACY_TITLE);
-            writePacket(PACKET_TITLE_LEGACY_SUBTITLE);
-            writePacket(PACKET_TITLE_LEGACY_TIMES);
+            writePacket(PacketSnapshots.PACKET_TITLE_LEGACY_TITLE);
+            writePacket(PacketSnapshots.PACKET_TITLE_LEGACY_SUBTITLE);
+            writePacket(PacketSnapshots.PACKET_TITLE_LEGACY_TIMES);
         }
     }
 
@@ -313,25 +204,23 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         return channel.isActive();
     }
 
-    private void setPlayState() {
-        this.state = State.PLAY;
-        decoder.updateState(this.state);
-        encoder.updateState(this.state);
-    }
-
-    public void updateStateAndVersion(State state, Version version) {
+    public void updateState(State state) {
         this.state = state;
-        decoder.updateVersion(version);
         decoder.updateState(state);
-        encoder.updateVersion(version);
         encoder.updateState(state);
     }
 
-    private void setAddress(String host) {
+    public void updateVersion(Version version) {
+        clientVersion = version;
+        decoder.updateVersion(version);
+        encoder.updateVersion(version);
+    }
+
+    public void setAddress(String host) {
         this.address = new InetSocketAddress(host, ((InetSocketAddress)this.address).getPort());
     }
 
-    private boolean checkBungeeGuardHandshake(String handshake) {
+    boolean checkBungeeGuardHandshake(String handshake) {
         String[] split = handshake.split("\00");
 
         if (split.length != 4)
@@ -370,7 +259,15 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         return true;
     }
 
-    private boolean checkVelocityKeyIntegrity(ByteMessage buf) {
+    int getVelocityLoginMessageId() {
+        return velocityLoginMessageId;
+    }
+
+    void setVelocityLoginMessageId(int velocityLoginMessageId) {
+        this.velocityLoginMessageId = velocityLoginMessageId;
+    }
+
+    boolean checkVelocityKeyIntegrity(ByteMessage buf) {
         byte[] signature = new byte[32];
         buf.readBytes(signature);
         byte[] data = new byte[buf.readableBytes()];
@@ -388,123 +285,5 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         if (version != 1)
             throw new IllegalStateException("Unsupported forwarding version " + version + ", wanted " + '\001');
         return true;
-    }
-
-    public static void initPackets(LimboServer server) {
-        final String username = server.getConfig().getPingData().getVersion();
-        final UUID uuid = UuidUtil.getOfflineModeUuid(username);
-
-        PacketLoginSuccess loginSuccess = new PacketLoginSuccess();
-        loginSuccess.setUsername(username);
-        loginSuccess.setUuid(uuid);
-
-        PacketJoinGame joinGame = new PacketJoinGame();
-        joinGame.setEntityId(0);
-        joinGame.setEnableRespawnScreen(true);
-        joinGame.setFlat(false);
-        joinGame.setGameMode(server.getConfig().getGameMode());
-        joinGame.setHardcore(false);
-        joinGame.setMaxPlayers(server.getConfig().getMaxPlayers());
-        joinGame.setPreviousGameMode(-1);
-        joinGame.setReducedDebugInfo(true);
-        joinGame.setDebug(false);
-        joinGame.setViewDistance(0);
-        joinGame.setWorldName("minecraft:world");
-        joinGame.setWorldNames("minecraft:world");
-        joinGame.setHashedSeed(0);
-        joinGame.setDimensionRegistry(server.getDimensionRegistry());
-
-        PacketPlayerAbilities playerAbilities = new PacketPlayerAbilities();
-        playerAbilities.setFlyingSpeed(0.0F);
-        playerAbilities.setFlags(0x02);
-        playerAbilities.setFieldOfView(0.1F);
-
-        PacketPlayerPositionAndLook positionAndLook = new PacketPlayerPositionAndLook();
-        positionAndLook.setX(server.getConfig().getSpawnPosition().getX());
-        positionAndLook.setY(server.getConfig().getSpawnPosition().getY());
-        positionAndLook.setZ(server.getConfig().getSpawnPosition().getZ());
-        positionAndLook.setYaw(server.getConfig().getSpawnPosition().getYaw());
-        positionAndLook.setPitch(server.getConfig().getSpawnPosition().getPitch());
-        positionAndLook.setTeleportId(ThreadLocalRandom.current().nextInt());
-
-        PacketDeclareCommands declareCommands = new PacketDeclareCommands();
-        declareCommands.setCommands(Collections.emptyList());
-
-        PacketPlayerInfo info = new PacketPlayerInfo();
-        info.setUsername(server.getConfig().getPlayerListUsername());
-        info.setGameMode(server.getConfig().getGameMode());
-        info.setUuid(uuid);
-
-        PACKET_LOGIN_SUCCESS = PacketSnapshot.of(loginSuccess);
-        PACKET_JOIN_GAME = PacketSnapshot.of(joinGame);
-        PACKET_PLAYER_ABILITIES = PacketSnapshot.of(playerAbilities);
-        PACKET_PLAYER_POS = PacketSnapshot.of(positionAndLook);
-        PACKET_PLAYER_INFO = PacketSnapshot.of(info);
-
-        PACKET_DECLARE_COMMANDS = PacketSnapshot.of(declareCommands);
-
-        if (server.getConfig().isUseHeaderAndFooter()) {
-            PacketPlayerListHeader header = new PacketPlayerListHeader();
-            header.setHeader(server.getConfig().getPlayerListHeader());
-            header.setFooter(server.getConfig().getPlayerListFooter());
-            PACKET_HEADER_AND_FOOTER = PacketSnapshot.of(header);
-        }
-
-        if (server.getConfig().isUseBrandName()){
-            PacketPluginMessage pluginMessage = new PacketPluginMessage();
-            pluginMessage.setChannel(LimboConstants.BRAND_CHANNEL);
-            pluginMessage.setMessage(server.getConfig().getBrandName());
-            PACKET_PLUGIN_MESSAGE = PacketSnapshot.of(pluginMessage);
-        }
-
-        if (server.getConfig().isUseJoinMessage()) {
-            PacketChatMessage joinMessage = new PacketChatMessage();
-            joinMessage.setJsonData(server.getConfig().getJoinMessage());
-            joinMessage.setPosition(PacketChatMessage.Position.CHAT);
-            joinMessage.setSender(UUID.randomUUID());
-            PACKET_JOIN_MESSAGE = PacketSnapshot.of(joinMessage);
-        }
-
-        if (server.getConfig().isUseBossBar()) {
-            PacketBossBar bossBar = new PacketBossBar();
-            bossBar.setBossBar(server.getConfig().getBossBar());
-            bossBar.setUuid(UUID.randomUUID());
-            PACKET_BOSS_BAR = PacketSnapshot.of(bossBar);
-        }
-
-        if (server.getConfig().isUseTitle()) {
-            Title title = server.getConfig().getTitle();
-
-            PacketTitleSetTitle packetTitle = new PacketTitleSetTitle();
-            PacketTitleSetSubTitle packetSubtitle = new PacketTitleSetSubTitle();
-            PacketTitleTimes packetTimes = new PacketTitleTimes();
-
-            PacketTitleLegacy legacyTitle = new PacketTitleLegacy();
-            PacketTitleLegacy legacySubtitle = new PacketTitleLegacy();
-            PacketTitleLegacy legacyTimes = new PacketTitleLegacy();
-
-            packetTitle.setTitle(title.getTitle());
-            packetSubtitle.setSubtitle(title.getSubtitle());
-            packetTimes.setFadeIn(title.getFadeIn());
-            packetTimes.setStay(title.getStay());
-            packetTimes.setFadeOut(title.getFadeOut());
-
-            legacyTitle.setTitle(title);
-            legacyTitle.setAction(PacketTitleLegacy.Action.SET_TITLE);
-
-            legacySubtitle.setTitle(title);
-            legacySubtitle.setAction(PacketTitleLegacy.Action.SET_SUBTITLE);
-
-            legacyTimes.setTitle(title);
-            legacyTimes.setAction(PacketTitleLegacy.Action.SET_TIMES_AND_DISPLAY);
-
-            PACKET_TITLE_TITLE = PacketSnapshot.of(packetTitle);
-            PACKET_TITLE_SUBTITLE = PacketSnapshot.of(packetSubtitle);
-            PACKET_TITLE_TIMES = PacketSnapshot.of(packetTimes);
-
-            PACKET_TITLE_LEGACY_TITLE = PacketSnapshot.of(legacyTitle);
-            PACKET_TITLE_LEGACY_SUBTITLE = PacketSnapshot.of(legacySubtitle);
-            PACKET_TITLE_LEGACY_TIMES = PacketSnapshot.of(legacyTimes);
-        }
     }
 }

@@ -43,6 +43,7 @@ public class ClientChannelInitializer extends ChannelInitializer<Channel> {
 
         PacketDecoder decoder = new PacketDecoder();
         PacketEncoder encoder = new PacketEncoder();
+        ClientConnection connection = new ClientConnection(channel, server, decoder, encoder);
 
         pipeline.addLast("timeout", new ReadTimeoutHandler(server.getConfig().getReadTimeout(),
                 TimeUnit.MILLISECONDS));
@@ -50,7 +51,7 @@ public class ClientChannelInitializer extends ChannelInitializer<Channel> {
         pipeline.addLast("frame_encoder", new VarIntLengthEncoder());
         pipeline.addLast("decoder", decoder);
         pipeline.addLast("encoder", encoder);
-        pipeline.addLast("handler", new ClientConnection(channel, server, decoder, encoder));
+        pipeline.addLast("handler", connection);
     }
 
 }

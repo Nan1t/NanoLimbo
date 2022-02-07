@@ -30,6 +30,8 @@ import io.netty.util.ResourceLeakDetector;
 import ru.nanit.limbo.configuration.LimboConfig;
 import ru.nanit.limbo.connection.ClientChannelInitializer;
 import ru.nanit.limbo.connection.ClientConnection;
+import ru.nanit.limbo.connection.PacketHandler;
+import ru.nanit.limbo.connection.PacketSnapshots;
 import ru.nanit.limbo.world.dimension.DimensionRegistry;
 
 import java.nio.file.Paths;
@@ -39,6 +41,7 @@ import java.util.concurrent.TimeUnit;
 public final class LimboServer {
 
     private LimboConfig config;
+    private PacketHandler packetHandler;
     private Connections connections;
     private DimensionRegistry dimensionRegistry;
     private ScheduledFuture<?> keepAliveTask;
@@ -48,6 +51,10 @@ public final class LimboServer {
 
     public LimboConfig getConfig() {
         return config;
+    }
+
+    public PacketHandler getPacketHandler() {
+        return packetHandler;
     }
 
     public Connections getConnections() {
@@ -66,11 +73,12 @@ public final class LimboServer {
         config = new LimboConfig(Paths.get("./"));
         config.load();
 
+        packetHandler = new PacketHandler(this);
         dimensionRegistry = new DimensionRegistry(this);
         dimensionRegistry.load(config.getDimensionType());
         connections = new Connections();
 
-        ClientConnection.initPackets(this);
+        PacketSnapshots.initPackets(this);
 
         startBootstrap();
 

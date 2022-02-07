@@ -17,9 +17,11 @@
 
 package ru.nanit.limbo.protocol.packets.login;
 
+import ru.nanit.limbo.connection.ClientConnection;
 import ru.nanit.limbo.protocol.ByteMessage;
 import ru.nanit.limbo.protocol.PacketIn;
 import ru.nanit.limbo.protocol.registry.Version;
+import ru.nanit.limbo.server.LimboServer;
 
 public class PacketLoginPluginResponse implements PacketIn {
 
@@ -48,6 +50,11 @@ public class PacketLoginPluginResponse implements PacketIn {
             int i = msg.readableBytes();
             data = new ByteMessage(msg.readBytes(i));
         }
+    }
+
+    @Override
+    public void handle(ClientConnection conn, LimboServer server) {
+        server.getPacketHandler().handle(conn, this);
     }
 
     @Override

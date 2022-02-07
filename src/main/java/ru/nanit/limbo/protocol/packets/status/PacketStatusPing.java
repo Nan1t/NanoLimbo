@@ -17,9 +17,11 @@
 
 package ru.nanit.limbo.protocol.packets.status;
 
+import ru.nanit.limbo.connection.ClientConnection;
 import ru.nanit.limbo.protocol.ByteMessage;
 import ru.nanit.limbo.protocol.Packet;
 import ru.nanit.limbo.protocol.registry.Version;
+import ru.nanit.limbo.server.LimboServer;
 
 public class PacketStatusPing implements Packet {
 
@@ -33,6 +35,11 @@ public class PacketStatusPing implements Packet {
     @Override
     public void decode(ByteMessage msg, Version version) {
         this.randomId = msg.readLong();
+    }
+
+    @Override
+    public void handle(ClientConnection conn, LimboServer server) {
+        server.getPacketHandler().handle(conn, this);
     }
 
     @Override
