@@ -253,6 +253,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
                     writePacket(PACKET_PLAYER_INFO);
                     break;
                 }
+                default:
             }
         }
 
