@@ -31,33 +31,49 @@ public final class DimensionRegistry {
 
     private final LimboServer server;
 
-    private Dimension defaultDimension;
+    private Dimension defaultDimension_1_16;
+    private Dimension defaultDimension_1_18_2;
 
-    private CompoundBinaryTag codec;
+    private CompoundBinaryTag codec_1_16;
+    private CompoundBinaryTag codec_1_18_2;
     private CompoundBinaryTag oldCodec;
 
     public DimensionRegistry(LimboServer server) {
         this.server = server;
     }
 
-    public CompoundBinaryTag getCodec() {
-        return codec;
+    public CompoundBinaryTag getCodec_1_16() {
+        return codec_1_16;
+    }
+
+    public CompoundBinaryTag getCodec_1_18_2() {
+        return codec_1_18_2;
     }
 
     public CompoundBinaryTag getOldCodec() {
         return oldCodec;
     }
 
-    public Dimension getDefaultDimension() {
-        return defaultDimension;
+    public Dimension getDefaultDimension_1_16() {
+        return defaultDimension_1_16;
+    }
+
+    public Dimension getDefaultDimension_1_18_2() {
+        return defaultDimension_1_18_2;
     }
 
     public void load(String def) throws IOException {
-        codec = readCodecFile("/dimension/codec_new.snbt");
+        codec_1_16 = readCodecFile("/dimension/codec_1_16.snbt");
+        codec_1_18_2 = readCodecFile("/dimension/codec_1_18_2.snbt");
         // On 1.16-1.16.1 different codec format
         oldCodec = readCodecFile("/dimension/codec_old.snbt");
 
-        ListBinaryTag dimensions = codec.getCompound("minecraft:dimension_type").getList("value");
+        defaultDimension_1_16 = getDefaultDimension(def, codec_1_16);
+        defaultDimension_1_18_2 = getDefaultDimension(def, codec_1_18_2);
+    }
+
+    private Dimension getDefaultDimension(String def, CompoundBinaryTag tag) {
+        ListBinaryTag dimensions = tag.getCompound("minecraft:dimension_type").getList("value");
 
         CompoundBinaryTag overWorld = (CompoundBinaryTag) ((CompoundBinaryTag) dimensions.get(0)).get("element");
         CompoundBinaryTag nether = (CompoundBinaryTag) ((CompoundBinaryTag) dimensions.get(2)).get("element");
@@ -65,18 +81,14 @@ public final class DimensionRegistry {
 
         switch (def.toLowerCase()) {
             case "overworld":
-                defaultDimension = new Dimension(0, "minecraft:overworld", overWorld);
-                break;
+                return new Dimension(0, "minecraft:overworld", overWorld);
             case "nether":
-                defaultDimension = new Dimension(-1, "minecraft:nether", nether);
-                break;
+                return new Dimension(-1, "minecraft:nether", nether);
             case "the_end":
-                defaultDimension = new Dimension(1, "minecraft:the_end", theEnd);
-                break;
+                return new Dimension(1, "minecraft:the_end", theEnd);
             default:
-                defaultDimension = new Dimension(1, "minecraft:the_end", theEnd);
                 Logger.warning("Undefined dimension type: '%s'. Using THE_END as default", def);
-                break;
+                return new Dimension(1, "minecraft:the_end", theEnd);
         }
     }
 
