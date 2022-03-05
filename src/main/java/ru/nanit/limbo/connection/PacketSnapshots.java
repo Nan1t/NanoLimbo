@@ -43,7 +43,6 @@ public final class PacketSnapshots {
     public static PacketSnapshot PACKET_JOIN_MESSAGE;
     public static PacketSnapshot PACKET_BOSS_BAR;
     public static PacketSnapshot PACKET_HEADER_AND_FOOTER;
-    public static PacketSnapshot PACKET_EMPTY_CHUNK;
 
     public static PacketSnapshot PACKET_TITLE_TITLE;
     public static PacketSnapshot PACKET_TITLE_SUBTITLE;
@@ -109,8 +108,6 @@ public final class PacketSnapshots {
         PACKET_PLAYER_INFO = PacketSnapshot.of(info);
 
         PACKET_DECLARE_COMMANDS = PacketSnapshot.of(declareCommands);
-
-        PACKET_EMPTY_CHUNK = PacketSnapshot.of(new PacketEmptyChunk());
 
         if (server.getConfig().isUseHeaderAndFooter()) {
             PacketPlayerListHeader header = new PacketPlayerListHeader();

@@ -154,9 +154,6 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         if (PacketSnapshots.PACKET_HEADER_AND_FOOTER != null)
             writePacket(PacketSnapshots.PACKET_HEADER_AND_FOOTER);
 
-        if (clientVersion.moreOrEqual(Version.V1_18_2))
-            writePacket(PacketSnapshots.PACKET_EMPTY_CHUNK);
-
         sendKeepAlive();
     }
 

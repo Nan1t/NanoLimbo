@@ -202,9 +202,6 @@ public enum State {
                     map(0x5E, V1_17, V1_17_1),
                     map(0x5F, V1_18, V1_18_2)
             );
-            clientBound.register(PacketEmptyChunk::new,
-                    map(0x22, V1_18, V1_18_2)
-            );
         }
     };
 
