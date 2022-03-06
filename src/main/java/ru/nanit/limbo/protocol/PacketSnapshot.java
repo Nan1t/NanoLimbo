@@ -45,8 +45,6 @@ public class PacketSnapshot implements PacketOut {
         Map<Integer, Version> hashes = new HashMap<>();
 
         for (Version version : Version.values()) {
-            if (version.equals(Version.UNDEFINED)) continue;
-
             ByteMessage encodedMessage = ByteMessage.create();
             packet.encode(encodedMessage, version);
 
