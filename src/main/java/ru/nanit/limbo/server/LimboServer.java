@@ -35,6 +35,7 @@ import ru.nanit.limbo.connection.PacketSnapshots;
 import ru.nanit.limbo.world.dimension.DimensionRegistry;
 
 import java.nio.file.Paths;
+import java.util.Scanner;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -89,6 +90,25 @@ public final class LimboServer {
         Logger.info("Server started on %s", config.getAddress());
 
         Logger.setLevel(config.getDebugLevel());
+
+        listenForStop();
+
+    }
+
+    /**
+     * Listener for stop command, very basic implementation, but should do the thing.
+     * <p>
+     * Under normal circumstances, this method never returns.
+     * It may return when the server was stopped from an outside source.
+     */
+    private void listenForStop() {
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            String line = scanner.nextLine();
+
+            //Ikr, yikes...
+            if (line.startsWith("stop")) System.exit(0);
+        }
     }
 
     private void startBootstrap() {
@@ -120,6 +140,8 @@ public final class LimboServer {
     }
 
     private void stop() {
+        Logger.info("Stopping server...");
+
         if (keepAliveTask != null) {
             keepAliveTask.cancel(true);
         }
@@ -131,6 +153,8 @@ public final class LimboServer {
         if (workerGroup != null) {
             workerGroup.shutdownGracefully();
         }
+
+        Logger.info("Server stopped, Goodbye!");
     }
 
 }
