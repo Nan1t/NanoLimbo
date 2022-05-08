@@ -1,10 +1,9 @@
 FROM eclipse-temurin:8 AS j8-builder
 ENV APP_SRC=/src
 WORKDIR $APP_SRC
-COPY gradlew build.gradle settings.gradle $APP_SRC
+COPY gradlew build.gradle settings.gradle $APP_SRC/
 
 COPY gradle $APP_SRC/gradle
-RUN ls -lha
 COPY --chmod=0755 . $APP_SRC
 
 RUN $APP_SRC/gradlew shadowJar
