@@ -47,7 +47,7 @@ public class PacketDecoder extends MessageToMessageDecoder<ByteBuf> {
         Packet packet = mappings.getPacket(packetId);
 
         if (packet != null) {
-            Logger.debug("Received packet %s", packet.toString());
+            Logger.debug("Received packet %s[0x%s]", packet.toString(), Integer.toHexString(packetId));
             try {
                 packet.decode(msg, version);
             } catch (Exception e) {
