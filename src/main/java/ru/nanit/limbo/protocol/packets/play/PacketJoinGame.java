@@ -170,7 +170,7 @@ public class PacketJoinGame implements PacketOut {
             msg.writeBoolean(isFlat);
         }
 
-        if (version.moreOrEqual(Version.V1_18)) {
+        if (version.fromTo(Version.V1_18, Version.V1_18_2)) {
             msg.writeBoolean(isHardcore);
             msg.writeByte(gameMode);
             msg.writeByte(previousGameMode);
@@ -192,6 +192,26 @@ public class PacketJoinGame implements PacketOut {
             msg.writeBoolean(enableRespawnScreen);
             msg.writeBoolean(isDebug);
             msg.writeBoolean(isFlat);
+        }
+
+        if (version.moreOrEqual(Version.V1_19)) {
+            msg.writeBoolean(isHardcore);
+            msg.writeByte(gameMode);
+            msg.writeByte(previousGameMode);
+            msg.writeStringsArray(worldNames);
+            msg.writeCompoundTag(dimensionRegistry.getCodec_1_18_2());
+            msg.writeCompoundTag(dimensionRegistry.getDefaultDimension_1_18_2().getData());
+            //msg.writeString("minecraft:overworld");
+            msg.writeString(worldName);
+            msg.writeLong(hashedSeed);
+            msg.writeVarInt(maxPlayers);
+            msg.writeVarInt(viewDistance);
+            msg.writeVarInt(viewDistance); // Simulation Distance
+            msg.writeBoolean(reducedDebugInfo);
+            msg.writeBoolean(enableRespawnScreen);
+            msg.writeBoolean(isDebug);
+            msg.writeBoolean(isFlat);
+            msg.writeBoolean(false);
         }
     }
 
