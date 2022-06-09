@@ -26,14 +26,14 @@ import java.util.UUID;
 public class PacketChatMessage implements PacketOut {
 
     private String jsonData;
-    private Position position;
+    private PositionLegacy position;
     private UUID sender;
 
     public void setJsonData(String jsonData) {
         this.jsonData = jsonData;
     }
 
-    public void setPosition(Position position) {
+    public void setPosition(PositionLegacy position) {
         this.position = position;
     }
 
@@ -44,13 +44,18 @@ public class PacketChatMessage implements PacketOut {
     @Override
     public void encode(ByteMessage msg, Version version) {
         msg.writeString(jsonData);
-        msg.writeByte(position.index);
+        if (version.moreOrEqual(Version.V1_19)) {
+            msg.writeVarInt(position.index);
+        }
+        else {
+            msg.writeByte(position.index);
+        }
 
-        if (version.moreOrEqual(Version.V1_16))
+        if (version.moreOrEqual(Version.V1_16) && version.less(Version.V1_19))
             msg.writeUuid(sender);
     }
 
-    public enum Position {
+    public enum PositionLegacy {
 
         CHAT(0),
         SYSTEM_MESSAGE(1),
@@ -58,7 +63,7 @@ public class PacketChatMessage implements PacketOut {
 
         private final int index;
 
-        Position(int index) {
+        PositionLegacy(int index) {
             this.index = index;
         }
 

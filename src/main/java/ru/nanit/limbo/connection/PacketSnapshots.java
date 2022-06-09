@@ -126,7 +126,7 @@ public final class PacketSnapshots {
         if (server.getConfig().isUseJoinMessage()) {
             PacketChatMessage joinMessage = new PacketChatMessage();
             joinMessage.setJsonData(server.getConfig().getJoinMessage());
-            joinMessage.setPosition(PacketChatMessage.Position.CHAT);
+            joinMessage.setPosition(PacketChatMessage.PositionLegacy.SYSTEM_MESSAGE);
             joinMessage.setSender(UUID.randomUUID());
             PACKET_JOIN_MESSAGE = PacketSnapshot.of(joinMessage);
         }
