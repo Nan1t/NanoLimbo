@@ -17,14 +17,10 @@
 
 package ru.nanit.limbo.protocol.packets.play;
 
-import net.kyori.adventure.nbt.TagStringIO;
 import ru.nanit.limbo.protocol.ByteMessage;
 import ru.nanit.limbo.protocol.PacketOut;
 import ru.nanit.limbo.protocol.registry.Version;
-import ru.nanit.limbo.server.Logger;
 import ru.nanit.limbo.world.dimension.DimensionRegistry;
-
-import java.io.IOException;
 
 public class PacketJoinGame implements PacketOut {
 
