@@ -190,21 +190,6 @@ public class ByteMessage extends ByteBuf {
         }
     }
 
-    public void writeProperties(Property[] properties) {
-        writeVarInt(properties.length);
-        for (Property prop : properties) {
-            writeString(prop.getName());
-            writeString(prop.getValue());
-            if (prop.getSignature() != null) {
-                buf.writeBoolean(true);
-                writeString(prop.getSignature());
-            }
-            else {
-                buf.writeBoolean(false);
-            }
-        }
-    }
-
     /* Delegated methods */
 
     @Override

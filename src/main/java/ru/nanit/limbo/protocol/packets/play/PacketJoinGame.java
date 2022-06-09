@@ -17,10 +17,14 @@
 
 package ru.nanit.limbo.protocol.packets.play;
 
+import net.kyori.adventure.nbt.TagStringIO;
 import ru.nanit.limbo.protocol.ByteMessage;
 import ru.nanit.limbo.protocol.PacketOut;
 import ru.nanit.limbo.protocol.registry.Version;
+import ru.nanit.limbo.server.Logger;
 import ru.nanit.limbo.world.dimension.DimensionRegistry;
+
+import java.io.IOException;
 
 public class PacketJoinGame implements PacketOut {
 
@@ -199,9 +203,8 @@ public class PacketJoinGame implements PacketOut {
             msg.writeByte(gameMode);
             msg.writeByte(previousGameMode);
             msg.writeStringsArray(worldNames);
-            msg.writeCompoundTag(dimensionRegistry.getCodec_1_18_2());
-            msg.writeCompoundTag(dimensionRegistry.getDefaultDimension_1_18_2().getData());
-            //msg.writeString("minecraft:overworld");
+            msg.writeCompoundTag(dimensionRegistry.getCodec_1_19());
+            msg.writeString(worldName); // World type
             msg.writeString(worldName);
             msg.writeLong(hashedSeed);
             msg.writeVarInt(maxPlayers);

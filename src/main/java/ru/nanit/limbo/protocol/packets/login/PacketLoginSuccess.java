@@ -19,7 +19,6 @@ package ru.nanit.limbo.protocol.packets.login;
 
 import ru.nanit.limbo.protocol.ByteMessage;
 import ru.nanit.limbo.protocol.PacketOut;
-import ru.nanit.limbo.protocol.Property;
 import ru.nanit.limbo.protocol.registry.Version;
 
 import java.util.UUID;
@@ -46,7 +45,7 @@ public class PacketLoginSuccess implements PacketOut {
         }
         msg.writeString(username);
         if (version.moreOrEqual(Version.V1_19)) {
-            msg.writeProperties(new Property[0]);
+            msg.writeVarInt(0);
         }
     }
 
