@@ -88,7 +88,7 @@ public final class DimensionRegistry {
         switch (def.toLowerCase()) {
             case "overworld":
                 return new Dimension(0, "minecraft:overworld", overWorld);
-            case "nether":
+            case "the_nether":
                 return new Dimension(-1, "minecraft:nether", nether);
             case "the_end":
                 return new Dimension(1, "minecraft:the_end", theEnd);

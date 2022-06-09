@@ -74,8 +74,9 @@ public final class PacketSnapshots {
         joinGame.setReducedDebugInfo(true);
         joinGame.setDebug(false);
         joinGame.setViewDistance(0);
-        joinGame.setWorldName("minecraft:overworld");
-        joinGame.setWorldNames("minecraft:overworld");
+        String worldName = "minecraft:" + server.getConfig().getDimensionType().toLowerCase();
+        joinGame.setWorldName(worldName);
+        joinGame.setWorldNames(worldName);
         joinGame.setHashedSeed(0);
         joinGame.setDimensionRegistry(server.getDimensionRegistry());
 
