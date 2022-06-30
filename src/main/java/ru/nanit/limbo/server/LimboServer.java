@@ -35,7 +35,6 @@ import ru.nanit.limbo.connection.PacketSnapshots;
 import ru.nanit.limbo.world.dimension.DimensionRegistry;
 
 import java.nio.file.Paths;
-import java.util.Scanner;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -91,18 +90,7 @@ public final class LimboServer {
 
         Logger.setLevel(config.getDebugLevel());
 
-        listenForStop();
-    }
-
-    private void listenForStop() {
-        Scanner scanner = new Scanner(System.in);
-
-        while (true) {
-            String line = scanner.nextLine();
-
-            if (line.startsWith("stop"))
-                System.exit(0);
-        }
+        new CommandManager().start();
     }
 
     private void startBootstrap() {
