@@ -92,22 +92,16 @@ public final class LimboServer {
         Logger.setLevel(config.getDebugLevel());
 
         listenForStop();
-
     }
 
-    /**
-     * Listener for stop command, very basic implementation, but should do the thing.
-     * <p>
-     * Under normal circumstances, this method never returns.
-     * It may return when the server was stopped from an outside source.
-     */
     private void listenForStop() {
         Scanner scanner = new Scanner(System.in);
+
         while (true) {
             String line = scanner.nextLine();
 
-            //Ikr, yikes...
-            if (line.startsWith("stop")) System.exit(0);
+            if (line.startsWith("stop"))
+                System.exit(0);
         }
     }
 
