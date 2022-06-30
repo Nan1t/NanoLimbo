@@ -87,6 +87,12 @@ public final class LimboConfig {
         maxPlayers = conf.node("maxPlayers").getInt();
         pingData = conf.node("ping").get(PingData.class);
         dimensionType = conf.node("dimension").getString();
+        if (dimensionType.equalsIgnoreCase("nether")) {
+            dimensionType = "the_nether";
+        }
+        if (dimensionType.equalsIgnoreCase("end")) {
+            dimensionType = "the_end";
+        }
         spawnPosition = conf.node("spawnPosition").get(Location.class);
         gameMode = conf.node("gameMode").getInt();
         useBrandName = conf.node("brandName", "enable").getBoolean();

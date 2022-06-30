@@ -166,7 +166,8 @@ public class ByteMessage extends ByteBuf {
             for (CompoundBinaryTag tag : compoundTags) {
                 BinaryTagIO.writer().write(tag, (OutputStream) stream);
             }
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new EncoderException("Cannot write NBT CompoundTag");
         }
     }
@@ -174,7 +175,8 @@ public class ByteMessage extends ByteBuf {
     public CompoundBinaryTag readCompoundTag() {
         try (ByteBufInputStream stream = new ByteBufInputStream(buf)) {
             return BinaryTagIO.reader().read((InputStream) stream);
-        } catch (IOException thrown) {
+        }
+        catch (IOException thrown) {
             throw new DecoderException("Cannot read NBT CompoundTag");
         }
     }
@@ -182,7 +184,8 @@ public class ByteMessage extends ByteBuf {
     public void writeCompoundTag(CompoundBinaryTag compoundTag) {
         try (ByteBufOutputStream stream = new ByteBufOutputStream(buf)) {
             BinaryTagIO.writer().write(compoundTag, (OutputStream) stream);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new EncoderException("Cannot write NBT CompoundTag");
         }
     }
