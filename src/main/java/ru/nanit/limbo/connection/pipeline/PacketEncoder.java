@@ -60,7 +60,7 @@ public class PacketEncoder extends MessageToByteEncoder<Packet> {
         try {
             packet.encode(msg, version);
 
-            if (Logger.getLevel() >= 3) {
+            if (Logger.getLevel() >= Logger.Level.DEBUG.getIndex()) {
                 Logger.debug("Sending %s[0x%s] packet (%d bytes)", packet.toString(), Integer.toHexString(packetId), msg.readableBytes());
             }
         } catch (Exception e) {
