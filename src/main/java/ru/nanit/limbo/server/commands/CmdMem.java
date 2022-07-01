@@ -14,6 +14,7 @@ public class CmdMem implements Command {
         long free = runtime.freeMemory() / mb;
         long max = runtime.maxMemory() / mb;
 
+        Logger.info("Memory usage:");
         Logger.info("Used: %d MB", used);
         Logger.info("Total: %d MB", total);
         Logger.info("Free: %d MB", free);
