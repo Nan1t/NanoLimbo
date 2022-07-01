@@ -39,7 +39,11 @@ The server **doesn't** support snapshots.
 
 ### Commands
 
-Write `stop` in the terminal to stop the server. 
+* `help` - Show help message
+* `conn` - Display amount of connections
+* `mem` - Display memory usage stats
+* `stop` - Stop the server
+
 Note, that it also will be closed correctly if you just press `Ctrl+C`.
 
 ### Installation
