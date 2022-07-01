@@ -178,8 +178,7 @@ public class PacketJoinGame implements PacketOut {
             if (version.moreOrEqual(Version.V1_18_2)) {
                 msg.writeCompoundTag(dimensionRegistry.getCodec_1_18_2());
                 msg.writeCompoundTag(dimensionRegistry.getDefaultDimension_1_18_2().getData());
-            }
-            else {
+            } else {
                 msg.writeCompoundTag(dimensionRegistry.getCodec_1_16());
                 msg.writeCompoundTag(dimensionRegistry.getDefaultDimension_1_16().getData());
             }

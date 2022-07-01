@@ -1,5 +1,6 @@
 package ru.nanit.limbo.server;
 
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public final class CommandManager extends Thread {
@@ -7,9 +8,14 @@ public final class CommandManager extends Thread {
     @Override
     public void run() {
         Scanner scanner = new Scanner(System.in);
+        String line;
 
         while (true) {
-            String line = scanner.nextLine();
+            try {
+                line = scanner.nextLine();
+            } catch (NoSuchElementException e) {
+                break;
+            }
 
             if (line.equalsIgnoreCase("stop")) {
                 System.exit(0);
@@ -19,4 +25,5 @@ public final class CommandManager extends Thread {
             Logger.info("Unknown command");
         }
     }
+
 }
