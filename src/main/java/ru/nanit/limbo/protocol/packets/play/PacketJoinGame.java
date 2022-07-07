@@ -99,7 +99,7 @@ public class PacketJoinGame implements PacketOut {
     public void encode(ByteMessage msg, Version version) {
         msg.writeInt(entityId);
 
-        if (version.fromTo(Version.V1_8, Version.V1_9_1)) {
+        if (version.fromTo(Version.V1_8, Version.V1_9)) {
             msg.writeByte(gameMode);
             msg.writeByte(dimensionRegistry.getDefaultDimension_1_16().getId());
             msg.writeByte(0); // Difficulty
@@ -108,7 +108,7 @@ public class PacketJoinGame implements PacketOut {
             msg.writeBoolean(reducedDebugInfo);
         }
 
-        if (version.fromTo(Version.V1_9_2, Version.V1_13_2)) {
+        if (version.fromTo(Version.V1_9_1, Version.V1_13_2)) {
             msg.writeByte(gameMode);
             msg.writeInt(dimensionRegistry.getDefaultDimension_1_16().getId());
             msg.writeByte(0); // Difficulty
