@@ -21,7 +21,6 @@ import ru.nanit.limbo.LimboConstants;
 import ru.nanit.limbo.protocol.PacketSnapshot;
 import ru.nanit.limbo.protocol.packets.login.PacketLoginSuccess;
 import ru.nanit.limbo.protocol.packets.play.*;
-import ru.nanit.limbo.protocol.packets.status.PacketStatusResponse;
 import ru.nanit.limbo.server.LimboServer;
 import ru.nanit.limbo.server.data.Title;
 import ru.nanit.limbo.util.UuidUtil;
@@ -32,7 +31,6 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public final class PacketSnapshots {
 
-    public static PacketSnapshot PACKET_STATUS_RESPONSE;
     public static PacketSnapshot PACKET_LOGIN_SUCCESS;
     public static PacketSnapshot PACKET_JOIN_GAME;
     public static PacketSnapshot PACKET_PLUGIN_MESSAGE;
@@ -51,6 +49,7 @@ public final class PacketSnapshots {
     public static PacketSnapshot PACKET_TITLE_LEGACY_TITLE;
     public static PacketSnapshot PACKET_TITLE_LEGACY_SUBTITLE;
     public static PacketSnapshot PACKET_TITLE_LEGACY_TIMES;
+
 
     private PacketSnapshots() { }
 
@@ -73,8 +72,9 @@ public final class PacketSnapshots {
         joinGame.setReducedDebugInfo(true);
         joinGame.setDebug(false);
         joinGame.setViewDistance(0);
-        joinGame.setWorldName("minecraft:world");
-        joinGame.setWorldNames("minecraft:world");
+        String worldName = "minecraft:" + server.getConfig().getDimensionType().toLowerCase();
+        joinGame.setWorldName(worldName);
+        joinGame.setWorldNames(worldName);
         joinGame.setHashedSeed(0);
         joinGame.setDimensionRegistry(server.getDimensionRegistry());
 
@@ -99,7 +99,6 @@ public final class PacketSnapshots {
         info.setGameMode(server.getConfig().getGameMode());
         info.setUuid(uuid);
 
-        PACKET_STATUS_RESPONSE = PacketSnapshot.of(new PacketStatusResponse(server));
         PACKET_LOGIN_SUCCESS = PacketSnapshot.of(loginSuccess);
         PACKET_JOIN_GAME = PacketSnapshot.of(joinGame);
         PACKET_PLAYER_ABILITIES = PacketSnapshot.of(playerAbilities);
@@ -125,7 +124,7 @@ public final class PacketSnapshots {
         if (server.getConfig().isUseJoinMessage()) {
             PacketChatMessage joinMessage = new PacketChatMessage();
             joinMessage.setJsonData(server.getConfig().getJoinMessage());
-            joinMessage.setPosition(PacketChatMessage.Position.CHAT);
+            joinMessage.setPosition(PacketChatMessage.PositionLegacy.SYSTEM_MESSAGE);
             joinMessage.setSender(UUID.randomUUID());
             PACKET_JOIN_MESSAGE = PacketSnapshot.of(joinMessage);
         }

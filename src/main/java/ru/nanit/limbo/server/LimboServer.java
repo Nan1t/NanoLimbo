@@ -49,6 +49,8 @@ public final class LimboServer {
     private EventLoopGroup bossGroup;
     private EventLoopGroup workerGroup;
 
+    private CommandManager commandManager;
+
     public LimboConfig getConfig() {
         return config;
     }
@@ -63,6 +65,10 @@ public final class LimboServer {
 
     public DimensionRegistry getDimensionRegistry() {
         return dimensionRegistry;
+    }
+
+    public CommandManager getCommandManager() {
+        return commandManager;
     }
 
     public void start() throws Exception {
@@ -89,6 +95,12 @@ public final class LimboServer {
         Logger.info("Server started on %s", config.getAddress());
 
         Logger.setLevel(config.getDebugLevel());
+
+        commandManager = new CommandManager();
+        commandManager.registerAll(this);
+        commandManager.start();
+
+        System.gc();
     }
 
     private void startBootstrap() {
@@ -120,6 +132,8 @@ public final class LimboServer {
     }
 
     private void stop() {
+        Logger.info("Stopping server...");
+
         if (keepAliveTask != null) {
             keepAliveTask.cancel(true);
         }
@@ -131,6 +145,8 @@ public final class LimboServer {
         if (workerGroup != null) {
             workerGroup.shutdownGracefully();
         }
+
+        Logger.info("Server stopped, Goodbye!");
     }
 
 }

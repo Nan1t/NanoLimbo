@@ -25,6 +25,7 @@ import ru.nanit.limbo.protocol.packets.login.PacketLoginPluginResponse;
 import ru.nanit.limbo.protocol.packets.login.PacketLoginStart;
 import ru.nanit.limbo.protocol.packets.status.PacketStatusPing;
 import ru.nanit.limbo.protocol.packets.status.PacketStatusRequest;
+import ru.nanit.limbo.protocol.packets.status.PacketStatusResponse;
 import ru.nanit.limbo.server.LimboServer;
 import ru.nanit.limbo.server.Logger;
 import ru.nanit.limbo.util.UuidUtil;
@@ -63,7 +64,7 @@ public class PacketHandler {
     }
 
     public void handle(ClientConnection conn, PacketStatusRequest packet) {
-        conn.sendPacket(PacketSnapshots.PACKET_STATUS_RESPONSE);
+        conn.sendPacket(new PacketStatusResponse(server));
     }
 
     public void handle(ClientConnection conn, PacketStatusPing packet) {

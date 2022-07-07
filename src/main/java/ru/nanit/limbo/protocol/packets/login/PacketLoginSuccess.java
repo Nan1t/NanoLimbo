@@ -44,6 +44,9 @@ public class PacketLoginSuccess implements PacketOut {
             msg.writeString(uuid.toString());
         }
         msg.writeString(username);
+        if (version.moreOrEqual(Version.V1_19)) {
+            msg.writeVarInt(0);
+        }
     }
 
     @Override

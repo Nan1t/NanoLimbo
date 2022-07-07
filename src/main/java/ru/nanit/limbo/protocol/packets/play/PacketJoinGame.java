@@ -101,7 +101,7 @@ public class PacketJoinGame implements PacketOut {
 
         if (version.fromTo(Version.V1_8, Version.V1_9_1)) {
             msg.writeByte(gameMode);
-            msg.writeByte(dimensionRegistry.getDefaultDimension().getId());
+            msg.writeByte(dimensionRegistry.getDefaultDimension_1_16().getId());
             msg.writeByte(0); // Difficulty
             msg.writeByte(maxPlayers);
             msg.writeString("flat"); // Level type
@@ -110,7 +110,7 @@ public class PacketJoinGame implements PacketOut {
 
         if (version.fromTo(Version.V1_9_2, Version.V1_13_2)) {
             msg.writeByte(gameMode);
-            msg.writeInt(dimensionRegistry.getDefaultDimension().getId());
+            msg.writeInt(dimensionRegistry.getDefaultDimension_1_16().getId());
             msg.writeByte(0); // Difficulty
             msg.writeByte(maxPlayers);
             msg.writeString("flat"); // Level type
@@ -119,7 +119,7 @@ public class PacketJoinGame implements PacketOut {
 
         if (version.fromTo(Version.V1_14, Version.V1_14_4)) {
             msg.writeByte(gameMode);
-            msg.writeInt(dimensionRegistry.getDefaultDimension().getId());
+            msg.writeInt(dimensionRegistry.getDefaultDimension_1_16().getId());
             msg.writeByte(maxPlayers);
             msg.writeString("flat"); // Level type
             msg.writeVarInt(viewDistance);
@@ -128,7 +128,7 @@ public class PacketJoinGame implements PacketOut {
 
         if (version.fromTo(Version.V1_15, Version.V1_15_2)) {
             msg.writeByte(gameMode);
-            msg.writeInt(dimensionRegistry.getDefaultDimension().getId());
+            msg.writeInt(dimensionRegistry.getDefaultDimension_1_16().getId());
             msg.writeLong(hashedSeed);
             msg.writeByte(maxPlayers);
             msg.writeString("flat"); // Level type
@@ -142,7 +142,7 @@ public class PacketJoinGame implements PacketOut {
             msg.writeByte(previousGameMode);
             msg.writeStringsArray(worldNames);
             msg.writeCompoundTag(dimensionRegistry.getOldCodec());
-            msg.writeString(dimensionRegistry.getDefaultDimension().getName());
+            msg.writeString(dimensionRegistry.getDefaultDimension_1_16().getName());
             msg.writeString(worldName);
             msg.writeLong(hashedSeed);
             msg.writeByte(maxPlayers);
@@ -158,8 +158,8 @@ public class PacketJoinGame implements PacketOut {
             msg.writeByte(gameMode);
             msg.writeByte(previousGameMode);
             msg.writeStringsArray(worldNames);
-            msg.writeCompoundTag(dimensionRegistry.getCodec());
-            msg.writeCompoundTag(dimensionRegistry.getDefaultDimension().getData());
+            msg.writeCompoundTag(dimensionRegistry.getCodec_1_16());
+            msg.writeCompoundTag(dimensionRegistry.getDefaultDimension_1_16().getData());
             msg.writeString(worldName);
             msg.writeLong(hashedSeed);
             msg.writeVarInt(maxPlayers);
@@ -170,13 +170,18 @@ public class PacketJoinGame implements PacketOut {
             msg.writeBoolean(isFlat);
         }
 
-        if (version.moreOrEqual(Version.V1_18)) {
+        if (version.fromTo(Version.V1_18, Version.V1_18_2)) {
             msg.writeBoolean(isHardcore);
             msg.writeByte(gameMode);
             msg.writeByte(previousGameMode);
             msg.writeStringsArray(worldNames);
-            msg.writeCompoundTag(dimensionRegistry.getCodec());
-            msg.writeCompoundTag(dimensionRegistry.getDefaultDimension().getData());
+            if (version.moreOrEqual(Version.V1_18_2)) {
+                msg.writeCompoundTag(dimensionRegistry.getCodec_1_18_2());
+                msg.writeCompoundTag(dimensionRegistry.getDefaultDimension_1_18_2().getData());
+            } else {
+                msg.writeCompoundTag(dimensionRegistry.getCodec_1_16());
+                msg.writeCompoundTag(dimensionRegistry.getDefaultDimension_1_16().getData());
+            }
             msg.writeString(worldName);
             msg.writeLong(hashedSeed);
             msg.writeVarInt(maxPlayers);
@@ -186,6 +191,25 @@ public class PacketJoinGame implements PacketOut {
             msg.writeBoolean(enableRespawnScreen);
             msg.writeBoolean(isDebug);
             msg.writeBoolean(isFlat);
+        }
+
+        if (version.moreOrEqual(Version.V1_19)) {
+            msg.writeBoolean(isHardcore);
+            msg.writeByte(gameMode);
+            msg.writeByte(previousGameMode);
+            msg.writeStringsArray(worldNames);
+            msg.writeCompoundTag(dimensionRegistry.getCodec_1_19());
+            msg.writeString(worldName); // World type
+            msg.writeString(worldName);
+            msg.writeLong(hashedSeed);
+            msg.writeVarInt(maxPlayers);
+            msg.writeVarInt(viewDistance);
+            msg.writeVarInt(viewDistance); // Simulation Distance
+            msg.writeBoolean(reducedDebugInfo);
+            msg.writeBoolean(enableRespawnScreen);
+            msg.writeBoolean(isDebug);
+            msg.writeBoolean(isFlat);
+            msg.writeBoolean(false);
         }
     }
 

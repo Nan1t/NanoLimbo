@@ -54,6 +54,9 @@ public class PacketPlayerInfo implements PacketOut {
         msg.writeVarInt(gameMode);
         msg.writeVarInt(60);
         msg.writeBoolean(false);
+        if (version.moreOrEqual(Version.V1_19)) {
+            msg.writeBoolean(false);
+        }
     }
 
 }

@@ -32,13 +32,19 @@ Symbol `X` means all minor versions.
 - [x] 1.15.X
 - [x] 1.16.X
 - [x] 1.17.X
-- [x] 1.18
+- [x] 1.18.X
+- [x] 1.19
 
 The server **doesn't** support snapshots.
 
 ### Commands
 
-There are no commands. To close server just run `Ctrl+C` in the terminal. It will be closed correctly.
+* `help` - Show help message
+* `conn` - Display amount of connections
+* `mem` - Display memory usage stats
+* `stop` - Stop the server
+
+Note, that it also will be closed correctly if you just press `Ctrl+C`.
 
 ### Installation
 
