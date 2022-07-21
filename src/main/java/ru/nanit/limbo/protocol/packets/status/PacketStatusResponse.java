@@ -26,26 +26,40 @@ public class PacketStatusResponse implements PacketOut {
 
     private static final String TEMPLATE = "{ \"version\": { \"name\": \"%s\", \"protocol\": %d }, \"players\": { \"max\": %d, \"online\": %d, \"sample\": [] }, \"description\": %s }";
 
-    private LimboServer server;
+    private String version;
+    private int protocol = -1;
+    private int maxPlayer;
+    private int online;
+    private String description;
 
     public PacketStatusResponse() { }
 
     public PacketStatusResponse(LimboServer server) {
-        this.server = server;
+        if (server.getConfig().getInfoForwarding().isNone()) {
+            protocol = Version.getMax().getProtocolNumber();
+        }
+        version = server.getConfig().getPingData().getVersion();
+        description = server.getConfig().getPingData().getDescription();
+        maxPlayer = server.getConfig().getMaxPlayers();
+        online = server.getConnections().getCount();
+    }
+
+    public PacketStatusResponse(String version, int protocol, int maxPlayer, int online, String description) {
+        this.version = version;
+        this.protocol = protocol;
+        this.maxPlayer = maxPlayer;
+        this.online = online;
+        this.description = description;
     }
 
     @Override
     public void encode(ByteMessage msg, Version version) {
-        int protocol = server.getConfig().getInfoForwarding().isNone()
-                ? version.getProtocolNumber()
-                : Version.getMax().getProtocolNumber();
+        int protocol = this.protocol == -1 ? version.getProtocolNumber() : Version.getMax().getProtocolNumber();
 
-        String ver = server.getConfig().getPingData().getVersion();
-        String desc = server.getConfig().getPingData().getDescription();
-
-        msg.writeString(getResponseJson(ver, protocol,
-                server.getConfig().getMaxPlayers(),
-                server.getConnections().getCount(), desc));
+        msg.writeString(getResponseJson(
+                this.version, protocol, this.maxPlayer,
+                this.online, this.description
+        ));
     }
 
     @Override
