@@ -52,6 +52,26 @@ public class PacketStatusResponse implements PacketOut {
         this.description = description;
     }
 
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public void setProtocol(int protocol) {
+        this.protocol = protocol;
+    }
+
+    public void setMaxPlayer(int maxPlayer) {
+        this.maxPlayer = maxPlayer;
+    }
+
+    public void setOnline(int online) {
+        this.online = online;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     @Override
     public void encode(ByteMessage msg, Version version) {
         int protocol = this.protocol == -1 ? version.getProtocolNumber() : Version.getMax().getProtocolNumber();
