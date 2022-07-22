@@ -94,6 +94,11 @@ infoForwarding:
   tokens:
     - '<BUNGEE_GUARD_TOKEN>'
 
+onlineMode:
+  enable: false
+  preventProxy: false
+  sessionServer: https://sessionserver.mojang.com/session/minecraft/hasJoined
+
 # Read timeout for connections in milliseconds
 readTimeout: 30000
 

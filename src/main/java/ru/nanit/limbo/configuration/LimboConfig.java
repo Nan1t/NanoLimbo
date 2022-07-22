@@ -63,6 +63,8 @@ public final class LimboConfig {
     private String playerListFooter;
 
     private InfoForwarding infoForwarding;
+    private OnlineMode onlineMode;
+
     private long readTimeout;
     private int debugLevel;
 
@@ -121,6 +123,7 @@ public final class LimboConfig {
         }
 
         infoForwarding = conf.node("infoForwarding").get(InfoForwarding.class);
+        onlineMode = conf.node("onlineMode").get(OnlineMode.class);
         readTimeout = conf.node("readTimeout").getLong();
         debugLevel = conf.node("debugLevel").getInt();
 
@@ -149,6 +152,7 @@ public final class LimboConfig {
         return TypeSerializerCollection.builder()
                 .register(SocketAddress.class, new SocketAddressSerializer())
                 .register(InfoForwarding.class, new InfoForwarding.Serializer())
+                .register(OnlineMode.class, new OnlineMode.Serializer())
                 .register(PingData.class, new PingData.Serializer())
                 .register(BossBar.class, new BossBar.Serializer())
                 .register(Title.class, new Title.Serializer())
@@ -182,6 +186,10 @@ public final class LimboConfig {
 
     public InfoForwarding getInfoForwarding() {
         return infoForwarding;
+    }
+
+    public OnlineMode getOnlineMode() {
+        return onlineMode;
     }
 
     public long getReadTimeout() {
