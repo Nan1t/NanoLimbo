@@ -103,12 +103,15 @@ public class PacketHandler {
             conn.getGameProfile().setUuid(UuidUtil.getOfflineModeUuid(packet.getUsername()));
         }
 
-        PacketEncryptionRequest encryptionRequest = new PacketEncryptionRequest();
-        encryptionRequest.setServerId("");
-        encryptionRequest.setPublicKey(server.getServerKeyPair().getPublic().getEncoded());
-        encryptionRequest.setVerifyToken(conn.generateVerifyToken());
-        conn.sendPacket(encryptionRequest);
-        // conn.fireLoginSuccess();
+        if (server.getConfig().getOnlineMode().isEnable()) {
+            PacketEncryptionRequest encryptionRequest = new PacketEncryptionRequest();
+            encryptionRequest.setServerId("");
+            encryptionRequest.setPublicKey(server.getServerKeyPair().getPublic().getEncoded());
+            encryptionRequest.setVerifyToken(conn.generateVerifyToken());
+            conn.sendPacket(encryptionRequest);
+        }else{
+            conn.fireLoginSuccess();
+        }
     }
 
     public void handle(ClientConnection conn, PacketLoginPluginResponse packet) {
