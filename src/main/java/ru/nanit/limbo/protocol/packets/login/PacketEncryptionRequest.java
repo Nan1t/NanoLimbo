@@ -22,6 +22,7 @@ import ru.nanit.limbo.protocol.PacketOut;
 import ru.nanit.limbo.protocol.registry.Version;
 
 public class PacketEncryptionRequest implements PacketOut {
+
     private String serverId;
     private byte[] publicKey;
     private byte[] verifyToken;

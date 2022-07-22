@@ -60,11 +60,17 @@ public enum State {
             serverBound.register(PacketLoginStart::new,
                     map(0x00, Version.getMin(), Version.getMax())
             );
+            serverBound.register(PacketEncryptionResponse::new,
+                    map(0x01, Version.getMin(), Version.getMax())
+            );
             serverBound.register(PacketLoginPluginResponse::new,
                     map(0x02, Version.getMin(), Version.getMax())
             );
             clientBound.register(PacketDisconnect::new,
                     map(0x00, Version.getMin(), Version.getMax())
+            );
+            clientBound.register(PacketEncryptionRequest::new,
+                    map(0x01, Version.getMin(), Version.getMax())
             );
             clientBound.register(PacketLoginSuccess::new,
                     map(0x02, Version.getMin(), Version.getMax())
