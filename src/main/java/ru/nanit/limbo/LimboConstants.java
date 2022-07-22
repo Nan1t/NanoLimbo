@@ -21,7 +21,9 @@ public final class LimboConstants {
 
     public static final String VELOCITY_INFO_CHANNEL = "velocity:player_info";
     public static final String BRAND_CHANNEL = "minecraft:brand";
+    public static final String NAME = "NanoLimbo";
+    // TODO: get current version
+    public static final String VERSION = "unknown";
 
     private LimboConstants() {}
-
 }

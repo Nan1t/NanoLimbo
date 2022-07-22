@@ -17,16 +17,28 @@
 
 package ru.nanit.limbo.server;
 
+import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
-import io.netty.channel.ServerChannel;
+import io.netty.channel.*;
 import io.netty.channel.epoll.Epoll;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.http.HttpClientCodec;
+import io.netty.handler.codec.http.HttpContentDecompressor;
+import io.netty.handler.ssl.SslContextBuilder;
+import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
+import io.netty.handler.stream.ChunkedWriteHandler;
 import io.netty.util.ResourceLeakDetector;
+import org.asynchttpclient.AsyncHttpClient;
+import org.asynchttpclient.DefaultAsyncHttpClient;
+import org.asynchttpclient.DefaultAsyncHttpClientConfig;
+import org.asynchttpclient.RequestBuilder;
+import org.asynchttpclient.filter.FilterContext;
+import org.asynchttpclient.filter.RequestFilter;
+import org.jetbrains.annotations.NotNull;
+import ru.nanit.limbo.LimboConstants;
 import ru.nanit.limbo.configuration.LimboConfig;
 import ru.nanit.limbo.connection.ClientChannelInitializer;
 import ru.nanit.limbo.connection.ClientConnection;
@@ -45,6 +57,7 @@ public final class LimboServer {
     private LimboConfig config;
     private PacketHandler packetHandler;
     private Connections connections;
+    private AsyncHttpClient httpClient;
     private KeyPair serverKeyPair;
     private DimensionRegistry dimensionRegistry;
     private ScheduledFuture<?> keepAliveTask;
@@ -64,6 +77,10 @@ public final class LimboServer {
 
     public Connections getConnections() {
         return connections;
+    }
+
+    public AsyncHttpClient getHttpClient() {
+        return httpClient;
     }
 
     public KeyPair getServerKeyPair() {
@@ -90,6 +107,12 @@ public final class LimboServer {
         dimensionRegistry = new DimensionRegistry(this);
         dimensionRegistry.load(config.getDimensionType());
         connections = new Connections();
+        httpClient = new DefaultAsyncHttpClient(
+                new DefaultAsyncHttpClientConfig.Builder()
+                        .setEventLoopGroup(this.workerGroup)
+                        .setUserAgent(LimboConstants.NAME + "/" + LimboConstants.VERSION)
+                        .build()
+        );
         serverKeyPair = EncryptUtil.createRsaKeyPair(1024);
 
         PacketSnapshots.initPackets(this);
