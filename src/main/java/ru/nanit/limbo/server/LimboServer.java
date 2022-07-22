@@ -32,9 +32,11 @@ import ru.nanit.limbo.connection.ClientChannelInitializer;
 import ru.nanit.limbo.connection.ClientConnection;
 import ru.nanit.limbo.connection.PacketHandler;
 import ru.nanit.limbo.connection.PacketSnapshots;
+import ru.nanit.limbo.util.EncryptUtil;
 import ru.nanit.limbo.world.dimension.DimensionRegistry;
 
 import java.nio.file.Paths;
+import java.security.KeyPair;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -43,6 +45,7 @@ public final class LimboServer {
     private LimboConfig config;
     private PacketHandler packetHandler;
     private Connections connections;
+    private KeyPair serverKeyPair;
     private DimensionRegistry dimensionRegistry;
     private ScheduledFuture<?> keepAliveTask;
 
@@ -61,6 +64,10 @@ public final class LimboServer {
 
     public Connections getConnections() {
         return connections;
+    }
+
+    public KeyPair getServerKeyPair() {
+        return serverKeyPair;
     }
 
     public DimensionRegistry getDimensionRegistry() {
@@ -83,6 +90,7 @@ public final class LimboServer {
         dimensionRegistry = new DimensionRegistry(this);
         dimensionRegistry.load(config.getDimensionType());
         connections = new Connections();
+        serverKeyPair = EncryptUtil.createRsaKeyPair(1024);
 
         PacketSnapshots.initPackets(this);
 
