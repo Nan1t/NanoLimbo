@@ -18,6 +18,9 @@
 package ru.nanit.limbo.connection;
 
 import io.netty.buffer.Unpooled;
+import org.asynchttpclient.BoundRequestBuilder;
+import org.asynchttpclient.ListenableFuture;
+import org.asynchttpclient.Response;
 import ru.nanit.limbo.LimboConstants;
 import ru.nanit.limbo.protocol.packets.PacketHandshake;
 import ru.nanit.limbo.protocol.packets.login.*;
@@ -29,9 +32,11 @@ import ru.nanit.limbo.server.Logger;
 import ru.nanit.limbo.util.EncryptUtil;
 import ru.nanit.limbo.util.UuidUtil;
 
+import java.net.InetSocketAddress;
 import java.security.GeneralSecurityException;
 import java.security.KeyPair;
 import java.security.MessageDigest;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class PacketHandler {
@@ -144,11 +149,48 @@ public class PacketHandler {
             if (!MessageDigest.isEqual(conn.getVerifyToken(), decryptedVerifyToken)) {
                 throw new IllegalStateException("Unable to successfully decrypt the verification token.");
             }
+
             byte[] decryptedSharedSecret = EncryptUtil.decryptRsa(serverKeyPair, packet.getSharedSecret());
-            String serverId = EncryptUtil.generateServerId(decryptedSharedSecret, serverKeyPair.getPublic());
-            // TODO: verify server id from mojang session server
             conn.enableEncrypt(decryptedSharedSecret);
-            conn.fireLoginSuccess();
+
+            String serverId = EncryptUtil.generateServerId(decryptedSharedSecret, serverKeyPair.getPublic());
+            String ip = ((InetSocketAddress)conn.getAddress()).getAddress().getHostAddress();
+
+            BoundRequestBuilder requestBuilder = server.getHttpClient()
+                    .prepareGet(server.getConfig().getOnlineMode().getSessionServer())
+                    .addQueryParam("username", conn.getUsername())
+                    .addQueryParam("serverId", serverId);
+            if(server.getConfig().getOnlineMode().isPreventProxy()){
+                requestBuilder.addQueryParam("ip", ip);
+            }
+            ListenableFuture<Response> hasJoinedResponse = requestBuilder.execute();
+
+            hasJoinedResponse.addListener(()->{
+                try {
+                    Response profileResponse = hasJoinedResponse.get();
+                    if (profileResponse.getStatusCode() == 200) {
+                        // All went well, Skin is useless in limbo server, just fire login success
+                        if (conn.checkHasJoinResponse(profileResponse.getResponseBody())) {
+                            conn.fireLoginSuccess();
+                        }else{
+                            Logger.error("Mojang response GameProfile is invalid.");
+                            conn.disconnectLogin("Unable to authenticate with Mojang.");
+                        }
+                    } else if (profileResponse.getStatusCode() == 204) {
+                        conn.disconnectLogin("Invalid session.");
+                    } else {
+                        Logger.error(
+                                "Got an unexpected error code {} whilst contacting Mojang to log in {} ({})",
+                                profileResponse.getStatusCode(), conn.getUsername(), "TODO");
+                        conn.disconnectLogin("Unable to authenticate with Mojang.");
+                    }
+                } catch (ExecutionException e) {
+                    Logger.error("Unable to authenticate with Mojang", e);
+                    conn.disconnectLogin("Unable to authenticate with Mojang.");
+                } catch (InterruptedException e) {
+                    //
+                }
+            }, conn.getEventLoop());
         } catch (GeneralSecurityException e) {
             conn.disconnectLogin("Failed to enable encrypt.");
         }

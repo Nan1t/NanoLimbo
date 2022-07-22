@@ -48,7 +48,7 @@ public class OnlineMode {
         public OnlineMode deserialize(Type type, ConfigurationNode node) throws SerializationException {
             OnlineMode onlineMode = new OnlineMode();
 
-            onlineMode.enable = node.node("type").getBoolean(false);
+            onlineMode.enable = node.node("enable").getBoolean(false);
             onlineMode.preventProxy = node.node("preventProxy").getBoolean(false);
             onlineMode.sessionServer = node.node("sessionServer")
                     .getString("https://sessionserver.mojang.com/session/minecraft/hasJoined");

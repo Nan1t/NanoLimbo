@@ -21,10 +21,7 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.*;
 import org.jetbrains.annotations.NotNull;
 import ru.nanit.limbo.connection.pipeline.MinecraftCipherCoder;
 import ru.nanit.limbo.connection.pipeline.PacketDecoder;
@@ -92,6 +89,10 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
 
     public GameProfile getGameProfile() {
         return gameProfile;
+    }
+
+    public EventLoop getEventLoop() {
+        return channel.eventLoop();
     }
 
     @Override
@@ -312,5 +313,16 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
                 .addBefore("frame_decoder", "cipher_decoder", coder.getDecoder());
         channel.pipeline()
                 .addBefore("frame_encoder", "cipher_encoder", coder.getEncoder());
+    }
+
+    boolean checkHasJoinResponse(String body){
+        try {
+            JsonObject jsonObject = JsonParser.object().from(body);
+            gameProfile.setUuid(UuidUtil.fromString(jsonObject.getString("id")));
+            gameProfile.setUsername(jsonObject.getString("name"));
+            return true;
+        } catch (IllegalArgumentException | JsonParserException e) {
+            return false;
+        }
     }
 }
