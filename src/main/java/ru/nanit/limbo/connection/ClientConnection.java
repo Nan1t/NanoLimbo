@@ -26,12 +26,13 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.jetbrains.annotations.NotNull;
+import ru.nanit.limbo.connection.pipeline.MinecraftCipherCoder;
 import ru.nanit.limbo.connection.pipeline.PacketDecoder;
 import ru.nanit.limbo.connection.pipeline.PacketEncoder;
 import ru.nanit.limbo.protocol.ByteMessage;
 import ru.nanit.limbo.protocol.Packet;
-import ru.nanit.limbo.protocol.packets.login.*;
-import ru.nanit.limbo.protocol.packets.play.*;
+import ru.nanit.limbo.protocol.packets.login.PacketDisconnect;
+import ru.nanit.limbo.protocol.packets.play.PacketKeepAlive;
 import ru.nanit.limbo.protocol.registry.State;
 import ru.nanit.limbo.protocol.registry.Version;
 import ru.nanit.limbo.server.LimboServer;
@@ -42,6 +43,7 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.util.UUID;
@@ -61,6 +63,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
     private SocketAddress address;
 
     private int velocityLoginMessageId = -1;
+    private byte[] verifyToken;
 
     public ClientConnection(Channel channel, LimboServer server, PacketDecoder decoder, PacketEncoder encoder) {
         this.server = server;
@@ -267,6 +270,20 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         this.velocityLoginMessageId = velocityLoginMessageId;
     }
 
+    byte[] getVerifyToken() {
+        return verifyToken;
+    }
+
+    void setVerifyToken(byte[] verifyToken) {
+        this.verifyToken = verifyToken;
+    }
+
+    byte[] generateVerifyToken() {
+        this.verifyToken = new byte[4];
+        ThreadLocalRandom.current().nextBytes(this.verifyToken);
+        return this.verifyToken;
+    }
+
     boolean checkVelocityKeyIntegrity(ByteMessage buf) {
         byte[] signature = new byte[32];
         buf.readBytes(signature);
@@ -278,12 +295,22 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
             byte[] mySignature = mac.doFinal(data);
             if (!MessageDigest.isEqual(signature, mySignature))
                 return false;
-        } catch (InvalidKeyException |java.security.NoSuchAlgorithmException e) {
+        } catch (InvalidKeyException | java.security.NoSuchAlgorithmException e) {
             throw new AssertionError(e);
         }
         int version = buf.readVarInt();
         if (version != 1)
             throw new IllegalStateException("Unsupported forwarding version " + version + ", wanted " + '\001');
         return true;
+    }
+
+    public void enableEncrypt(byte[] secret) throws GeneralSecurityException {
+        MinecraftCipherCoder coder = new MinecraftCipherCoder(
+                new SecretKeySpec(secret, "AES")
+        );
+        channel.pipeline()
+                .addBefore("frame_decoder", "cipher_decoder", coder.getDecoder());
+        channel.pipeline()
+                .addBefore("frame_encoder", "cipher_encoder", coder.getEncoder());
     }
 }

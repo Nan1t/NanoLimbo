@@ -26,8 +26,12 @@ import ru.nanit.limbo.protocol.packets.status.PacketStatusRequest;
 import ru.nanit.limbo.protocol.packets.status.PacketStatusResponse;
 import ru.nanit.limbo.server.LimboServer;
 import ru.nanit.limbo.server.Logger;
+import ru.nanit.limbo.util.EncryptUtil;
 import ru.nanit.limbo.util.UuidUtil;
 
+import java.security.GeneralSecurityException;
+import java.security.KeyPair;
+import java.security.MessageDigest;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class PacketHandler {
@@ -101,12 +105,8 @@ public class PacketHandler {
 
         PacketEncryptionRequest encryptionRequest = new PacketEncryptionRequest();
         encryptionRequest.setServerId("");
-        byte[] publicKey = new byte[20];
-        ThreadLocalRandom.current().nextBytes(publicKey);
-        encryptionRequest.setPublicKey(publicKey);
-        byte[] verifyToken = new byte[20];
-        ThreadLocalRandom.current().nextBytes(verifyToken);
-        encryptionRequest.setVerifyToken(verifyToken);
+        encryptionRequest.setPublicKey(server.getServerKeyPair().getPublic().getEncoded());
+        encryptionRequest.setVerifyToken(conn.generateVerifyToken());
         conn.sendPacket(encryptionRequest);
         // conn.fireLoginSuccess();
     }
@@ -135,6 +135,19 @@ public class PacketHandler {
     }
 
     public void handle(ClientConnection conn, PacketEncryptionResponse packet) {
-
+        try {
+            KeyPair serverKeyPair = server.getServerKeyPair();
+            byte[] decryptedVerifyToken = EncryptUtil.decryptRsa(serverKeyPair, packet.getVerifyToken());
+            if (!MessageDigest.isEqual(conn.getVerifyToken(), decryptedVerifyToken)) {
+                throw new IllegalStateException("Unable to successfully decrypt the verification token.");
+            }
+            byte[] decryptedSharedSecret = EncryptUtil.decryptRsa(serverKeyPair, packet.getSharedSecret());
+            String serverId = EncryptUtil.generateServerId(decryptedSharedSecret, serverKeyPair.getPublic());
+            // TODO: verify server id from mojang session server
+            conn.enableEncrypt(decryptedSharedSecret);
+            conn.fireLoginSuccess();
+        } catch (GeneralSecurityException e) {
+            conn.disconnectLogin("Failed to enable encrypt.");
+        }
     }
 }
