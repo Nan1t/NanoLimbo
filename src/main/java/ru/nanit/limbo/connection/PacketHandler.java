@@ -20,9 +20,7 @@ package ru.nanit.limbo.connection;
 import io.netty.buffer.Unpooled;
 import ru.nanit.limbo.LimboConstants;
 import ru.nanit.limbo.protocol.packets.PacketHandshake;
-import ru.nanit.limbo.protocol.packets.login.PacketLoginPluginRequest;
-import ru.nanit.limbo.protocol.packets.login.PacketLoginPluginResponse;
-import ru.nanit.limbo.protocol.packets.login.PacketLoginStart;
+import ru.nanit.limbo.protocol.packets.login.*;
 import ru.nanit.limbo.protocol.packets.status.PacketStatusPing;
 import ru.nanit.limbo.protocol.packets.status.PacketStatusRequest;
 import ru.nanit.limbo.protocol.packets.status.PacketStatusResponse;
@@ -101,7 +99,16 @@ public class PacketHandler {
             conn.getGameProfile().setUuid(UuidUtil.getOfflineModeUuid(packet.getUsername()));
         }
 
-        conn.fireLoginSuccess();
+        PacketEncryptionRequest encryptionRequest = new PacketEncryptionRequest();
+        encryptionRequest.setServerId("");
+        byte[] publicKey = new byte[20];
+        ThreadLocalRandom.current().nextBytes(publicKey);
+        encryptionRequest.setPublicKey(publicKey);
+        byte[] verifyToken = new byte[20];
+        ThreadLocalRandom.current().nextBytes(verifyToken);
+        encryptionRequest.setVerifyToken(verifyToken);
+        conn.sendPacket(encryptionRequest);
+        // conn.fireLoginSuccess();
     }
 
     public void handle(ClientConnection conn, PacketLoginPluginResponse packet) {
@@ -127,4 +134,7 @@ public class PacketHandler {
         }
     }
 
+    public void handle(ClientConnection conn, PacketEncryptionResponse packet) {
+
+    }
 }
