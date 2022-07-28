@@ -44,7 +44,10 @@ public class PacketChatMessage implements PacketOut {
     @Override
     public void encode(ByteMessage msg, Version version) {
         msg.writeString(jsonData);
-        if (version.moreOrEqual(Version.V1_19)) {
+        if (version.moreOrEqual(Version.V1_19_1)) {
+            msg.writeBoolean(position.index == PositionLegacy.ACTION_BAR.index);
+        }
+        else if (version.moreOrEqual(Version.V1_19)) {
             msg.writeVarInt(position.index);
         }
         else {
