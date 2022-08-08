@@ -17,11 +17,14 @@ tasks.withType(JavaCompile) {
 
 repositories {
     mavenCentral()
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots' } // This lets gradle find the BungeeCord files online
 }
 
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+
+    compileOnly 'net.md-5:bungeecord-api:1.19-R0.1-SNAPSHOT'
 
     implementation 'org.spongepowered:configurate-yaml:4.1.2'
     implementation 'io.netty:netty-all:4.1.77.Final'

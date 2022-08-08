@@ -130,7 +130,7 @@ public final class LimboConfig {
     }
 
     private BufferedReader getReader() throws IOException {
-        String name = "settings.yml";
+        String name = "nanolimbo.yml";
         Path filePath = Paths.get(root.toString(), name);
 
         if (!Files.exists(filePath)) {

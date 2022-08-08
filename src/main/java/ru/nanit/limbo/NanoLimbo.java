@@ -17,11 +17,21 @@
 
 package ru.nanit.limbo;
 
+import net.md_5.bungee.api.plugin.Plugin;
 import ru.nanit.limbo.server.LimboServer;
 import ru.nanit.limbo.server.Logger;
 
-public final class NanoLimbo {
+public class NanoLimbo extends Plugin {
 
+
+    public void start() {
+        try {
+            new LimboServer().start();
+            getLogger().info("NanoLimbo successfully loaded");
+        } catch (Exception e) {
+            getLogger().warning("Error loading Nanolimbo"+ e);
+        }
+    }
     public static void main(String[] args) {
         try {
             new LimboServer().start();
