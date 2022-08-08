@@ -17,6 +17,7 @@
 
 package ru.nanit.limbo.server;
 
+import es.angelillo15.limbo.NanoLimboLoader;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
@@ -27,17 +28,16 @@ import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.util.ResourceLeakDetector;
-import net.md_5.bungee.api.ProxyServer;
 import ru.nanit.limbo.NanoLimbo;
 import ru.nanit.limbo.configuration.LimboConfig;
 import ru.nanit.limbo.connection.ClientChannelInitializer;
 import ru.nanit.limbo.connection.ClientConnection;
 import ru.nanit.limbo.connection.PacketHandler;
 import ru.nanit.limbo.connection.PacketSnapshots;
+import ru.nanit.limbo.server.Bungee.Utils;
 import ru.nanit.limbo.world.dimension.DimensionRegistry;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -75,8 +75,8 @@ public final class LimboServer {
     }
     private final Path root;
     private boolean bungee;
-    private NanoLimbo nanoLimbo;
-    public LimboServer(Path root, Boolean bungee, NanoLimbo nanoLimbo){
+    private NanoLimboLoader nanoLimbo;
+    public LimboServer(Path root, Boolean bungee, NanoLimboLoader nanoLimbo){
         this.root = root;
         this.bungee = bungee;
         this.nanoLimbo = nanoLimbo;
@@ -113,7 +113,7 @@ public final class LimboServer {
         if(!bungee){
             commandManager.start();
         }else {
-            ProxyServer.getInstance().getPluginManager().registerCommand(nanoLimbo, new BungeeCommandManager(this));
+            Utils.RegisterCommands(nanoLimbo, this);
         }
 
         System.gc();

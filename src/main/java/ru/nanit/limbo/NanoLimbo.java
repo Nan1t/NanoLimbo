@@ -17,30 +17,18 @@
 
 package ru.nanit.limbo;
 
-import net.md_5.bungee.api.plugin.Plugin;
 import ru.nanit.limbo.server.LimboServer;
 import ru.nanit.limbo.server.Logger;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class NanoLimbo extends Plugin {
+public class NanoLimbo {
 
-
-    public void start() {
-        try {
-            Path path = Paths.get(this.getDataFolder().getAbsolutePath());
-            getLogger().info(path.toString());
-            new LimboServer(path, true, this).start();
-            getLogger().info("NanoLimbo successfully loaded");
-        } catch (Exception e) {
-            getLogger().warning("Error loading Nanolimbo"+ e);
-        }
-    }
     public static void main(String[] args) {
         try {
             Path path = Paths.get("./");
-            new LimboServer(path, false, new NanoLimbo()).start();
+            new LimboServer(path, false, null).start();
         } catch (Exception e) {
             Logger.error("Cannot start server: ", e);
         }
