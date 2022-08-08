@@ -133,6 +133,7 @@ public final class LimboConfig {
         String name = "settings.yml";
         Path filePath = Paths.get(root.toString(), name);
 
+
         if (!Files.exists(filePath)) {
             InputStream stream = getClass().getResourceAsStream( "/" + name);
 

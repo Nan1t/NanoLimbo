@@ -37,6 +37,7 @@ import ru.nanit.limbo.connection.PacketSnapshots;
 import ru.nanit.limbo.server.Bungee.Utils;
 import ru.nanit.limbo.world.dimension.DimensionRegistry;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -87,6 +88,12 @@ public final class LimboServer {
         Logger.info("Starting server...");
 
         ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.DISABLED);
+        if(bungee){
+            File theDir = new File(root.toString());
+            if (!theDir.exists()){
+                theDir.mkdirs();
+            }
+        }
 
         config = new LimboConfig(root);
         config.load();
@@ -113,6 +120,7 @@ public final class LimboServer {
         if(!bungee){
             commandManager.start();
         }else {
+
             Utils.RegisterCommands(nanoLimbo, this);
         }
 
