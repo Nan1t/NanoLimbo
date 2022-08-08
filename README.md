@@ -49,6 +49,8 @@ Note, that it also will be closed correctly if you just press `Ctrl+C`.
 
 ### Installation
 
+### Running the jar
+
 The installation process is simple.
 
 1. Download the latest version of program **[here](https://github.com/Nan1t/NanoLimbo/releases)**
@@ -57,6 +59,14 @@ The installation process is simple.
 `java -jar NanoLimbo-<version>.jar`
 4. The server will create `settings.yml` file. It's a server configuration.
 5. Configure it as you want and restart server.
+
+### As a bungeecord plugin
+
+1. Download the latest release of the plugin
+2. Put the jar file in the plugin's folder of your proxy
+3. Start the server
+4. Edit the file called settings.yml in the plugin's folder
+5. Select a not used port and open it
 
 ### About player info forwarding
 
