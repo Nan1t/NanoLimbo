@@ -72,8 +72,10 @@ public final class LimboServer {
         return commandManager;
     }
     private final Path root;
-    public LimboServer(Path root){
+    private boolean bungee;
+    public LimboServer(Path root, Boolean bungee){
         this.root = root;
+        this.bungee = bungee;
     }
 
     public void start() throws Exception {
@@ -103,7 +105,9 @@ public final class LimboServer {
 
         commandManager = new CommandManager();
         commandManager.registerAll(this);
-        commandManager.start();
+        if(!bungee){
+            commandManager.start();
+        }
 
         System.gc();
     }
