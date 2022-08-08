@@ -102,4 +102,4 @@ gradlew shadowJar
 
 ### Contacts
 
-If you have any question or suggestion, join to [Discord server](https://discord.gg/4VGP3Gv)
+If you have any question or suggestion, join to [Discord server](https://discord.angelillo15.es/)
