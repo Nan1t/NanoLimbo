@@ -29,7 +29,8 @@ public class NanoLimbo extends Plugin {
 
     public void start() {
         try {
-            Path path = this.getDataFolder().toPath();
+            Path path = Paths.get(this.getDataFolder().getAbsolutePath());
+            getLogger().info(path.toString());
             new LimboServer(path).start();
             getLogger().info("NanoLimbo successfully loaded");
         } catch (Exception e) {

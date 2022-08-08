@@ -71,7 +71,7 @@ public final class LimboServer {
     public CommandManager getCommandManager() {
         return commandManager;
     }
-    private Path root;
+    private final Path root;
     public LimboServer(Path root){
         this.root = root;
     }
