@@ -21,4 +21,9 @@ public class CmdConn implements Command {
     public String description() {
         return "Display connections count";
     }
+
+    @Override
+    public String name() {
+        return "conn";
+    }
 }

@@ -31,7 +31,7 @@ public class NanoLimbo extends Plugin {
         try {
             Path path = Paths.get(this.getDataFolder().getAbsolutePath());
             getLogger().info(path.toString());
-            new LimboServer(path, true).start();
+            new LimboServer(path, true, this).start();
             getLogger().info("NanoLimbo successfully loaded");
         } catch (Exception e) {
             getLogger().warning("Error loading Nanolimbo"+ e);
@@ -40,7 +40,7 @@ public class NanoLimbo extends Plugin {
     public static void main(String[] args) {
         try {
             Path path = Paths.get("./");
-            new LimboServer(path, false).start();
+            new LimboServer(path, false, new NanoLimbo()).start();
         } catch (Exception e) {
             Logger.error("Cannot start server: ", e);
         }

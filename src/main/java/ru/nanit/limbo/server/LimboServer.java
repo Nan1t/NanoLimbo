@@ -27,6 +27,8 @@ import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.util.ResourceLeakDetector;
+import net.md_5.bungee.api.ProxyServer;
+import ru.nanit.limbo.NanoLimbo;
 import ru.nanit.limbo.configuration.LimboConfig;
 import ru.nanit.limbo.connection.ClientChannelInitializer;
 import ru.nanit.limbo.connection.ClientConnection;
@@ -73,9 +75,12 @@ public final class LimboServer {
     }
     private final Path root;
     private boolean bungee;
-    public LimboServer(Path root, Boolean bungee){
+    private NanoLimbo nanoLimbo;
+    public LimboServer(Path root, Boolean bungee, NanoLimbo nanoLimbo){
         this.root = root;
         this.bungee = bungee;
+        this.nanoLimbo = nanoLimbo;
+
     }
 
     public void start() throws Exception {
@@ -107,6 +112,8 @@ public final class LimboServer {
         commandManager.registerAll(this);
         if(!bungee){
             commandManager.start();
+        }else {
+            ProxyServer.getInstance().getPluginManager().registerCommand(nanoLimbo, new BungeeCommandManager(this));
         }
 
         System.gc();
