@@ -53,7 +53,7 @@ Note, that it also will be closed correctly if you just press `Ctrl+C`.
 
 The installation process is simple.
 
-1. Download the latest version of program **[here](https://github.com/Nan1t/NanoLimbo/releases)**
+1. Download the latest version of program **[here](https://github.com/Angelillo15/BungeeNanoLimbo/actions)**
 2. Put jar file in the folder you want.
 3. Create a start script as you did it for Bukkit or BungeeCord with command like this:
 `java -jar NanoLimbo-<version>.jar`
@@ -62,7 +62,7 @@ The installation process is simple.
 
 ### As a bungeecord plugin
 
-1. Download the latest release of the plugin
+1. Download the latest release of the plugin **[here](https://github.com/Angelillo15/BungeeNanoLimbo/actions)**
 2. Put the jar file in the plugin's folder of your proxy
 3. Start the server
 4. Edit the file called settings.yml in the plugin's folder
