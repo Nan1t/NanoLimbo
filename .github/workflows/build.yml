@@ -1,0 +1,43 @@
+# This workflow will build a Java project with Maven
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+
+name: BungeeNanoLimbo build
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+jobs:
+
+  build-on-ubuntu:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout main branch from GitHub 
+        uses: actions/checkout@v2
+
+      # Runs a single command using the runners shell
+      - name: Seting up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+    
+      - name: Execute Gradle build
+        run: |
+          chmod +x gradlew
+          ./gradlew shadowJar
+          mkdir staging && cp build/libs/*.jar staging
+      - name: Upload the jar
+        uses: actions/upload-artifact@v2
+        with:
+          name: BungeeNanoLimbo
+          path: staging
+        
+
