@@ -34,6 +34,7 @@ import ru.nanit.limbo.connection.PacketHandler;
 import ru.nanit.limbo.connection.PacketSnapshots;
 import ru.nanit.limbo.world.dimension.DimensionRegistry;
 
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -70,13 +71,17 @@ public final class LimboServer {
     public CommandManager getCommandManager() {
         return commandManager;
     }
+    private Path root;
+    public LimboServer(Path root){
+        this.root = root;
+    }
 
     public void start() throws Exception {
         Logger.info("Starting server...");
 
         ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.DISABLED);
 
-        config = new LimboConfig(Paths.get("./"));
+        config = new LimboConfig(root);
         config.load();
 
         packetHandler = new PacketHandler(this);
