@@ -40,10 +40,20 @@ The server **doesn't** support snapshots.
 
 ### Commands
 
+### Commands in runable JAR
+
 * `help` - Show help message
 * `conn` - Display amount of connections
 * `mem` - Display memory usage stats
 * `stop` - Stop the server
+
+### Commands as a bungee plugin
+
+* `limbo help` - Show help message of the plugin
+* `limbo conn` - Display amount of connections in the limbo
+* `limbo mem` - Display memory usage stats of the server
+* `limbo stop` - Stop the server
+
 
 Note, that it also will be closed correctly if you just press `Ctrl+C`.
 
