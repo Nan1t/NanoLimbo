@@ -17,6 +17,9 @@
 
 package ru.nanit.limbo.server;
 
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
@@ -34,10 +37,6 @@ import ru.nanit.limbo.connection.PacketHandler;
 import ru.nanit.limbo.connection.PacketSnapshots;
 import ru.nanit.limbo.world.dimension.DimensionRegistry;
 
-import java.nio.file.Paths;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
-
 public final class LimboServer {
 
     private LimboConfig config;
@@ -50,6 +49,10 @@ public final class LimboServer {
     private EventLoopGroup workerGroup;
 
     private CommandManager commandManager;
+
+    public LimboServer(LimboConfig config) {
+        this.config = config;
+    }
 
     public LimboConfig getConfig() {
         return config;
@@ -76,11 +79,8 @@ public final class LimboServer {
 
         ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.DISABLED);
 
-        config = new LimboConfig(Paths.get("./"));
-        config.load();
-
         packetHandler = new PacketHandler(this);
-        dimensionRegistry = new DimensionRegistry(this);
+        dimensionRegistry = new DimensionRegistry(this.getClass().getClassLoader());
         dimensionRegistry.load(config.getDimensionType());
         connections = new Connections();
 

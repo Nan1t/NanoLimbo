@@ -17,6 +17,9 @@
 
 package ru.nanit.limbo;
 
+import java.nio.file.Paths;
+
+import ru.nanit.limbo.configuration.YamlLimboConfig;
 import ru.nanit.limbo.server.LimboServer;
 import ru.nanit.limbo.server.Logger;
 
@@ -24,7 +27,7 @@ public final class NanoLimbo {
 
     public static void main(String[] args) {
         try {
-            new LimboServer().start();
+            new LimboServer(new YamlLimboConfig(Paths.get("./")).load()).start();
         } catch (Exception e) {
             Logger.error("Cannot start server: ", e);
         }

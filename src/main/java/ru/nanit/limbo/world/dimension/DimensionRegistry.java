@@ -20,7 +20,9 @@ package ru.nanit.limbo.world.dimension;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.kyori.adventure.nbt.ListBinaryTag;
 import net.kyori.adventure.nbt.TagStringIO;
-import ru.nanit.limbo.server.LimboServer;
+
+import java.lang.ClassLoader;
+
 import ru.nanit.limbo.server.Logger;
 
 import java.io.*;
@@ -29,7 +31,7 @@ import java.util.stream.Collectors;
 
 public final class DimensionRegistry {
 
-    private final LimboServer server;
+    private final ClassLoader classLoader;
 
     private Dimension defaultDimension_1_16;
     private Dimension defaultDimension_1_18_2;
@@ -40,8 +42,8 @@ public final class DimensionRegistry {
     private CompoundBinaryTag codec_1_19_1;
     private CompoundBinaryTag oldCodec;
 
-    public DimensionRegistry(LimboServer server) {
-        this.server = server;
+    public DimensionRegistry(ClassLoader server) {
+        this.classLoader = server;
     }
 
     public CompoundBinaryTag getCodec_1_16() {
@@ -105,9 +107,9 @@ public final class DimensionRegistry {
     }
 
     private CompoundBinaryTag readCodecFile(String resPath) throws IOException {
-        InputStream in = server.getClass().getResourceAsStream(resPath);
+        InputStream in = classLoader.getResourceAsStream(resPath);
 
-        if(in == null)
+        if (in == null)
             throw new FileNotFoundException("Cannot find dimension registry file");
 
         return TagStringIO.get().asCompound(streamToString(in));
