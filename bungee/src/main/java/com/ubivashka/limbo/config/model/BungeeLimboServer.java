@@ -1,7 +1,7 @@
 package com.ubivashka.limbo.config.model;
 
+import java.io.File;
 import java.lang.reflect.Type;
-import java.nio.file.Paths;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.configurate.ConfigurationNode;
@@ -9,6 +9,7 @@ import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
 
 import com.ubivashka.limbo.NanoLimboBungee;
+import com.ubivashka.limbo.config.ConfigurationUtil;
 
 import ru.nanit.limbo.configuration.LimboConfig;
 import ru.nanit.limbo.configuration.YamlLimboConfig;
@@ -56,7 +57,9 @@ public class BungeeLimboServer {
             String settingsFolder = node.node("settingsFolder").getString("");
             LimboConfig limboConfig;
             try {
-                limboConfig = new YamlLimboConfig(Paths.get(PLUGIN.getDataFolder().getPath(), settingsFolder), PLUGIN.getClass().getClassLoader()).load();
+                File limboSettingsFolder = new File(PLUGIN.getDataFolder().getPath(), settingsFolder);
+                ConfigurationUtil.saveDefaultConfig(PLUGIN.getClass().getClassLoader(), limboSettingsFolder, "settings.yml");
+                limboConfig = new YamlLimboConfig(limboSettingsFolder.toPath(), PLUGIN.getClass().getClassLoader()).load();
             } catch(Exception e) {
                 e.printStackTrace();
                 throw new SerializationException();
