@@ -1,0 +1,16 @@
+group 'com.ubivashka.limbo'
+
+repositories {
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+}
+
+dependencies {
+    implementation project(':api')
+    compileOnly 'net.md-5:bungeecord-api:1.19-R0.1-SNAPSHOT'
+}
+
+shadowJar {
+    manifest{
+        attributes 'Main-Class': 'ru.nanit.limbo.NanoLimbo'
+    }
+}
