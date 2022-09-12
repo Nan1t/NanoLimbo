@@ -2,10 +2,14 @@ group 'com.ubivashka.limbo'
 
 repositories {
     maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
     implementation project(':api')
+    implementation 'com.github.Revxrsal.Lamp:common:3.0.8'
+    implementation 'com.github.Revxrsal.Lamp:bungee:3.0.8'
+    compileOnly 'org.spongepowered:configurate-yaml:4.1.2'
     compileOnly 'net.md-5:bungeecord-api:1.19-R0.1-SNAPSHOT'
 }
 
