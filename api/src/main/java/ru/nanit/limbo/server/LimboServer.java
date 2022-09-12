@@ -38,6 +38,7 @@ import ru.nanit.limbo.connection.PacketSnapshots;
 import ru.nanit.limbo.world.dimension.DimensionRegistry;
 
 public final class LimboServer {
+    private boolean running = false;
 
     private PacketHandler packetHandler;
     private Connections connections;
@@ -98,6 +99,7 @@ public final class LimboServer {
         Logger.setLevel(config.getDebugLevel());
 
         System.gc();
+        running = true;
     }
 
     private void startBootstrap() {
@@ -143,7 +145,11 @@ public final class LimboServer {
             workerGroup.shutdownGracefully();
         }
 
+        running = false;
         Logger.info("Server stopped, Goodbye!");
     }
 
+    public boolean isRunning() {
+        return running;
+    }
 }
