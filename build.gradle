@@ -1,44 +1,40 @@
 plugins {
-    id 'java'
     id 'com.github.johnrengelman.shadow' version '7.0.0'
 }
 
-group 'ru.nanit'
-version '1.4.1'
-
-compileJava {
-    options.encoding = "UTF-8"
+allprojects {
+    group 'ru.nanit'
+    version '1.4.1'
 }
 
-tasks.withType(JavaCompile) {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-}
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'com.github.johnrengelman.shadow'
 
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
-
-    implementation 'org.spongepowered:configurate-yaml:4.1.2'
-    implementation 'io.netty:netty-all:4.1.77.Final'
-    implementation 'net.kyori:adventure-nbt:4.10.1'
-    implementation 'com.grack:nanojson:1.7'
-}
-
-shadowJar {
-    from 'LICENSE'
-
-    manifest {
-        attributes('Main-Class': 'ru.nanit.limbo.NanoLimbo')
+    compileJava {
+        options.encoding = "UTF-8"
     }
 
-    minimize()
-}
+    tasks.withType(JavaCompile) {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
 
-test {
-    useJUnitPlatform()
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    }
+
+    shadowJar {
+        from 'LICENSE'
+        minimize()
+    }
+
+    test {
+        useJUnitPlatform()
+    }
 }

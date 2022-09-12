@@ -15,22 +15,28 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ru.nanit.limbo;
+package ru.nanit.limbo.connection;
 
-import java.nio.file.Paths;
+import java.util.UUID;
 
-import ru.nanit.limbo.configuration.YamlLimboConfig;
-import ru.nanit.limbo.server.LimboServer;
-import ru.nanit.limbo.server.Logger;
+public class GameProfile {
 
-public final class NanoLimbo {
+    private UUID uuid;
+    private String username;
 
-    public static void main(String[] args) {
-        try {
-            new LimboServer(new YamlLimboConfig(Paths.get("./")).load()).start();
-        } catch (Exception e) {
-            Logger.error("Cannot start server: ", e);
-        }
+    public UUID getUuid() {
+        return uuid;
     }
 
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 }

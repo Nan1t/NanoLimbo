@@ -18,6 +18,11 @@ public class CmdConn implements Command {
     }
 
     @Override
+    public String name() {
+        return "conn";
+    }
+
+    @Override
     public String description() {
         return "Display connections count";
     }

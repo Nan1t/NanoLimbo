@@ -23,8 +23,6 @@ import ru.nanit.limbo.protocol.PacketIn;
 import ru.nanit.limbo.protocol.registry.State;
 import ru.nanit.limbo.protocol.registry.Version;
 import ru.nanit.limbo.server.LimboServer;
-import ru.nanit.limbo.server.Logger;
-import ru.nanit.limbo.util.UuidUtil;
 
 public class PacketHandshake implements PacketIn {
 
@@ -53,7 +51,7 @@ public class PacketHandshake implements PacketIn {
     public void decode(ByteMessage msg, Version version) {
         try {
             this.version = Version.of(msg.readVarInt());
-        } catch (IllegalArgumentException e) {
+        } catch(IllegalArgumentException e) {
             this.version = Version.UNDEFINED;
         }
 

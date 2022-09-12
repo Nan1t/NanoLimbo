@@ -17,17 +17,18 @@
 
 package ru.nanit.limbo.world.dimension;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.stream.Collectors;
+
 import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.kyori.adventure.nbt.ListBinaryTag;
 import net.kyori.adventure.nbt.TagStringIO;
-
-import java.lang.ClassLoader;
-
 import ru.nanit.limbo.server.Logger;
-
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.util.stream.Collectors;
 
 public final class DimensionRegistry {
 
@@ -75,12 +76,12 @@ public final class DimensionRegistry {
     }
 
     public void load(String def) throws IOException {
-        codec_1_16 = readCodecFile("/dimension/codec_1_16.snbt");
-        codec_1_18_2 = readCodecFile("/dimension/codec_1_18_2.snbt");
-        codec_1_19 = readCodecFile("/dimension/codec_1_19.snbt");
-        codec_1_19_1 = readCodecFile("/dimension/codec_1_19_1.snbt");
+        codec_1_16 = readCodecFile("dimension/codec_1_16.snbt");
+        codec_1_18_2 = readCodecFile("dimension/codec_1_18_2.snbt");
+        codec_1_19 = readCodecFile("dimension/codec_1_19.snbt");
+        codec_1_19_1 = readCodecFile("dimension/codec_1_19_1.snbt");
         // On 1.16-1.16.1 different codec format
-        oldCodec = readCodecFile("/dimension/codec_old.snbt");
+        oldCodec = readCodecFile("dimension/codec_old.snbt");
 
         defaultDimension_1_16 = getDefaultDimension(def, codec_1_16);
         defaultDimension_1_18_2 = getDefaultDimension(def, codec_1_18_2);
@@ -110,7 +111,7 @@ public final class DimensionRegistry {
         InputStream in = classLoader.getResourceAsStream(resPath);
 
         if (in == null)
-            throw new FileNotFoundException("Cannot find dimension registry file");
+            throw new FileNotFoundException("Cannot find dimension registry file in " + resPath);
 
         return TagStringIO.get().asCompound(streamToString(in));
     }

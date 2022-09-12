@@ -39,7 +39,6 @@ import ru.nanit.limbo.world.dimension.DimensionRegistry;
 
 public final class LimboServer {
 
-    private LimboConfig config;
     private PacketHandler packetHandler;
     private Connections connections;
     private DimensionRegistry dimensionRegistry;
@@ -48,10 +47,14 @@ public final class LimboServer {
     private EventLoopGroup bossGroup;
     private EventLoopGroup workerGroup;
 
-    private CommandManager commandManager;
+    private final LimboConfig config;
+    private final CommandHandler<Command> commandHandler;
+    private final ClassLoader classLoader;
 
-    public LimboServer(LimboConfig config) {
+    public LimboServer(LimboConfig config, CommandHandler<Command> commandHandler, ClassLoader classLoader) {
         this.config = config;
+        this.commandHandler = commandHandler;
+        this.classLoader = classLoader;
     }
 
     public LimboConfig getConfig() {
@@ -70,8 +73,8 @@ public final class LimboServer {
         return dimensionRegistry;
     }
 
-    public CommandManager getCommandManager() {
-        return commandManager;
+    public CommandHandler<Command> getCommandManager() {
+        return commandHandler;
     }
 
     public void start() throws Exception {
@@ -80,7 +83,7 @@ public final class LimboServer {
         ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.DISABLED);
 
         packetHandler = new PacketHandler(this);
-        dimensionRegistry = new DimensionRegistry(this.getClass().getClassLoader());
+        dimensionRegistry = new DimensionRegistry(classLoader);
         dimensionRegistry.load(config.getDimensionType());
         connections = new Connections();
 
@@ -90,15 +93,9 @@ public final class LimboServer {
 
         keepAliveTask = workerGroup.scheduleAtFixedRate(this::broadcastKeepAlive, 0L, 5L, TimeUnit.SECONDS);
 
-        Runtime.getRuntime().addShutdownHook(new Thread(this::stop, "NanoLimbo shutdown thread"));
-
         Logger.info("Server started on %s", config.getAddress());
 
         Logger.setLevel(config.getDebugLevel());
-
-        commandManager = new CommandManager();
-        commandManager.registerAll(this);
-        commandManager.start();
 
         System.gc();
     }
@@ -131,7 +128,7 @@ public final class LimboServer {
         connections.getAllConnections().forEach(ClientConnection::sendKeepAlive);
     }
 
-    private void stop() {
+    public void stop() {
         Logger.info("Stopping server...");
 
         if (keepAliveTask != null) {

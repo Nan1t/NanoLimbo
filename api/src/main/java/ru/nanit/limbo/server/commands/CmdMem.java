@@ -22,6 +22,11 @@ public class CmdMem implements Command {
     }
 
     @Override
+    public String name() {
+        return "mem";
+    }
+
+    @Override
     public String description() {
         return "Display memory usage";
     }

@@ -1,10 +1,10 @@
 package ru.nanit.limbo.server.commands;
 
+import java.util.Collection;
+
 import ru.nanit.limbo.server.Command;
 import ru.nanit.limbo.server.LimboServer;
 import ru.nanit.limbo.server.Logger;
-
-import java.util.Map;
 
 public class CmdHelp implements Command {
 
@@ -16,13 +16,18 @@ public class CmdHelp implements Command {
 
     @Override
     public void execute() {
-        Map<String, Command> commands = server.getCommandManager().getCommands();
+        Collection<Command> commands = server.getCommandManager().getCommands();
 
         Logger.info("Available commands:");
 
-        for (Map.Entry<String, Command> entry : commands.entrySet()) {
-            Logger.info("%s - %s", entry.getKey(), entry.getValue().description());
+        for (Command command : commands) {
+            Logger.info("%s - %s", command.name(), command.description());
         }
+    }
+
+    @Override
+    public String name() {
+        return "help";
     }
 
     @Override

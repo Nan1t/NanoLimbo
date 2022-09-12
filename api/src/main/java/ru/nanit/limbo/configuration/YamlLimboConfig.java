@@ -41,6 +41,7 @@ import ru.nanit.limbo.world.Location;
 public final class YamlLimboConfig implements LimboConfig {
 
     private final Path root;
+    private final ClassLoader classLoader;
 
     private SocketAddress address;
     private int maxPlayers;
@@ -74,8 +75,9 @@ public final class YamlLimboConfig implements LimboConfig {
     private int bossGroupSize;
     private int workerGroupSize;
 
-    public YamlLimboConfig(Path root) {
+    public YamlLimboConfig(Path root,ClassLoader classLoader) {
         this.root = root;
+        this.classLoader = classLoader;
     }
 
     public YamlLimboConfig load() throws Exception {
@@ -139,7 +141,7 @@ public final class YamlLimboConfig implements LimboConfig {
         Path filePath = Paths.get(root.toString(), name);
 
         if (!Files.exists(filePath)) {
-            InputStream stream = getClass().getResourceAsStream("/" + name);
+            InputStream stream = classLoader.getResourceAsStream(name);
 
             if (stream == null)
                 throw new FileNotFoundException("Cannot find settings resource file");
