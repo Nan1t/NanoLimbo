@@ -1,18 +1,19 @@
 package com.ubivashka.limbo;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
-import com.ubivashka.limbo.command.BungeeCommandHandler;
+import com.ubivashka.limbo.command.LampBungeeCommandHandler;
+import com.ubivashka.limbo.config.LimboConfig;
+import com.ubivashka.limbo.config.model.BungeeLimboServer;
 
+import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.plugin.Plugin;
-import net.md_5.bungee.config.Configuration;
-import net.md_5.bungee.config.ConfigurationProvider;
-import net.md_5.bungee.config.YamlConfiguration;
 import ru.nanit.limbo.NanoLimbo;
-import ru.nanit.limbo.configuration.YamlLimboConfig;
+import ru.nanit.limbo.server.Command;
+import ru.nanit.limbo.server.CommandHandler;
 import ru.nanit.limbo.server.LimboServer;
 
 public class NanoLimboBungee extends Plugin {
@@ -20,35 +21,46 @@ public class NanoLimboBungee extends Plugin {
         NanoLimbo.class.getName(); // For preventing minimizing this class
     }
 
+    private static NanoLimboBungee instance;
+    private final Map<String, LimboServer> servers = new HashMap<>();
+    private LimboConfig limboConfig;
+
     @Override
     public void onEnable() {
-        saveDefaultConfiguration(this, "settings.yml");
-        BungeeCommandHandler commandHandler = new BungeeCommandHandler(this);
+        instance = this;
+        limboConfig = new LimboConfig(this);
+        CommandHandler<Command> commandHandler = new LampBungeeCommandHandler(this).registerAll();
         try {
-            LimboServer server = new LimboServer(new YamlLimboConfig(getDataFolder().toPath(), getClass().getClassLoader()).load(), commandHandler,
-                    getClass().getClassLoader());
-            commandHandler.registerAll(server);
-            server.start();
+            for (BungeeLimboServer bungeeLimboServer : limboConfig.getServers()) {
+                LimboServer server = new LimboServer(bungeeLimboServer.getLimboConfig(), commandHandler,
+                        getClass().getClassLoader());
+
+                ServerInfo serverInfo = ProxyServer.getInstance().constructServerInfo(bungeeLimboServer.getLimboName(), bungeeLimboServer.getLimboConfig()
+                        .getAddress(), bungeeLimboServer.getMotd(), bungeeLimboServer.isRestricted());
+                servers.put(serverInfo.getName(), server);
+                ProxyServer.getInstance()
+                        .getServers()
+                        .put(serverInfo.getName(),
+                                serverInfo);
+                ProxyServer.getInstance().getConfig().getServers().put(serverInfo
+                        .getName(), serverInfo);
+
+                server.start();
+            }
         } catch(Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    private Configuration saveDefaultConfiguration(Plugin plugin, String configurationName) {
-        try {
-            if (!plugin.getDataFolder().exists())
-                plugin.getDataFolder().mkdir();
-            File configurationFile = new File(plugin.getDataFolder(), configurationName);
-            if (!configurationFile.exists()) {
-                try (InputStream inputStream = plugin.getResourceAsStream(configurationName)) {
-                    Files.copy(inputStream, configurationFile.toPath());
-                }
-            }
+    public Map<String, LimboServer> getServers() {
+        return Collections.unmodifiableMap(servers);
+    }
 
-            return ConfigurationProvider.getProvider(YamlConfiguration.class).load(configurationFile);
-        } catch(IOException e) {
-            e.printStackTrace();
-            return null;
-        }
+    public LimboConfig getLimboConfig() {
+        return limboConfig;
+    }
+
+    public static NanoLimboBungee getInstance() {
+        return instance;
     }
 }
