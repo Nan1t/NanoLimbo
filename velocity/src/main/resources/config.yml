@@ -18,14 +18,14 @@ messages:
     &a/limbomem - Get TOTAL memory used by Velocity and plugins. Permission - limbo.memory
     &a/limbostop (limbo-name) - Stop specific limbo server. Permission limbo.stop
     &a/limbostart (limbo-name) - Start specific limbo server. Permission limbo.start
-  connection-count: '&aConnections count: {0}'
+  connection-count: '&aConnections count: %count%'
   already-stopped: '&cCannot stop server that already stopped'
   successfully-stopped: '&aSuccessfully stopped server!'
   already-running: '&cCannot enable server that already running!'
   successfully-started: '&aSuccessfully started server!'
   memory: |
     &aMemory usage:
-    &aUsed: {0} MB
-    &aTotal: {1} MB
-    &aFree: {2} MB
-    &aMax: {3} MB
+    &aUsed: %used% MB
+    &aTotal: %total% MB
+    &aFree: %free% MB
+    &aMax: %max% MB
