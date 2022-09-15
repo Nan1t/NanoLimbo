@@ -1,0 +1,31 @@
+limbos:
+  first:
+    settingsFolder: first
+messages:
+  # PLAIN            - Just plain text without any color codes, etc
+  # GSON             - text in new JSON format
+  # GSON_LEGACY      - text in old JSON format
+  # LEGACY_AMPERSAND - Format with color code character &
+  # LEGACY_SECTION   - Format with color code character §
+  # MINIMESSAGE      - MiniMessage (https://docs.adventure.kyori.net/minimessage/format.html)
+  deserializer: LEGACY_AMPERSAND
+  no-permission: '&cNot enough permission for this command'
+  no-argument: '&cArgument not specified, use /limbohelp for help.'
+  invalid-limbo: '&cLimbo with that name disabled or not exists!'
+  help: |
+    &a/limbohelp - Show this message.
+    &a/limboconn (limbo-name) - Get connection count on limbo. Permission - limbo.connection
+    &a/limbomem - Get TOTAL memory used by Velocity and plugins. Permission - limbo.memory
+    &a/limbostop (limbo-name) - Stop specific limbo server. Permission limbo.stop
+    &a/limbostart (limbo-name) - Start specific limbo server. Permission limbo.start
+  connection-count: '&aConnections count: {0}'
+  already-stopped: '&cCannot stop server that already stopped'
+  successfully-stopped: '&aSuccessfully stopped server!'
+  already-running: '&cCannot enable server that already running!'
+  successfully-started: '&aSuccessfully started server!'
+  memory: |
+    &aMemory usage:
+    &aUsed: {0} MB
+    &aTotal: {1} MB
+    &aFree: {2} MB
+    &aMax: {3} MB
