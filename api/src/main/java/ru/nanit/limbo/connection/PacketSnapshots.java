@@ -31,29 +31,27 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public final class PacketSnapshots {
 
-    public static PacketSnapshot PACKET_LOGIN_SUCCESS;
-    public static PacketSnapshot PACKET_JOIN_GAME;
-    public static PacketSnapshot PACKET_PLUGIN_MESSAGE;
-    public static PacketSnapshot PACKET_PLAYER_ABILITIES;
-    public static PacketSnapshot PACKET_PLAYER_INFO;
-    public static PacketSnapshot PACKET_DECLARE_COMMANDS;
-    public static PacketSnapshot PACKET_PLAYER_POS;
-    public static PacketSnapshot PACKET_JOIN_MESSAGE;
-    public static PacketSnapshot PACKET_BOSS_BAR;
-    public static PacketSnapshot PACKET_HEADER_AND_FOOTER;
+    private PacketSnapshot packetLoginSuccess;
+    private PacketSnapshot packetJoinGame;
+    private PacketSnapshot packetPluginMessage;
+    private PacketSnapshot packetPlayerAbilities;
+    private PacketSnapshot packetPlayerInfo;
+    private PacketSnapshot packetDeclareCommands;
+    private PacketSnapshot packetPlayerPos;
+    private PacketSnapshot packetJoinMessage;
+    private PacketSnapshot packetBossBar;
+    private PacketSnapshot packetHeaderAndFooter;
 
-    public static PacketSnapshot PACKET_TITLE_TITLE;
-    public static PacketSnapshot PACKET_TITLE_SUBTITLE;
-    public static PacketSnapshot PACKET_TITLE_TIMES;
+    private PacketSnapshot packetTitleTitle;
+    private PacketSnapshot packetTitleSubtitle;
+    private PacketSnapshot packetTitleTimes;
 
-    public static PacketSnapshot PACKET_TITLE_LEGACY_TITLE;
-    public static PacketSnapshot PACKET_TITLE_LEGACY_SUBTITLE;
-    public static PacketSnapshot PACKET_TITLE_LEGACY_TIMES;
+    private PacketSnapshot packetTitleLegacyTitle;
+    private PacketSnapshot packetTitleLegacySubtitle;
+    private PacketSnapshot packetTitleLegacyTimes;
 
 
-    private PacketSnapshots() { }
-
-    public static void initPackets(LimboServer server) {
+    public PacketSnapshots(LimboServer server) {
         final String username = server.getConfig().getPingData().getVersion();
         final UUID uuid = UuidUtil.getOfflineModeUuid(username);
 
@@ -99,26 +97,26 @@ public final class PacketSnapshots {
         info.setGameMode(server.getConfig().getGameMode());
         info.setUuid(uuid);
 
-        PACKET_LOGIN_SUCCESS = PacketSnapshot.of(loginSuccess);
-        PACKET_JOIN_GAME = PacketSnapshot.of(joinGame);
-        PACKET_PLAYER_ABILITIES = PacketSnapshot.of(playerAbilities);
-        PACKET_PLAYER_POS = PacketSnapshot.of(positionAndLook);
-        PACKET_PLAYER_INFO = PacketSnapshot.of(info);
+        packetLoginSuccess = PacketSnapshot.of(loginSuccess);
+        packetJoinGame = PacketSnapshot.of(joinGame);
+        packetPlayerAbilities = PacketSnapshot.of(playerAbilities);
+        packetPlayerPos = PacketSnapshot.of(positionAndLook);
+        packetPlayerInfo = PacketSnapshot.of(info);
 
-        PACKET_DECLARE_COMMANDS = PacketSnapshot.of(declareCommands);
+        packetDeclareCommands = PacketSnapshot.of(declareCommands);
 
         if (server.getConfig().isUseHeaderAndFooter()) {
             PacketPlayerListHeader header = new PacketPlayerListHeader();
             header.setHeader(server.getConfig().getPlayerListHeader());
             header.setFooter(server.getConfig().getPlayerListFooter());
-            PACKET_HEADER_AND_FOOTER = PacketSnapshot.of(header);
+            packetHeaderAndFooter = PacketSnapshot.of(header);
         }
 
-        if (server.getConfig().isUseBrandName()){
+        if (server.getConfig().isUseBrandName()) {
             PacketPluginMessage pluginMessage = new PacketPluginMessage();
             pluginMessage.setChannel(LimboConstants.BRAND_CHANNEL);
             pluginMessage.setMessage(server.getConfig().getBrandName());
-            PACKET_PLUGIN_MESSAGE = PacketSnapshot.of(pluginMessage);
+            packetPluginMessage = PacketSnapshot.of(pluginMessage);
         }
 
         if (server.getConfig().isUseJoinMessage()) {
@@ -126,14 +124,14 @@ public final class PacketSnapshots {
             joinMessage.setJsonData(server.getConfig().getJoinMessage());
             joinMessage.setPosition(PacketChatMessage.PositionLegacy.SYSTEM_MESSAGE);
             joinMessage.setSender(UUID.randomUUID());
-            PACKET_JOIN_MESSAGE = PacketSnapshot.of(joinMessage);
+            packetJoinMessage = PacketSnapshot.of(joinMessage);
         }
 
         if (server.getConfig().isUseBossBar()) {
             PacketBossBar bossBar = new PacketBossBar();
             bossBar.setBossBar(server.getConfig().getBossBar());
             bossBar.setUuid(UUID.randomUUID());
-            PACKET_BOSS_BAR = PacketSnapshot.of(bossBar);
+            packetBossBar = PacketSnapshot.of(bossBar);
         }
 
         if (server.getConfig().isUseTitle()) {
@@ -162,13 +160,77 @@ public final class PacketSnapshots {
             legacyTimes.setTitle(title);
             legacyTimes.setAction(PacketTitleLegacy.Action.SET_TIMES_AND_DISPLAY);
 
-            PACKET_TITLE_TITLE = PacketSnapshot.of(packetTitle);
-            PACKET_TITLE_SUBTITLE = PacketSnapshot.of(packetSubtitle);
-            PACKET_TITLE_TIMES = PacketSnapshot.of(packetTimes);
+            packetTitleTitle = PacketSnapshot.of(packetTitle);
+            packetTitleSubtitle = PacketSnapshot.of(packetSubtitle);
+            packetTitleTimes = PacketSnapshot.of(packetTimes);
 
-            PACKET_TITLE_LEGACY_TITLE = PacketSnapshot.of(legacyTitle);
-            PACKET_TITLE_LEGACY_SUBTITLE = PacketSnapshot.of(legacySubtitle);
-            PACKET_TITLE_LEGACY_TIMES = PacketSnapshot.of(legacyTimes);
+            packetTitleLegacyTitle = PacketSnapshot.of(legacyTitle);
+            packetTitleLegacySubtitle = PacketSnapshot.of(legacySubtitle);
+            packetTitleLegacyTimes = PacketSnapshot.of(legacyTimes);
         }
+    }
+
+    public PacketSnapshot getPacketLoginSuccess() {
+        return packetLoginSuccess;
+    }
+
+    public PacketSnapshot getPacketJoinGame() {
+        return packetJoinGame;
+    }
+
+    public PacketSnapshot getPacketPluginMessage() {
+        return packetPluginMessage;
+    }
+
+    public PacketSnapshot getPacketPlayerAbilities() {
+        return packetPlayerAbilities;
+    }
+
+    public PacketSnapshot getPacketPlayerInfo() {
+        return packetPlayerInfo;
+    }
+
+    public PacketSnapshot getPacketDeclareCommands() {
+        return packetDeclareCommands;
+    }
+
+    public PacketSnapshot getPacketPlayerPos() {
+        return packetPlayerPos;
+    }
+
+    public PacketSnapshot getPacketJoinMessage() {
+        return packetJoinMessage;
+    }
+
+    public PacketSnapshot getPacketBossBar() {
+        return packetBossBar;
+    }
+
+    public PacketSnapshot getPacketHeaderAndFooter() {
+        return packetHeaderAndFooter;
+    }
+
+    public PacketSnapshot getPacketTitleTitle() {
+        return packetTitleTitle;
+    }
+
+    public PacketSnapshot getPacketTitleSubtitle() {
+        return packetTitleSubtitle;
+    }
+
+    public PacketSnapshot getPacketTitleTimes() {
+        return packetTitleTimes;
+    }
+
+    public PacketSnapshot getPacketTitleLegacyTitle() {
+        return packetTitleLegacyTitle;
+    }
+
+    public PacketSnapshot getPacketTitleLegacySubtitle() {
+        return packetTitleLegacySubtitle;
+    }
+
+    public PacketSnapshot getPacketTitleLegacyTimes() {
+        return packetTitleLegacyTimes;
     }
 }

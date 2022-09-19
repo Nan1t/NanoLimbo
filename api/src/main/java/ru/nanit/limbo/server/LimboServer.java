@@ -41,6 +41,7 @@ public final class LimboServer {
     private boolean running = false;
 
     private PacketHandler packetHandler;
+    private PacketSnapshots packetSnapshots;
     private Connections connections;
     private DimensionRegistry dimensionRegistry;
     private ScheduledFuture<?> keepAliveTask;
@@ -66,6 +67,10 @@ public final class LimboServer {
         return packetHandler;
     }
 
+    public PacketSnapshots getPacketSnapshots() {
+        return packetSnapshots;
+    }
+
     public Connections getConnections() {
         return connections;
     }
@@ -88,7 +93,7 @@ public final class LimboServer {
         dimensionRegistry.load(config.getDimensionType());
         connections = new Connections();
 
-        PacketSnapshots.initPackets(this);
+        packetSnapshots = new PacketSnapshots(this);
 
         startBootstrap();
 

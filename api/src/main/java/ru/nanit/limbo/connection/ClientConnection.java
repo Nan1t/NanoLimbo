@@ -21,11 +21,14 @@ import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
 import com.grack.nanojson.JsonParserException;
+
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+
 import org.jetbrains.annotations.NotNull;
+
 import ru.nanit.limbo.connection.pipeline.PacketDecoder;
 import ru.nanit.limbo.connection.pipeline.PacketEncoder;
 import ru.nanit.limbo.protocol.ByteMessage;
@@ -40,6 +43,7 @@ import ru.nanit.limbo.util.UuidUtil;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.security.InvalidKeyException;
@@ -113,7 +117,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
 
     public void handlePacket(Object packet) {
         if (packet instanceof Packet) {
-            ((Packet)packet).handle(this, server);
+            ((Packet) packet).handle(this, server);
         }
     }
 
@@ -123,36 +127,36 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
             return;
         }
 
-        writePacket(PacketSnapshots.PACKET_LOGIN_SUCCESS);
+        writePacket(server.getPacketSnapshots().getPacketLoginSuccess());
         updateState(State.PLAY);
 
         server.getConnections().addConnection(this);
 
-        writePacket(PacketSnapshots.PACKET_JOIN_GAME);
-        writePacket(PacketSnapshots.PACKET_PLAYER_ABILITIES);
-        writePacket(PacketSnapshots.PACKET_PLAYER_POS);
+        writePacket(server.getPacketSnapshots().getPacketJoinGame());
+        writePacket(server.getPacketSnapshots().getPacketPlayerAbilities());
+        writePacket(server.getPacketSnapshots().getPacketPlayerPos());
 
         if (server.getConfig().isUsePlayerList() || clientVersion.equals(Version.V1_16_4))
-            writePacket(PacketSnapshots.PACKET_PLAYER_INFO);
+            writePacket(server.getPacketSnapshots().getPacketPlayerInfo());
 
         if (clientVersion.moreOrEqual(Version.V1_13)) {
-            writePacket(PacketSnapshots.PACKET_DECLARE_COMMANDS);
+            writePacket(server.getPacketSnapshots().getPacketDeclareCommands());
 
-            if (PacketSnapshots.PACKET_PLUGIN_MESSAGE != null)
-                writePacket(PacketSnapshots.PACKET_PLUGIN_MESSAGE);
+            if (server.getPacketSnapshots().getPacketPluginMessage() != null)
+                writePacket(server.getPacketSnapshots().getPacketPluginMessage());
         }
 
-        if (PacketSnapshots.PACKET_BOSS_BAR != null && clientVersion.moreOrEqual(Version.V1_9))
-            writePacket(PacketSnapshots.PACKET_BOSS_BAR);
+        if (server.getPacketSnapshots().getPacketBossBar() != null && clientVersion.moreOrEqual(Version.V1_9))
+            writePacket(server.getPacketSnapshots().getPacketBossBar());
 
-        if (PacketSnapshots.PACKET_JOIN_MESSAGE != null)
-            writePacket(PacketSnapshots.PACKET_JOIN_MESSAGE);
+        if (server.getPacketSnapshots().getPacketJoinMessage() != null)
+            writePacket(server.getPacketSnapshots().getPacketJoinGame());
 
-        if (PacketSnapshots.PACKET_TITLE_TITLE != null)
+        if (server.getPacketSnapshots().getPacketTitleTitle() != null)
             writeTitle();
 
-        if (PacketSnapshots.PACKET_HEADER_AND_FOOTER != null)
-            writePacket(PacketSnapshots.PACKET_HEADER_AND_FOOTER);
+        if (server.getPacketSnapshots().getPacketHeaderAndFooter() != null)
+            writePacket(server.getPacketSnapshots().getPacketHeaderAndFooter());
 
         sendKeepAlive();
     }
@@ -167,13 +171,13 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
 
     public void writeTitle() {
         if (clientVersion.moreOrEqual(Version.V1_17)) {
-            writePacket(PacketSnapshots.PACKET_TITLE_TITLE);
-            writePacket(PacketSnapshots.PACKET_TITLE_SUBTITLE);
-            writePacket(PacketSnapshots.PACKET_TITLE_TIMES);
+            writePacket(server.getPacketSnapshots().getPacketTitleTitle());
+            writePacket(server.getPacketSnapshots().getPacketTitleSubtitle());
+            writePacket(server.getPacketSnapshots().getPacketTitleTimes());
         } else {
-            writePacket(PacketSnapshots.PACKET_TITLE_LEGACY_TITLE);
-            writePacket(PacketSnapshots.PACKET_TITLE_LEGACY_SUBTITLE);
-            writePacket(PacketSnapshots.PACKET_TITLE_LEGACY_TIMES);
+            writePacket(server.getPacketSnapshots().getPacketTitleLegacyTitle());
+            writePacket(server.getPacketSnapshots().getPacketTitleLegacySubtitle());
+            writePacket(server.getPacketSnapshots().getPacketTitleLegacyTimes());
         }
     }
 
@@ -217,7 +221,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
     }
 
     public void setAddress(String host) {
-        this.address = new InetSocketAddress(host, ((InetSocketAddress)this.address).getPort());
+        this.address = new InetSocketAddress(host, ((InetSocketAddress) this.address).getPort());
     }
 
     boolean checkBungeeGuardHandshake(String handshake) {
@@ -232,7 +236,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
 
         try {
             arr = JsonParser.array().from(split[3]);
-        } catch (JsonParserException e) {
+        } catch(JsonParserException e) {
             return false;
         }
 
@@ -278,7 +282,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
             byte[] mySignature = mac.doFinal(data);
             if (!MessageDigest.isEqual(signature, mySignature))
                 return false;
-        } catch (InvalidKeyException |java.security.NoSuchAlgorithmException e) {
+        } catch(InvalidKeyException | java.security.NoSuchAlgorithmException e) {
             throw new AssertionError(e);
         }
         int version = buf.readVarInt();
