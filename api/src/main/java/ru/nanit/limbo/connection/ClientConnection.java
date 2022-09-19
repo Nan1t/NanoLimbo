@@ -150,7 +150,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
             writePacket(server.getPacketSnapshots().getPacketBossBar());
 
         if (server.getPacketSnapshots().getPacketJoinMessage() != null)
-            writePacket(server.getPacketSnapshots().getPacketJoinGame());
+            writePacket(server.getPacketSnapshots().getPacketJoinMessage());
 
         if (server.getPacketSnapshots().getPacketTitleTitle() != null)
             writeTitle();
