@@ -22,6 +22,7 @@ The general features:
 
 Symbol `X` means all minor versions.
 
+- [x] 1.7.X
 - [x] 1.8.X
 - [x] 1.9.X
 - [x] 1.10.X
