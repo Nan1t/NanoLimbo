@@ -46,11 +46,9 @@ public class PacketChatMessage implements PacketOut {
         msg.writeString(jsonData);
         if (version.moreOrEqual(Version.V1_19_1)) {
             msg.writeBoolean(position.index == PositionLegacy.ACTION_BAR.index);
-        }
-        else if (version.moreOrEqual(Version.V1_19)) {
+        } else if (version.moreOrEqual(Version.V1_19)) {
             msg.writeVarInt(position.index);
-        }
-        else {
+        } else if (version.moreOrEqual(Version.V1_8)) {
             msg.writeByte(position.index);
         }
 

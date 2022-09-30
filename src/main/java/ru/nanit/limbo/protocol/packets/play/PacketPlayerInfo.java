@@ -46,16 +46,22 @@ public class PacketPlayerInfo implements PacketOut {
 
     @Override
     public void encode(ByteMessage msg, Version version) {
-        msg.writeVarInt(0); // Add player action
-        msg.writeVarInt(1);
-        msg.writeUuid(uuid);
-        msg.writeString(username);
-        msg.writeVarInt(0);
-        msg.writeVarInt(gameMode);
-        msg.writeVarInt(60);
-        msg.writeBoolean(false);
-        if (version.moreOrEqual(Version.V1_19)) {
+        if (version.less(Version.V1_8)) {
+            msg.writeString(username);
+            msg.writeBoolean(true); // Is online
+            msg.writeShort(0);
+        } else {
+            msg.writeVarInt(0); // Add player action
+            msg.writeVarInt(1);
+            msg.writeUuid(uuid);
+            msg.writeString(username);
+            msg.writeVarInt(0);
+            msg.writeVarInt(gameMode);
+            msg.writeVarInt(60);
             msg.writeBoolean(false);
+            if (version.moreOrEqual(Version.V1_19)) {
+                msg.writeBoolean(false);
+            }
         }
     }
 

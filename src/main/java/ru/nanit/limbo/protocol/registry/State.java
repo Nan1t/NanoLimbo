@@ -77,7 +77,7 @@ public enum State {
     PLAY(3) {
         {
             serverBound.register(PacketKeepAlive::new,
-                    map(0x00, V1_8, V1_8),
+                    map(0x00, V1_7_2, V1_8),
                     map(0x0B, V1_9, V1_11_1),
                     map(0x0C, V1_12, V1_12),
                     map(0x0B, V1_12_1, V1_12_2),
@@ -98,7 +98,7 @@ public enum State {
                     map(0x0F, V1_19, V1_19_1)
             );
             clientBound.register(PacketJoinGame::new,
-                    map(0x01, V1_8, V1_8),
+                    map(0x01, V1_7_2, V1_8),
                     map(0x23, V1_9, V1_12_2),
                     map(0x25, V1_13, V1_14_4),
                     map(0x26, V1_15, V1_15_2),
@@ -119,7 +119,7 @@ public enum State {
                     map(0x16, V1_19_1, V1_19_1)
             );
             clientBound.register(PacketPlayerAbilities::new,
-                    map(0x39, V1_8, V1_8),
+                    map(0x39, V1_7_2, V1_8),
                     map(0x2B, V1_9, V1_12),
                     map(0x2C, V1_12_1, V1_12_2),
                     map(0x2E, V1_13, V1_13_2),
@@ -132,7 +132,7 @@ public enum State {
                     map(0x31, V1_19_1, V1_19_1)
             );
             clientBound.register(PacketPlayerPositionAndLook::new,
-                    map(0x08, V1_8, V1_8),
+                    map(0x08, V1_7_2, V1_8),
                     map(0x2E, V1_9, V1_12),
                     map(0x2F, V1_12_1, V1_12_2),
                     map(0x32, V1_13, V1_13_2),
@@ -145,7 +145,7 @@ public enum State {
                     map(0x39, V1_19_1, V1_19_1)
             );
             clientBound.register(PacketKeepAlive::new,
-                    map(0x00, V1_8, V1_8),
+                    map(0x00, V1_7_2, V1_8),
                     map(0x1F, V1_9, V1_12_2),
                     map(0x21, V1_13, V1_13_2),
                     map(0x20, V1_14, V1_14_4),
@@ -157,7 +157,7 @@ public enum State {
                     map(0x20, V1_19_1, V1_19_1)
             );
             clientBound.register(PacketChatMessage::new,
-                    map(0x02, V1_8, V1_8),
+                    map(0x02, V1_7_2, V1_8),
                     map(0x0F, V1_9, V1_12_2),
                     map(0x0E, V1_13, V1_14_4),
                     map(0x0F, V1_15, V1_15_2),
@@ -174,7 +174,7 @@ public enum State {
                     map(0x0A, V1_19, V1_19_1)
             );
             clientBound.register(PacketPlayerInfo::new,
-                    map(0x38, V1_8, V1_8),
+                    map(0x38, V1_7_2, V1_8),
                     map(0x2D, V1_9, V1_12),
                     map(0x2E, V1_12_1, V1_12_2),
                     map(0x30, V1_13, V1_13_2),
