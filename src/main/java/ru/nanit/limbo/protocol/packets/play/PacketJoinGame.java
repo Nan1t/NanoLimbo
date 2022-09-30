@@ -100,7 +100,7 @@ public class PacketJoinGame implements PacketOut {
         msg.writeInt(entityId);
 
         if (version.fromTo(Version.V1_7_2, Version.V1_7_6)) {
-            msg.writeByte(gameMode);
+            msg.writeByte(gameMode == 3 ? 1 : gameMode);
             msg.writeByte(dimensionRegistry.getDefaultDimension_1_16().getId());
             msg.writeByte(0); // Difficulty
             msg.writeByte(maxPlayers);
