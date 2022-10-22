@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'com.github.johnrengelman.shadow' version '7.0.0'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
 group 'ru.nanit'
@@ -21,14 +21,14 @@ repositories {
 }
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
 
     compileOnly 'net.md-5:bungeecord-api:1.19-R0.1-SNAPSHOT'
 
     implementation 'org.spongepowered:configurate-yaml:4.1.2'
-    implementation 'io.netty:netty-all:4.1.77.Final'
-    implementation 'net.kyori:adventure-nbt:4.10.1'
+    implementation 'io.netty:netty-all:4.1.82.Final'
+    implementation 'net.kyori:adventure-nbt:4.11.0'
     implementation 'com.grack:nanojson:1.7'
 }
 
