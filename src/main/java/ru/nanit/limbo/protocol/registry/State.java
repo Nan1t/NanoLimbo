@@ -238,6 +238,9 @@ public enum State {
                     map(0x63, V1_19_1, V1_19_1),
                     map(0x61, V1_19_3, V1_19_3)
             );
+            clientBound.register(PacketSpawnPosition::new,
+                    map(0x4C, V1_19_3, V1_19_3)
+            );
         }
     };
 
