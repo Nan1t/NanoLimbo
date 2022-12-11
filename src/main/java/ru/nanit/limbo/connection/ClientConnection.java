@@ -131,7 +131,12 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         Runnable sendPlayPackets = () -> {
             writePacket(PacketSnapshots.PACKET_JOIN_GAME);
             writePacket(PacketSnapshots.PACKET_PLAYER_ABILITIES);
-            writePacket(PacketSnapshots.PACKET_PLAYER_POS);
+
+            if (clientVersion.less(Version.V1_9)) {
+                writePacket(PacketSnapshots.PACKET_PLAYER_POS_AND_LOOK_LEGACY);
+            } else {
+                writePacket(PacketSnapshots.PACKET_PLAYER_POS_AND_LOOK);
+            }
 
             if (clientVersion.moreOrEqual(Version.V1_19_3))
                 writePacket(PacketSnapshots.PACKET_SPAWN_POSITION);

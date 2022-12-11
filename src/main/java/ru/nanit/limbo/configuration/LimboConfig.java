@@ -23,7 +23,6 @@ import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 import ru.nanit.limbo.server.data.*;
 import ru.nanit.limbo.util.Colors;
-import ru.nanit.limbo.world.Location;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -43,7 +42,6 @@ public final class LimboConfig {
     private PingData pingData;
 
     private String dimensionType;
-    private Location spawnPosition;
     private int gameMode;
 
     private boolean useBrandName;
@@ -86,14 +84,13 @@ public final class LimboConfig {
         address = conf.node("bind").get(SocketAddress.class);
         maxPlayers = conf.node("maxPlayers").getInt();
         pingData = conf.node("ping").get(PingData.class);
-        dimensionType = conf.node("dimension").getString();
+        dimensionType = conf.node("dimension").getString("the_end");
         if (dimensionType.equalsIgnoreCase("nether")) {
             dimensionType = "the_nether";
         }
         if (dimensionType.equalsIgnoreCase("end")) {
             dimensionType = "the_end";
         }
-        spawnPosition = conf.node("spawnPosition").get(Location.class);
         gameMode = conf.node("gameMode").getInt();
         useBrandName = conf.node("brandName", "enable").getBoolean();
         useJoinMessage = conf.node("joinMessage", "enable").getBoolean();
@@ -152,7 +149,6 @@ public final class LimboConfig {
                 .register(PingData.class, new PingData.Serializer())
                 .register(BossBar.class, new BossBar.Serializer())
                 .register(Title.class, new Title.Serializer())
-                .register(Location.class, new Location.Serializer())
                 .build();
     }
 
@@ -170,10 +166,6 @@ public final class LimboConfig {
 
     public String getDimensionType() {
         return dimensionType;
-    }
-
-    public Location getSpawnPosition() {
-        return spawnPosition;
     }
 
     public int getGameMode() {

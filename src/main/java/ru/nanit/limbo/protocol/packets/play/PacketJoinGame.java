@@ -20,7 +20,7 @@ package ru.nanit.limbo.protocol.packets.play;
 import ru.nanit.limbo.protocol.ByteMessage;
 import ru.nanit.limbo.protocol.PacketOut;
 import ru.nanit.limbo.protocol.registry.Version;
-import ru.nanit.limbo.world.dimension.DimensionRegistry;
+import ru.nanit.limbo.world.DimensionRegistry;
 
 public class PacketJoinGame implements PacketOut {
 

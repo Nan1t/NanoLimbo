@@ -32,7 +32,7 @@ import ru.nanit.limbo.connection.ClientChannelInitializer;
 import ru.nanit.limbo.connection.ClientConnection;
 import ru.nanit.limbo.connection.PacketHandler;
 import ru.nanit.limbo.connection.PacketSnapshots;
-import ru.nanit.limbo.world.dimension.DimensionRegistry;
+import ru.nanit.limbo.world.DimensionRegistry;
 
 import java.nio.file.Paths;
 import java.util.concurrent.ScheduledFuture;

@@ -28,34 +28,16 @@ public class PacketPlayerPositionAndLook implements PacketOut {
     private double z;
     private float yaw;
     private float pitch;
-    private byte flags = 0x08;
     private int teleportId;
 
-    public void setX(double x) {
+    public PacketPlayerPositionAndLook() {}
+
+    public PacketPlayerPositionAndLook(double x, double y, double z, float yaw, float pitch, int teleportId) {
         this.x = x;
-    }
-
-    public void setY(double y) {
         this.y = y;
-    }
-
-    public void setZ(double z) {
         this.z = z;
-    }
-
-    public void setYaw(float yaw) {
         this.yaw = yaw;
-    }
-
-    public void setPitch(float pitch) {
         this.pitch = pitch;
-    }
-
-    public void setFlags(byte flags) {
-        this.flags = flags;
-    }
-
-    public void setTeleportId(int teleportId) {
         this.teleportId = teleportId;
     }
 
@@ -68,7 +50,7 @@ public class PacketPlayerPositionAndLook implements PacketOut {
         msg.writeFloat(pitch);
 
         if (version.moreOrEqual(Version.V1_8)) {
-            msg.writeByte(flags);
+            msg.writeByte(0x08);
         } else {
             msg.writeBoolean(true);
         }

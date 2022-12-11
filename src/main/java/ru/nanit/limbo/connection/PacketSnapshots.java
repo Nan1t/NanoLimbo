@@ -38,10 +38,13 @@ public final class PacketSnapshots {
     public static PacketSnapshot PACKET_PLAYER_ABILITIES;
     public static PacketSnapshot PACKET_PLAYER_INFO;
     public static PacketSnapshot PACKET_DECLARE_COMMANDS;
-    public static PacketSnapshot PACKET_PLAYER_POS;
     public static PacketSnapshot PACKET_JOIN_MESSAGE;
     public static PacketSnapshot PACKET_BOSS_BAR;
     public static PacketSnapshot PACKET_HEADER_AND_FOOTER;
+
+    public static PacketSnapshot PACKET_PLAYER_POS_AND_LOOK_LEGACY;
+    // For 1.19 we need to spawn player outside world to avoid stuck in terrain loading
+    public static PacketSnapshot PACKET_PLAYER_POS_AND_LOOK;
 
     public static PacketSnapshot PACKET_TITLE_TITLE;
     public static PacketSnapshot PACKET_TITLE_SUBTITLE;
@@ -63,6 +66,7 @@ public final class PacketSnapshots {
         loginSuccess.setUuid(uuid);
 
         PacketJoinGame joinGame = new PacketJoinGame();
+        String worldName = "minecraft:" + server.getConfig().getDimensionType().toLowerCase();
         joinGame.setEntityId(0);
         joinGame.setEnableRespawnScreen(true);
         joinGame.setFlat(false);
@@ -73,7 +77,6 @@ public final class PacketSnapshots {
         joinGame.setReducedDebugInfo(true);
         joinGame.setDebug(false);
         joinGame.setViewDistance(0);
-        String worldName = "minecraft:" + server.getConfig().getDimensionType().toLowerCase();
         joinGame.setWorldName(worldName);
         joinGame.setWorldNames(worldName);
         joinGame.setHashedSeed(0);
@@ -84,13 +87,15 @@ public final class PacketSnapshots {
         playerAbilities.setFlags(0x02);
         playerAbilities.setFieldOfView(0.1F);
 
-        PacketPlayerPositionAndLook positionAndLook = new PacketPlayerPositionAndLook();
-        positionAndLook.setX(server.getConfig().getSpawnPosition().getX());
-        positionAndLook.setY(server.getConfig().getSpawnPosition().getY());
-        positionAndLook.setZ(server.getConfig().getSpawnPosition().getZ());
-        positionAndLook.setYaw(server.getConfig().getSpawnPosition().getYaw());
-        positionAndLook.setPitch(server.getConfig().getSpawnPosition().getPitch());
-        positionAndLook.setTeleportId(ThreadLocalRandom.current().nextInt());
+        int teleportId = ThreadLocalRandom.current().nextInt();
+
+        PacketPlayerPositionAndLook positionAndLookLegacy
+                = new PacketPlayerPositionAndLook(0, 64, 0, 0, 0, teleportId);
+
+        PacketPlayerPositionAndLook positionAndLook
+                = new PacketPlayerPositionAndLook(0, 400, 0, 0, 0, teleportId);
+
+        PacketSpawnPosition packetSpawnPosition = new PacketSpawnPosition(0, 400, 0);
 
         PacketDeclareCommands declareCommands = new PacketDeclareCommands();
         declareCommands.setCommands(Collections.emptyList());
@@ -100,16 +105,12 @@ public final class PacketSnapshots {
         info.setGameMode(server.getConfig().getGameMode());
         info.setUuid(uuid);
 
-        PacketSpawnPosition packetSpawnPosition = new PacketSpawnPosition();
-        packetSpawnPosition.setX((long) server.getConfig().getSpawnPosition().getX());
-        packetSpawnPosition.setY((long) server.getConfig().getSpawnPosition().getY());
-        packetSpawnPosition.setZ((long) server.getConfig().getSpawnPosition().getZ());
-
         PACKET_LOGIN_SUCCESS = PacketSnapshot.of(loginSuccess);
         PACKET_JOIN_GAME = PacketSnapshot.of(joinGame);
+        PACKET_PLAYER_POS_AND_LOOK_LEGACY = PacketSnapshot.of(positionAndLookLegacy);
+        PACKET_PLAYER_POS_AND_LOOK = PacketSnapshot.of(positionAndLook);
         PACKET_SPAWN_POSITION = PacketSnapshot.of(packetSpawnPosition);
         PACKET_PLAYER_ABILITIES = PacketSnapshot.of(playerAbilities);
-        PACKET_PLAYER_POS = PacketSnapshot.of(positionAndLook);
         PACKET_PLAYER_INFO = PacketSnapshot.of(info);
 
         PACKET_DECLARE_COMMANDS = PacketSnapshot.of(declareCommands);
