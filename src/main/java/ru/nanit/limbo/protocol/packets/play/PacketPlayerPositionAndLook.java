@@ -62,15 +62,18 @@ public class PacketPlayerPositionAndLook implements PacketOut {
     @Override
     public void encode(ByteMessage msg, Version version) {
         msg.writeDouble(x);
-        msg.writeDouble(y);
+        msg.writeDouble(y + (version.less(Version.V1_8) ? 1.62F : 0));
         msg.writeDouble(z);
         msg.writeFloat(yaw);
         msg.writeFloat(pitch);
 
-        if (version.less(Version.V1_9)) {
-            msg.writeBoolean(true); // On ground
-        } else {
+        if (version.moreOrEqual(Version.V1_8)) {
             msg.writeByte(flags);
+        } else {
+            msg.writeBoolean(true);
+        }
+
+        if (version.moreOrEqual(Version.V1_9)) {
             msg.writeVarInt(teleportId);
         }
 
