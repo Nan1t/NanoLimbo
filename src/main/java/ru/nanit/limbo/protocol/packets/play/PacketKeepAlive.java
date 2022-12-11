@@ -37,8 +37,10 @@ public class PacketKeepAlive implements Packet {
     public void encode(ByteMessage msg, Version version) {
         if (version.moreOrEqual(Version.V1_12_2)) {
             msg.writeLong(id);
-        } else {
+        } else if (version.moreOrEqual(Version.V1_8)) {
             msg.writeVarInt((int) id);
+        } else {
+            msg.writeInt((int) id);
         }
     }
 
@@ -46,8 +48,10 @@ public class PacketKeepAlive implements Packet {
     public void decode(ByteMessage msg, Version version) {
         if (version.moreOrEqual(Version.V1_12_2)) {
             this.id = msg.readLong();
-        } else {
+        } else if (version.moreOrEqual(Version.V1_8)) {
             this.id = msg.readVarInt();
+        } else {
+            this.id = msg.readInt();
         }
     }
 

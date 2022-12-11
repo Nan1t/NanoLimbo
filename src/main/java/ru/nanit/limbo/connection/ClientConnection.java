@@ -46,6 +46,7 @@ import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
 
 public class ClientConnection extends ChannelInboundHandlerAdapter {
 
@@ -123,41 +124,48 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
             return;
         }
 
-        writePacket(PacketSnapshots.PACKET_LOGIN_SUCCESS);
+        sendPacket(PacketSnapshots.PACKET_LOGIN_SUCCESS);
         updateState(State.PLAY);
-
         server.getConnections().addConnection(this);
 
-        writePacket(PacketSnapshots.PACKET_JOIN_GAME);
-        writePacket(PacketSnapshots.PACKET_PLAYER_ABILITIES);
-        writePacket(PacketSnapshots.PACKET_PLAYER_POS);
-        if (clientVersion.moreOrEqual(Version.V1_19_3)) {
-            writePacket(PacketSnapshots.PACKET_SPAWN_POSITION);
+        Runnable sendPlayPackets = () -> {
+            writePacket(PacketSnapshots.PACKET_JOIN_GAME);
+            writePacket(PacketSnapshots.PACKET_PLAYER_ABILITIES);
+            writePacket(PacketSnapshots.PACKET_PLAYER_POS);
+
+            if (clientVersion.moreOrEqual(Version.V1_19_3))
+                writePacket(PacketSnapshots.PACKET_SPAWN_POSITION);
+
+            if (server.getConfig().isUsePlayerList() || clientVersion.equals(Version.V1_16_4))
+                writePacket(PacketSnapshots.PACKET_PLAYER_INFO);
+
+            if (clientVersion.moreOrEqual(Version.V1_13)) {
+                writePacket(PacketSnapshots.PACKET_DECLARE_COMMANDS);
+
+                if (PacketSnapshots.PACKET_PLUGIN_MESSAGE != null)
+                    writePacket(PacketSnapshots.PACKET_PLUGIN_MESSAGE);
+            }
+
+            if (PacketSnapshots.PACKET_BOSS_BAR != null && clientVersion.moreOrEqual(Version.V1_9))
+                writePacket(PacketSnapshots.PACKET_BOSS_BAR);
+
+            if (PacketSnapshots.PACKET_JOIN_MESSAGE != null)
+                writePacket(PacketSnapshots.PACKET_JOIN_MESSAGE);
+
+            if (PacketSnapshots.PACKET_TITLE_TITLE != null && clientVersion.moreOrEqual(Version.V1_8))
+                writeTitle();
+
+            if (PacketSnapshots.PACKET_HEADER_AND_FOOTER != null && clientVersion.moreOrEqual(Version.V1_8))
+                writePacket(PacketSnapshots.PACKET_HEADER_AND_FOOTER);
+
+            sendKeepAlive();
+        };
+
+        if (clientVersion.lessOrEqual(Version.V1_7_6)) {
+            this.channel.eventLoop().schedule(sendPlayPackets, 100, TimeUnit.MILLISECONDS);
+        } else {
+            sendPlayPackets.run();
         }
-
-        if (server.getConfig().isUsePlayerList() || clientVersion.equals(Version.V1_16_4))
-            writePacket(PacketSnapshots.PACKET_PLAYER_INFO);
-
-        if (clientVersion.moreOrEqual(Version.V1_13)) {
-            writePacket(PacketSnapshots.PACKET_DECLARE_COMMANDS);
-
-            if (PacketSnapshots.PACKET_PLUGIN_MESSAGE != null)
-                writePacket(PacketSnapshots.PACKET_PLUGIN_MESSAGE);
-        }
-
-        if (PacketSnapshots.PACKET_BOSS_BAR != null && clientVersion.moreOrEqual(Version.V1_9))
-            writePacket(PacketSnapshots.PACKET_BOSS_BAR);
-
-        if (PacketSnapshots.PACKET_JOIN_MESSAGE != null)
-            writePacket(PacketSnapshots.PACKET_JOIN_MESSAGE);
-
-        if (PacketSnapshots.PACKET_TITLE_TITLE != null)
-            writeTitle();
-
-        if (PacketSnapshots.PACKET_HEADER_AND_FOOTER != null)
-            writePacket(PacketSnapshots.PACKET_HEADER_AND_FOOTER);
-
-        sendKeepAlive();
     }
 
     public void disconnectLogin(String reason) {
