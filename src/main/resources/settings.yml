@@ -20,12 +20,13 @@ ping:
 dimension: THE_END
 
 # Whether to display the player in the player list
-# For 1.16.5 clients player list will be sent even if disabled, to avoid crash
+# For 1.16.5 clients, player list will be sent even if disabled, to avoid crash
 playerList:
   enable: false
   username: 'NanoLimbo'
 
 # Whether to display header and footer in player list
+# For 1.8+ clients
 headerAndFooter:
   enable: false
   header: '{"text": "&eWelcome!"}'
@@ -44,9 +45,11 @@ spawnPosition:
 # 1 - Creative (hide HP and food bar)
 # 2 - Adventure
 # 3 - Spectator (hide all UI bars)
+# Spectator works on 1.8+ clients
 gameMode: 3
 
 # Server name which is shown under F3
+# For 1.13+ clients
 brandName:
   enable: true
   content: 'NanoLimbo'
@@ -57,7 +60,7 @@ joinMessage:
   text: '{"text": "&eWelcome to the Limbo!"}'
 
 # BossBar displays when player join to server
-# Works on 1.9+ clients only
+# For 1.9+ clients
 bossBar:
   enable: true
   text: '{"text": "Welcome to the Limbo!"}'
@@ -68,6 +71,7 @@ bossBar:
   division: SOLID
 
 # Display title and subtitle
+# For 1.8+ clients
 title:
   enable: true
   # Set title text value empty, if you need only subtitle
