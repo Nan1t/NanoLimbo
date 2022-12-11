@@ -41,23 +41,43 @@ The server **doesn't** support snapshots.
 
 ### Commands
 
+### Commands in runable JAR
+
 * `help` - Show help message
 * `conn` - Display amount of connections
 * `mem` - Display memory usage stats
 * `stop` - Stop the server
 
+### Commands as a bungee plugin
+
+* `limbo help` - Show help message of the plugin
+* `limbo conn` - Display amount of connections in the limbo
+* `limbo mem` - Display memory usage stats of the server
+* `limbo stop` - Stop the server
+
+
 Note, that it also will be closed correctly if you just press `Ctrl+C`.
 
 ### Installation
 
+### Running the jar
+
 The installation process is simple.
 
-1. Download the latest version of program **[here](https://github.com/Nan1t/NanoLimbo/releases)**
+1. Download the latest version of program **[here](https://github.com/Angelillo15/BungeeNanoLimbo/actions)**
 2. Put jar file in the folder you want.
 3. Create a start script as you did it for Bukkit or BungeeCord with command like this:
 `java -jar NanoLimbo-<version>.jar`
 4. The server will create `settings.yml` file. It's a server configuration.
 5. Configure it as you want and restart server.
+
+### As a bungeecord plugin
+
+1. Download the latest release of the plugin **[here](https://github.com/Angelillo15/BungeeNanoLimbo/actions)**
+2. Put the jar file in the plugin's folder of your proxy
+3. Start the server
+4. Edit the file called settings.yml in the plugin's folder
+5. Select a not used port and open it
 
 ### About player info forwarding
 
@@ -93,4 +113,4 @@ gradlew shadowJar
 
 ### Contacts
 
-If you have any question or suggestion, join to [Discord server](https://discord.gg/4VGP3Gv)
+If you have any question or suggestion, join to [Discord server](https://discord.angelillo15.es/)

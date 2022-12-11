@@ -29,4 +29,9 @@ public class CmdHelp implements Command {
     public String description() {
         return "Show this message";
     }
+
+    @Override
+    public String name() {
+        return "help";
+    }
 }

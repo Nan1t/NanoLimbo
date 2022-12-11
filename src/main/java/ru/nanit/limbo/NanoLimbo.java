@@ -20,11 +20,15 @@ package ru.nanit.limbo;
 import ru.nanit.limbo.server.LimboServer;
 import ru.nanit.limbo.server.Logger;
 
-public final class NanoLimbo {
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+public class NanoLimbo {
 
     public static void main(String[] args) {
         try {
-            new LimboServer().start();
+            Path path = Paths.get("./");
+            new LimboServer(path, false, null).start();
         } catch (Exception e) {
             Logger.error("Cannot start server: ", e);
         }

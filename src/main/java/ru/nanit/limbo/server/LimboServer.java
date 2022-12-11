@@ -17,6 +17,7 @@
 
 package ru.nanit.limbo.server;
 
+import es.angelillo15.limbo.NanoLimboLoader;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
@@ -27,14 +28,17 @@ import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.util.ResourceLeakDetector;
+import ru.nanit.limbo.NanoLimbo;
 import ru.nanit.limbo.configuration.LimboConfig;
 import ru.nanit.limbo.connection.ClientChannelInitializer;
 import ru.nanit.limbo.connection.ClientConnection;
 import ru.nanit.limbo.connection.PacketHandler;
 import ru.nanit.limbo.connection.PacketSnapshots;
+import ru.nanit.limbo.server.Bungee.Utils;
 import ru.nanit.limbo.world.dimension.DimensionRegistry;
 
-import java.nio.file.Paths;
+import java.io.File;
+import java.nio.file.Path;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -70,13 +74,28 @@ public final class LimboServer {
     public CommandManager getCommandManager() {
         return commandManager;
     }
+    private final Path root;
+    private boolean bungee;
+    private NanoLimboLoader nanoLimbo;
+    public LimboServer(Path root, Boolean bungee, NanoLimboLoader nanoLimbo){
+        this.root = root;
+        this.bungee = bungee;
+        this.nanoLimbo = nanoLimbo;
+
+    }
 
     public void start() throws Exception {
         Logger.info("Starting server...");
 
         ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.DISABLED);
+        if(bungee){
+            File theDir = new File(root.toString());
+            if (!theDir.exists()){
+                theDir.mkdirs();
+            }
+        }
 
-        config = new LimboConfig(Paths.get("./"));
+        config = new LimboConfig(root);
         config.load();
 
         packetHandler = new PacketHandler(this);
@@ -98,7 +117,12 @@ public final class LimboServer {
 
         commandManager = new CommandManager();
         commandManager.registerAll(this);
-        commandManager.start();
+        if(!bungee){
+            commandManager.start();
+        }else {
+
+            Utils.RegisterCommands(nanoLimbo, this);
+        }
 
         System.gc();
     }

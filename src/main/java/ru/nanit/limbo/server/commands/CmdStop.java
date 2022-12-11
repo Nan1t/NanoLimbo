@@ -13,4 +13,9 @@ public class CmdStop implements Command {
     public String description() {
         return "Stop the server";
     }
+
+    @Override
+    public String name() {
+        return "stop";
+    }
 }
