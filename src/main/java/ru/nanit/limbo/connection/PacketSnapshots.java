@@ -33,6 +33,7 @@ public final class PacketSnapshots {
 
     public static PacketSnapshot PACKET_LOGIN_SUCCESS;
     public static PacketSnapshot PACKET_JOIN_GAME;
+    public static PacketSnapshot PACKET_SPAWN_POSITION;
     public static PacketSnapshot PACKET_PLUGIN_MESSAGE;
     public static PacketSnapshot PACKET_PLAYER_ABILITIES;
     public static PacketSnapshot PACKET_PLAYER_INFO;
@@ -99,8 +100,14 @@ public final class PacketSnapshots {
         info.setGameMode(server.getConfig().getGameMode());
         info.setUuid(uuid);
 
+        PacketSpawnPosition packetSpawnPosition = new PacketSpawnPosition();
+        packetSpawnPosition.setX((long) server.getConfig().getSpawnPosition().getX());
+        packetSpawnPosition.setY((long) server.getConfig().getSpawnPosition().getY());
+        packetSpawnPosition.setZ((long) server.getConfig().getSpawnPosition().getZ());
+
         PACKET_LOGIN_SUCCESS = PacketSnapshot.of(loginSuccess);
         PACKET_JOIN_GAME = PacketSnapshot.of(joinGame);
+        PACKET_SPAWN_POSITION = PacketSnapshot.of(packetSpawnPosition);
         PACKET_PLAYER_ABILITIES = PacketSnapshot.of(playerAbilities);
         PACKET_PLAYER_POS = PacketSnapshot.of(positionAndLook);
         PACKET_PLAYER_INFO = PacketSnapshot.of(info);
