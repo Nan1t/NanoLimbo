@@ -36,6 +36,8 @@ Symbol `X` means all minor versions.
 - [x] 1.18.X
 - [x] 1.19
 - [x] 1.19.1
+- [x] 1.19.2
+- [x] 1.19.3
 
 The server **doesn't** support snapshots.
 
@@ -88,7 +90,7 @@ Required software:
 To build minimized .jar, go to project root and write in terminal:
 
 ```
-gradlew shadowJar
+./gradlew shadowJar
 ```
 
 ### Contacts
