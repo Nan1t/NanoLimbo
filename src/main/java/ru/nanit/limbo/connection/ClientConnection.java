@@ -131,6 +131,9 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         writePacket(PacketSnapshots.PACKET_JOIN_GAME);
         writePacket(PacketSnapshots.PACKET_PLAYER_ABILITIES);
         writePacket(PacketSnapshots.PACKET_PLAYER_POS);
+        if (clientVersion.moreOrEqual(Version.V1_19_3)) {
+            writePacket(PacketSnapshots.PACKET_SPAWN_POSITION);
+        }
 
         if (server.getConfig().isUsePlayerList() || clientVersion.equals(Version.V1_16_4))
             writePacket(PacketSnapshots.PACKET_PLAYER_INFO);

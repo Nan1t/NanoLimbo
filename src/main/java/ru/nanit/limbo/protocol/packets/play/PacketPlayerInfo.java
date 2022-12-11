@@ -21,6 +21,7 @@ import ru.nanit.limbo.protocol.ByteMessage;
 import ru.nanit.limbo.protocol.PacketOut;
 import ru.nanit.limbo.protocol.registry.Version;
 
+import java.util.EnumSet;
 import java.util.UUID;
 
 /**
@@ -46,6 +47,24 @@ public class PacketPlayerInfo implements PacketOut {
 
     @Override
     public void encode(ByteMessage msg, Version version) {
+        if (version.moreOrEqual(Version.V1_19_3)) {
+            EnumSet<Action> actions = EnumSet.noneOf(Action.class);
+            actions.add(Action.ADD_PLAYER);
+            actions.add(Action.UPDATE_LISTED);
+            actions.add(Action.UPDATE_GAMEMODE);
+            msg.writeEnumSet(actions, Action.class);
+
+            msg.writeVarInt(1); // Array length (1 element)
+            msg.writeUuid(uuid); // UUID
+            msg.writeString(username); //Username
+            msg.writeVarInt(0); //Properties (0 is empty)
+
+            msg.writeBoolean(true); //Update listed
+
+            msg.writeVarInt(gameMode); //Gamemode
+
+            return;
+        }
         msg.writeVarInt(0); // Add player action
         msg.writeVarInt(1);
         msg.writeUuid(uuid);
@@ -59,4 +78,13 @@ public class PacketPlayerInfo implements PacketOut {
         }
     }
 
+    public static enum Action {
+
+        ADD_PLAYER,
+        INITIALIZE_CHAT,
+        UPDATE_GAMEMODE,
+        UPDATE_LISTED,
+        UPDATE_LATENCY,
+        UPDATE_DISPLAY_NAME;
+    }
 }

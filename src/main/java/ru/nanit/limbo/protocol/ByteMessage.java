@@ -34,6 +34,9 @@ import java.nio.channels.GatheringByteChannel;
 import java.nio.channels.ScatteringByteChannel;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.BitSet;
+import java.util.EnumSet;
 import java.util.UUID;
 
 public class ByteMessage extends ByteBuf {
@@ -188,6 +191,24 @@ public class ByteMessage extends ByteBuf {
         catch (IOException e) {
             throw new EncoderException("Cannot write NBT CompoundTag");
         }
+    }
+
+    public <E extends Enum<E>> void writeEnumSet(EnumSet<E> enumset, Class<E> oclass) {
+        E[] enums = oclass.getEnumConstants();
+        BitSet bits = new BitSet(enums.length);
+
+        for (int i = 0; i < enums.length; ++i) {
+            bits.set(i, enumset.contains(enums[i]));
+        }
+
+        writeFixedBitSet(bits, enums.length, buf);
+    }
+
+    private static void writeFixedBitSet(BitSet bits, int size, ByteBuf buf) {
+        if (bits.length() > size) {
+            throw new StackOverflowError("BitSet too large (expected " + size + " got " + bits.size() + ")");
+        }
+        buf.writeBytes(Arrays.copyOf(bits.toByteArray(), (size + 8) >> 3));
     }
 
     /* Delegated methods */
