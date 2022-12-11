@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ua.nanit.limbo.world.dimension;
+package ua.nanit.limbo.world;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -43,8 +43,8 @@ public final class DimensionRegistry {
     private CompoundBinaryTag codec_1_19_1;
     private CompoundBinaryTag oldCodec;
 
-    public DimensionRegistry(ClassLoader server) {
-        this.classLoader = server;
+    public DimensionRegistry(ClassLoader classLoader) {
+        this.classLoader = classLoader;
     }
 
     public CompoundBinaryTag getCodec_1_16() {
@@ -76,12 +76,12 @@ public final class DimensionRegistry {
     }
 
     public void load(String def) throws IOException {
-        codec_1_16 = readCodecFile("dimension/codec_1_16.snbt");
-        codec_1_18_2 = readCodecFile("dimension/codec_1_18_2.snbt");
-        codec_1_19 = readCodecFile("dimension/codec_1_19.snbt");
-        codec_1_19_1 = readCodecFile("dimension/codec_1_19_1.snbt");
+        codec_1_16 = readCodecFile("/dimension/codec_1_16.snbt");
+        codec_1_18_2 = readCodecFile("/dimension/codec_1_18_2.snbt");
+        codec_1_19 = readCodecFile("/dimension/codec_1_19.snbt");
+        codec_1_19_1 = readCodecFile("/dimension/codec_1_19_1.snbt");
         // On 1.16-1.16.1 different codec format
-        oldCodec = readCodecFile("dimension/codec_old.snbt");
+        oldCodec = readCodecFile("/dimension/codec_old.snbt");
 
         defaultDimension_1_16 = getDefaultDimension(def, codec_1_16);
         defaultDimension_1_18_2 = getDefaultDimension(def, codec_1_18_2);
@@ -108,10 +108,11 @@ public final class DimensionRegistry {
     }
 
     private CompoundBinaryTag readCodecFile(String resPath) throws IOException {
-        InputStream in = classLoader.getResourceAsStream(resPath);
+        String originalPath = resPath.startsWith("/") ? resPath.substring(1) : resPath;
+        InputStream in = classLoader.getResourceAsStream(originalPath);
 
         if (in == null)
-            throw new FileNotFoundException("Cannot find dimension registry file in " + resPath);
+            throw new FileNotFoundException("Cannot find dimension registry file");
 
         return TagStringIO.get().asCompound(streamToString(in));
     }

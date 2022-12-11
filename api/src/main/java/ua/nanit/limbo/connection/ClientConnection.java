@@ -17,6 +17,19 @@
 
 package ua.nanit.limbo.connection;
 
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+import java.security.InvalidKeyException;
+import java.security.MessageDigest;
+import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+
+import org.jetbrains.annotations.NotNull;
+
 import com.grack.nanojson.JsonArray;
 import com.grack.nanojson.JsonObject;
 import com.grack.nanojson.JsonParser;
@@ -26,32 +39,17 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-
-import org.jetbrains.annotations.NotNull;
-
 import ua.nanit.limbo.connection.pipeline.PacketDecoder;
 import ua.nanit.limbo.connection.pipeline.PacketEncoder;
 import ua.nanit.limbo.protocol.ByteMessage;
 import ua.nanit.limbo.protocol.Packet;
-import ru.nanit.limbo.protocol.packets.login.*;
-import ru.nanit.limbo.protocol.packets.play.*;
+import ua.nanit.limbo.protocol.packets.login.PacketDisconnect;
+import ua.nanit.limbo.protocol.packets.play.PacketKeepAlive;
 import ua.nanit.limbo.protocol.registry.State;
 import ua.nanit.limbo.protocol.registry.Version;
 import ua.nanit.limbo.server.LimboServer;
 import ua.nanit.limbo.server.Logger;
 import ua.nanit.limbo.util.UuidUtil;
-import ua.nanit.limbo.protocol.packets.login.PacketDisconnect;
-import ua.nanit.limbo.protocol.packets.play.PacketKeepAlive;
-
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
-import java.security.InvalidKeyException;
-import java.security.MessageDigest;
-import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class ClientConnection extends ChannelInboundHandlerAdapter {
 
@@ -129,38 +127,53 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
             return;
         }
 
-        writePacket(server.getPacketSnapshots().getPacketLoginSuccess());
+        sendPacket(server.getPacketSnapshots().getPacketLoginSuccess());
         updateState(State.PLAY);
-
         server.getConnections().addConnection(this);
 
-        writePacket(server.getPacketSnapshots().getPacketJoinGame());
-        writePacket(server.getPacketSnapshots().getPacketPlayerAbilities());
-        writePacket(server.getPacketSnapshots().getPacketPlayerPos());
+        Runnable sendPlayPackets = () -> {
+            writePacket(server.getPacketSnapshots().getPacketJoinGame());
+            writePacket(server.getPacketSnapshots().getPacketPlayerAbilities());
 
-        if (server.getConfig().isUsePlayerList() || clientVersion.equals(Version.V1_16_4))
-            writePacket(server.getPacketSnapshots().getPacketPlayerInfo());
+            if (clientVersion.less(Version.V1_9)) {
+                writePacket(server.getPacketSnapshots().getPacketPlayerPosAndLookLegacy());
+            } else {
+                writePacket(server.getPacketSnapshots().getPacketPlayerPosAndLook());
+            }
 
-        if (clientVersion.moreOrEqual(Version.V1_13)) {
-            writePacket(server.getPacketSnapshots().getPacketDeclareCommands());
+            if (clientVersion.moreOrEqual(Version.V1_19_3))
+                writePacket(server.getPacketSnapshots().getPacketSpawnPosition());
 
-            if (server.getPacketSnapshots().getPacketPluginMessage() != null)
-                writePacket(server.getPacketSnapshots().getPacketPluginMessage());
+            if (server.getConfig().isUsePlayerList() || clientVersion.equals(Version.V1_16_4))
+                writePacket(server.getPacketSnapshots().getPacketPlayerInfo());
+
+            if (clientVersion.moreOrEqual(Version.V1_13)) {
+                writePacket(server.getPacketSnapshots().getPacketDeclareCommands());
+
+                if (server.getPacketSnapshots().getPacketPluginMessage() != null)
+                    writePacket(server.getPacketSnapshots().getPacketPluginMessage());
+            }
+
+            if (server.getPacketSnapshots().getPacketBossBar() != null && clientVersion.moreOrEqual(Version.V1_9))
+                writePacket(server.getPacketSnapshots().getPacketBossBar());
+
+            if (server.getPacketSnapshots().getPacketJoinMessage() != null)
+                writePacket(server.getPacketSnapshots().getPacketJoinMessage());
+
+            if (server.getPacketSnapshots().getPacketTitleTitle() != null && clientVersion.moreOrEqual(Version.V1_8))
+                writeTitle();
+
+            if (server.getPacketSnapshots().getPacketHeaderAndFooter() != null && clientVersion.moreOrEqual(Version.V1_8))
+                writePacket(server.getPacketSnapshots().getPacketHeaderAndFooter());
+
+            sendKeepAlive();
+        };
+
+        if (clientVersion.lessOrEqual(Version.V1_7_6)) {
+            this.channel.eventLoop().schedule(sendPlayPackets, 100, TimeUnit.MILLISECONDS);
+        } else {
+            sendPlayPackets.run();
         }
-
-        if (server.getPacketSnapshots().getPacketBossBar() != null && clientVersion.moreOrEqual(Version.V1_9))
-            writePacket(server.getPacketSnapshots().getPacketBossBar());
-
-        if (server.getPacketSnapshots().getPacketJoinMessage() != null)
-            writePacket(server.getPacketSnapshots().getPacketJoinMessage());
-
-        if (server.getPacketSnapshots().getPacketTitleTitle() != null)
-            writeTitle();
-
-        if (server.getPacketSnapshots().getPacketHeaderAndFooter() != null)
-            writePacket(server.getPacketSnapshots().getPacketHeaderAndFooter());
-
-        sendKeepAlive();
     }
 
     public void disconnectLogin(String reason) {

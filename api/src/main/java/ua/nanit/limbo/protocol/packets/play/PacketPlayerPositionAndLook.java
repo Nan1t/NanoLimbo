@@ -28,49 +28,34 @@ public class PacketPlayerPositionAndLook implements PacketOut {
     private double z;
     private float yaw;
     private float pitch;
-    private byte flags = 0x08;
     private int teleportId;
 
-    public void setX(double x) {
+    public PacketPlayerPositionAndLook() {}
+
+    public PacketPlayerPositionAndLook(double x, double y, double z, float yaw, float pitch, int teleportId) {
         this.x = x;
-    }
-
-    public void setY(double y) {
         this.y = y;
-    }
-
-    public void setZ(double z) {
         this.z = z;
-    }
-
-    public void setYaw(float yaw) {
         this.yaw = yaw;
-    }
-
-    public void setPitch(float pitch) {
         this.pitch = pitch;
-    }
-
-    public void setFlags(byte flags) {
-        this.flags = flags;
-    }
-
-    public void setTeleportId(int teleportId) {
         this.teleportId = teleportId;
     }
 
     @Override
     public void encode(ByteMessage msg, Version version) {
         msg.writeDouble(x);
-        msg.writeDouble(y);
+        msg.writeDouble(y + (version.less(Version.V1_8) ? 1.62F : 0));
         msg.writeDouble(z);
         msg.writeFloat(yaw);
         msg.writeFloat(pitch);
 
-        if (version.less(Version.V1_9)) {
-            msg.writeBoolean(true); // On ground
+        if (version.moreOrEqual(Version.V1_8)) {
+            msg.writeByte(0x08);
         } else {
-            msg.writeByte(flags);
+            msg.writeBoolean(true);
+        }
+
+        if (version.moreOrEqual(Version.V1_9)) {
             msg.writeVarInt(teleportId);
         }
 

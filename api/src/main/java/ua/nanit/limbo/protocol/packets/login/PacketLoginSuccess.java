@@ -40,8 +40,10 @@ public class PacketLoginSuccess implements PacketOut {
     public void encode(ByteMessage msg, Version version) {
         if (version.moreOrEqual(Version.V1_16)) {
             msg.writeUuid(uuid);
-        } else {
+        } else if (version.moreOrEqual(Version.V1_7_6)) {
             msg.writeString(uuid.toString());
+        } else {
+            msg.writeString(uuid.toString().replace("-", ""));
         }
         msg.writeString(username);
         if (version.moreOrEqual(Version.V1_19)) {

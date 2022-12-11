@@ -35,7 +35,7 @@ import ua.nanit.limbo.connection.ClientChannelInitializer;
 import ua.nanit.limbo.connection.ClientConnection;
 import ua.nanit.limbo.connection.PacketHandler;
 import ua.nanit.limbo.connection.PacketSnapshots;
-import ua.nanit.limbo.world.dimension.DimensionRegistry;
+import ua.nanit.limbo.world.DimensionRegistry;
 
 public final class LimboServer {
     private boolean running = false;

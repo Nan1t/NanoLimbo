@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ua.nanit.limbo.world.dimension;
+package ua.nanit.limbo.world;
 
 import net.kyori.adventure.nbt.CompoundBinaryTag;
 

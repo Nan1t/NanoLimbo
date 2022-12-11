@@ -20,7 +20,7 @@ package ua.nanit.limbo.connection;
 import ua.nanit.limbo.LimboConstants;
 import ua.nanit.limbo.protocol.PacketSnapshot;
 import ua.nanit.limbo.protocol.packets.login.PacketLoginSuccess;
-import ru.nanit.limbo.protocol.packets.play.*;
+import ua.nanit.limbo.protocol.packets.play.*;
 import ua.nanit.limbo.server.LimboServer;
 import ua.nanit.limbo.server.data.Title;
 import ua.nanit.limbo.util.UuidUtil;
@@ -46,14 +46,18 @@ public final class PacketSnapshots {
 
     private PacketSnapshot packetLoginSuccess;
     private PacketSnapshot packetJoinGame;
+    private PacketSnapshot packetSpawnPosition;
     private PacketSnapshot packetPluginMessage;
     private PacketSnapshot packetPlayerAbilities;
     private PacketSnapshot packetPlayerInfo;
     private PacketSnapshot packetDeclareCommands;
-    private PacketSnapshot packetPlayerPos;
     private PacketSnapshot packetJoinMessage;
     private PacketSnapshot packetBossBar;
     private PacketSnapshot packetHeaderAndFooter;
+
+    private PacketSnapshot packetPlayerPosAndLookLegacy;
+    // For 1.19 we need to spawn player outside world to avoid stuck in terrain loading
+    private PacketSnapshot packetPlayerPosAndLook;
 
     private PacketSnapshot packetTitleTitle;
     private PacketSnapshot packetTitleSubtitle;
@@ -73,6 +77,7 @@ public final class PacketSnapshots {
         loginSuccess.setUuid(uuid);
 
         PacketJoinGame joinGame = new PacketJoinGame();
+        String worldName = "minecraft:" + server.getConfig().getDimensionType().toLowerCase();
         joinGame.setEntityId(0);
         joinGame.setEnableRespawnScreen(true);
         joinGame.setFlat(false);
@@ -83,7 +88,6 @@ public final class PacketSnapshots {
         joinGame.setReducedDebugInfo(true);
         joinGame.setDebug(false);
         joinGame.setViewDistance(0);
-        String worldName = "minecraft:" + server.getConfig().getDimensionType().toLowerCase();
         joinGame.setWorldName(worldName);
         joinGame.setWorldNames(worldName);
         joinGame.setHashedSeed(0);
@@ -94,13 +98,15 @@ public final class PacketSnapshots {
         playerAbilities.setFlags(0x02);
         playerAbilities.setFieldOfView(0.1F);
 
-        PacketPlayerPositionAndLook positionAndLook = new PacketPlayerPositionAndLook();
-        positionAndLook.setX(server.getConfig().getSpawnPosition().getX());
-        positionAndLook.setY(server.getConfig().getSpawnPosition().getY());
-        positionAndLook.setZ(server.getConfig().getSpawnPosition().getZ());
-        positionAndLook.setYaw(server.getConfig().getSpawnPosition().getYaw());
-        positionAndLook.setPitch(server.getConfig().getSpawnPosition().getPitch());
-        positionAndLook.setTeleportId(ThreadLocalRandom.current().nextInt());
+        int teleportId = ThreadLocalRandom.current().nextInt();
+
+        PacketPlayerPositionAndLook positionAndLookLegacy
+                = new PacketPlayerPositionAndLook(0, 64, 0, 0, 0, teleportId);
+
+        PacketPlayerPositionAndLook positionAndLook
+                = new PacketPlayerPositionAndLook(0, 400, 0, 0, 0, teleportId);
+
+        PacketSpawnPosition spawnPosition = new PacketSpawnPosition(0, 400, 0);
 
         PacketDeclareCommands declareCommands = new PacketDeclareCommands();
         declareCommands.setCommands(Collections.emptyList());
@@ -112,8 +118,10 @@ public final class PacketSnapshots {
 
         packetLoginSuccess = PacketSnapshot.of(loginSuccess);
         packetJoinGame = PacketSnapshot.of(joinGame);
+        packetPlayerPosAndLookLegacy = PacketSnapshot.of(positionAndLookLegacy);
+        packetPlayerPosAndLook = PacketSnapshot.of(positionAndLook);
+        packetSpawnPosition = PacketSnapshot.of(spawnPosition);
         packetPlayerAbilities = PacketSnapshot.of(playerAbilities);
-        packetPlayerPos = PacketSnapshot.of(positionAndLook);
         packetPlayerInfo = PacketSnapshot.of(info);
 
         packetDeclareCommands = PacketSnapshot.of(declareCommands);
@@ -191,6 +199,10 @@ public final class PacketSnapshots {
         return packetJoinGame;
     }
 
+    public PacketSnapshot getPacketSpawnPosition() {
+        return packetSpawnPosition;
+    }
+
     public PacketSnapshot getPacketPluginMessage() {
         return packetPluginMessage;
     }
@@ -207,10 +219,6 @@ public final class PacketSnapshots {
         return packetDeclareCommands;
     }
 
-    public PacketSnapshot getPacketPlayerPos() {
-        return packetPlayerPos;
-    }
-
     public PacketSnapshot getPacketJoinMessage() {
         return packetJoinMessage;
     }
@@ -221,6 +229,14 @@ public final class PacketSnapshots {
 
     public PacketSnapshot getPacketHeaderAndFooter() {
         return packetHeaderAndFooter;
+    }
+
+    public PacketSnapshot getPacketPlayerPosAndLookLegacy() {
+        return packetPlayerPosAndLookLegacy;
+    }
+
+    public PacketSnapshot getPacketPlayerPosAndLook() {
+        return packetPlayerPosAndLook;
     }
 
     public PacketSnapshot getPacketTitleTitle() {

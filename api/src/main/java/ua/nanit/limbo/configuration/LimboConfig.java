@@ -6,7 +6,6 @@ import ua.nanit.limbo.server.data.BossBar;
 import ua.nanit.limbo.server.data.InfoForwarding;
 import ua.nanit.limbo.server.data.PingData;
 import ua.nanit.limbo.server.data.Title;
-import ua.nanit.limbo.world.Location;
 
 public interface LimboConfig {
     SocketAddress getAddress();
@@ -16,8 +15,6 @@ public interface LimboConfig {
     PingData getPingData();
 
     String getDimensionType();
-
-    Location getSpawnPosition();
 
     int getGameMode();
 

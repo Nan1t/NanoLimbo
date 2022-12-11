@@ -36,7 +36,6 @@ import ua.nanit.limbo.server.data.InfoForwarding;
 import ua.nanit.limbo.server.data.PingData;
 import ua.nanit.limbo.server.data.Title;
 import ua.nanit.limbo.util.Colors;
-import ua.nanit.limbo.world.Location;
 
 public final class YamlLimboConfig implements LimboConfig {
 
@@ -48,7 +47,6 @@ public final class YamlLimboConfig implements LimboConfig {
     private PingData pingData;
 
     private String dimensionType;
-    private Location spawnPosition;
     private int gameMode;
 
     private boolean useBrandName;
@@ -99,7 +97,6 @@ public final class YamlLimboConfig implements LimboConfig {
         if (dimensionType.equalsIgnoreCase("end")) {
             dimensionType = "the_end";
         }
-        spawnPosition = conf.node("spawnPosition").get(Location.class);
         gameMode = conf.node("gameMode").getInt();
         useBrandName = conf.node("brandName", "enable").getBoolean();
         useJoinMessage = conf.node("joinMessage", "enable").getBoolean();
@@ -159,7 +156,6 @@ public final class YamlLimboConfig implements LimboConfig {
                 .register(PingData.class, new PingData.Serializer())
                 .register(BossBar.class, new BossBar.Serializer())
                 .register(Title.class, new Title.Serializer())
-                .register(Location.class, new Location.Serializer())
                 .build();
     }
 
@@ -181,11 +177,6 @@ public final class YamlLimboConfig implements LimboConfig {
     @Override
     public String getDimensionType() {
         return dimensionType;
-    }
-
-    @Override
-    public Location getSpawnPosition() {
-        return spawnPosition;
     }
 
     @Override

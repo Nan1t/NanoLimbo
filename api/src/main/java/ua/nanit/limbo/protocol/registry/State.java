@@ -19,33 +19,16 @@ package ua.nanit.limbo.protocol.registry;
 
 import ua.nanit.limbo.protocol.Packet;
 import ua.nanit.limbo.protocol.packets.PacketHandshake;
-import ru.nanit.limbo.protocol.packets.login.*;
-import ru.nanit.limbo.protocol.packets.play.*;
-import ua.nanit.limbo.protocol.packets.play.PacketBossBar;
-import ua.nanit.limbo.protocol.packets.play.PacketChatMessage;
-import ua.nanit.limbo.protocol.packets.play.PacketJoinGame;
-import ua.nanit.limbo.protocol.packets.play.PacketKeepAlive;
-import ua.nanit.limbo.protocol.packets.play.PacketPlayerPositionAndLook;
-import ua.nanit.limbo.protocol.packets.play.PacketPluginMessage;
-import ua.nanit.limbo.protocol.packets.play.PacketTitleSetSubTitle;
-import ua.nanit.limbo.protocol.packets.play.PacketTitleSetTitle;
+import ua.nanit.limbo.protocol.packets.login.*;
+import ua.nanit.limbo.protocol.packets.play.*;
 import ua.nanit.limbo.protocol.packets.status.PacketStatusPing;
 import ua.nanit.limbo.protocol.packets.status.PacketStatusRequest;
 import ua.nanit.limbo.protocol.packets.status.PacketStatusResponse;
-import ua.nanit.limbo.protocol.packets.login.PacketDisconnect;
-import ua.nanit.limbo.protocol.packets.login.PacketLoginPluginRequest;
-import ua.nanit.limbo.protocol.packets.login.PacketLoginPluginResponse;
-import ua.nanit.limbo.protocol.packets.login.PacketLoginStart;
-import ua.nanit.limbo.protocol.packets.login.PacketLoginSuccess;
-import ua.nanit.limbo.protocol.packets.play.PacketDeclareCommands;
-import ua.nanit.limbo.protocol.packets.play.PacketPlayerAbilities;
-import ua.nanit.limbo.protocol.packets.play.PacketPlayerInfo;
-import ua.nanit.limbo.protocol.packets.play.PacketPlayerListHeader;
-import ua.nanit.limbo.protocol.packets.play.PacketTitleLegacy;
-import ua.nanit.limbo.protocol.packets.play.PacketTitleTimes;
 
 import java.util.*;
 import java.util.function.Supplier;
+
+import static ua.nanit.limbo.protocol.registry.Version.*;
 
 public enum State {
 
@@ -94,153 +77,169 @@ public enum State {
     PLAY(3) {
         {
             serverBound.register(PacketKeepAlive::new,
-                    map(0x00, Version.V1_8, Version.V1_8),
-                    map(0x0B, Version.V1_9, Version.V1_11_1),
-                    map(0x0C, Version.V1_12, Version.V1_12),
-                    map(0x0B, Version.V1_12_1, Version.V1_12_2),
-                    map(0x0E, Version.V1_13, Version.V1_13_2),
-                    map(0x0F, Version.V1_14, Version.V1_15_2),
-                    map(0x10, Version.V1_16, Version.V1_16_4),
-                    map(0x0F, Version.V1_17, Version.V1_18_2),
-                    map(0x11, Version.V1_19, Version.V1_19),
-                    map(0x12, Version.V1_19_1, Version.V1_19_1)
+                    map(0x00, V1_7_2, V1_8),
+                    map(0x0B, V1_9, V1_11_1),
+                    map(0x0C, V1_12, V1_12),
+                    map(0x0B, V1_12_1, V1_12_2),
+                    map(0x0E, V1_13, V1_13_2),
+                    map(0x0F, V1_14, V1_15_2),
+                    map(0x10, V1_16, V1_16_4),
+                    map(0x0F, V1_17, V1_18_2),
+                    map(0x11, V1_19, V1_19),
+                    map(0x12, V1_19_1, V1_19_1),
+                    map(0x11, V1_19_3, V1_19_3)
             );
 
             clientBound.register(PacketDeclareCommands::new,
-                    map(0x11, Version.V1_13, Version.V1_14_4),
-                    map(0x12, Version.V1_15, Version.V1_15_2),
-                    map(0x11, Version.V1_16, Version.V1_16_1),
-                    map(0x10, Version.V1_16_2, Version.V1_16_4),
-                    map(0x12, Version.V1_17, Version.V1_18_2),
-                    map(0x0F, Version.V1_19, Version.V1_19_1)
+                    map(0x11, V1_13, V1_14_4),
+                    map(0x12, V1_15, V1_15_2),
+                    map(0x11, V1_16, V1_16_1),
+                    map(0x10, V1_16_2, V1_16_4),
+                    map(0x12, V1_17, V1_18_2),
+                    map(0x0F, V1_19, V1_19_1),
+                    map(0x0E, V1_19_3, V1_19_3)
             );
             clientBound.register(PacketJoinGame::new,
-                    map(0x01, Version.V1_8, Version.V1_8),
-                    map(0x23, Version.V1_9, Version.V1_12_2),
-                    map(0x25, Version.V1_13, Version.V1_14_4),
-                    map(0x26, Version.V1_15, Version.V1_15_2),
-                    map(0x25, Version.V1_16, Version.V1_16_1),
-                    map(0x24, Version.V1_16_2, Version.V1_16_4),
-                    map(0x26, Version.V1_17, Version.V1_18_2),
-                    map(0x23, Version.V1_19, Version.V1_19),
-                    map(0x25, Version.V1_19_1, Version.V1_19_1)
+                    map(0x01, V1_7_2, V1_8),
+                    map(0x23, V1_9, V1_12_2),
+                    map(0x25, V1_13, V1_14_4),
+                    map(0x26, V1_15, V1_15_2),
+                    map(0x25, V1_16, V1_16_1),
+                    map(0x24, V1_16_2, V1_16_4),
+                    map(0x26, V1_17, V1_18_2),
+                    map(0x23, V1_19, V1_19),
+                    map(0x25, V1_19_1, V1_19_1),
+                    map(0x24, V1_19_3, V1_19_3)
             );
             clientBound.register(PacketPluginMessage::new,
-                    map(0x19, Version.V1_13, Version.V1_13_2),
-                    map(0x18, Version.V1_14, Version.V1_14_4),
-                    map(0x19, Version.V1_15, Version.V1_15_2),
-                    map(0x18, Version.V1_16, Version.V1_16_1),
-                    map(0x17, Version.V1_16_2, Version.V1_16_4),
-                    map(0x18, Version.V1_17, Version.V1_18_2),
-                    map(0x15, Version.V1_19, Version.V1_19),
-                    map(0x16, Version.V1_19_1, Version.V1_19_1)
+                    map(0x19, V1_13, V1_13_2),
+                    map(0x18, V1_14, V1_14_4),
+                    map(0x19, V1_15, V1_15_2),
+                    map(0x18, V1_16, V1_16_1),
+                    map(0x17, V1_16_2, V1_16_4),
+                    map(0x18, V1_17, V1_18_2),
+                    map(0x15, V1_19, V1_19),
+                    map(0x16, V1_19_1, V1_19_1),
+                    map(0x15, V1_19_3, V1_19_3)
             );
             clientBound.register(PacketPlayerAbilities::new,
-                    map(0x39, Version.V1_8, Version.V1_8),
-                    map(0x2B, Version.V1_9, Version.V1_12),
-                    map(0x2C, Version.V1_12_1, Version.V1_12_2),
-                    map(0x2E, Version.V1_13, Version.V1_13_2),
-                    map(0x31, Version.V1_14, Version.V1_14_4),
-                    map(0x32, Version.V1_15, Version.V1_15_2),
-                    map(0x31, Version.V1_16, Version.V1_16_1),
-                    map(0x30, Version.V1_16_2, Version.V1_16_4),
-                    map(0x32, Version.V1_17, Version.V1_18_2),
-                    map(0x2F, Version.V1_19, Version.V1_19),
-                    map(0x31, Version.V1_19_1, Version.V1_19_1)
+                    map(0x39, V1_7_2, V1_8),
+                    map(0x2B, V1_9, V1_12),
+                    map(0x2C, V1_12_1, V1_12_2),
+                    map(0x2E, V1_13, V1_13_2),
+                    map(0x31, V1_14, V1_14_4),
+                    map(0x32, V1_15, V1_15_2),
+                    map(0x31, V1_16, V1_16_1),
+                    map(0x30, V1_16_2, V1_16_4),
+                    map(0x32, V1_17, V1_18_2),
+                    map(0x2F, V1_19, V1_19),
+                    map(0x31, V1_19_1, V1_19_1),
+                    map(0x30, V1_19_3, V1_19_3)
             );
             clientBound.register(PacketPlayerPositionAndLook::new,
-                    map(0x08, Version.V1_8, Version.V1_8),
-                    map(0x2E, Version.V1_9, Version.V1_12),
-                    map(0x2F, Version.V1_12_1, Version.V1_12_2),
-                    map(0x32, Version.V1_13, Version.V1_13_2),
-                    map(0x35, Version.V1_14, Version.V1_14_4),
-                    map(0x36, Version.V1_15, Version.V1_15_2),
-                    map(0x35, Version.V1_16, Version.V1_16_1),
-                    map(0x34, Version.V1_16_2, Version.V1_16_4),
-                    map(0x38, Version.V1_17, Version.V1_18_2),
-                    map(0x36, Version.V1_19, Version.V1_19),
-                    map(0x39, Version.V1_19_1, Version.V1_19_1)
+                    map(0x08, V1_7_2, V1_8),
+                    map(0x2E, V1_9, V1_12),
+                    map(0x2F, V1_12_1, V1_12_2),
+                    map(0x32, V1_13, V1_13_2),
+                    map(0x35, V1_14, V1_14_4),
+                    map(0x36, V1_15, V1_15_2),
+                    map(0x35, V1_16, V1_16_1),
+                    map(0x34, V1_16_2, V1_16_4),
+                    map(0x38, V1_17, V1_18_2),
+                    map(0x36, V1_19, V1_19),
+                    map(0x39, V1_19_1, V1_19_1),
+                    map(0x38, V1_19_3, V1_19_3)
             );
             clientBound.register(PacketKeepAlive::new,
-                    map(0x00, Version.V1_8, Version.V1_8),
-                    map(0x1F, Version.V1_9, Version.V1_12_2),
-                    map(0x21, Version.V1_13, Version.V1_13_2),
-                    map(0x20, Version.V1_14, Version.V1_14_4),
-                    map(0x21, Version.V1_15, Version.V1_15_2),
-                    map(0x20, Version.V1_16, Version.V1_16_1),
-                    map(0x1F, Version.V1_16_2, Version.V1_16_4),
-                    map(0x21, Version.V1_17, Version.V1_18_2),
-                    map(0x1E, Version.V1_19, Version.V1_19),
-                    map(0x20, Version.V1_19_1, Version.V1_19_1)
+                    map(0x00, V1_7_2, V1_8),
+                    map(0x1F, V1_9, V1_12_2),
+                    map(0x21, V1_13, V1_13_2),
+                    map(0x20, V1_14, V1_14_4),
+                    map(0x21, V1_15, V1_15_2),
+                    map(0x20, V1_16, V1_16_1),
+                    map(0x1F, V1_16_2, V1_16_4),
+                    map(0x21, V1_17, V1_18_2),
+                    map(0x1E, V1_19, V1_19),
+                    map(0x20, V1_19_1, V1_19_1),
+                    map(0x1F, V1_19_3, V1_19_3)
             );
             clientBound.register(PacketChatMessage::new,
-                    map(0x02, Version.V1_8, Version.V1_8),
-                    map(0x0F, Version.V1_9, Version.V1_12_2),
-                    map(0x0E, Version.V1_13, Version.V1_14_4),
-                    map(0x0F, Version.V1_15, Version.V1_15_2),
-                    map(0x0E, Version.V1_16, Version.V1_16_4),
-                    map(0x0F, Version.V1_17, Version.V1_18_2),
-                    map(0x5F, Version.V1_19, Version.V1_19),
-                    map(0x62, Version.V1_19_1, Version.V1_19_1)
+                    map(0x02, V1_7_2, V1_8),
+                    map(0x0F, V1_9, V1_12_2),
+                    map(0x0E, V1_13, V1_14_4),
+                    map(0x0F, V1_15, V1_15_2),
+                    map(0x0E, V1_16, V1_16_4),
+                    map(0x0F, V1_17, V1_18_2),
+                    map(0x5F, V1_19, V1_19),
+                    map(0x62, V1_19_1, V1_19_1),
+                    map(0x60, V1_19_3, V1_19_3)
             );
             clientBound.register(PacketBossBar::new,
-                    map(0x0C, Version.V1_9, Version.V1_14_4),
-                    map(0x0D, Version.V1_15, Version.V1_15_2),
-                    map(0x0C, Version.V1_16, Version.V1_16_4),
-                    map(0x0D, Version.V1_17, Version.V1_18_2),
-                    map(0x0A, Version.V1_19, Version.V1_19_1)
+                    map(0x0C, V1_9, V1_14_4),
+                    map(0x0D, V1_15, V1_15_2),
+                    map(0x0C, V1_16, V1_16_4),
+                    map(0x0D, V1_17, V1_18_2),
+                    map(0x0A, V1_19, V1_19_3)
             );
             clientBound.register(PacketPlayerInfo::new,
-                    map(0x38, Version.V1_8, Version.V1_8),
-                    map(0x2D, Version.V1_9, Version.V1_12),
-                    map(0x2E, Version.V1_12_1, Version.V1_12_2),
-                    map(0x30, Version.V1_13, Version.V1_13_2),
-                    map(0x33, Version.V1_14, Version.V1_14_4),
-                    map(0x34, Version.V1_15, Version.V1_15_2),
-                    map(0x33, Version.V1_16, Version.V1_16_1),
-                    map(0x32, Version.V1_16_2, Version.V1_16_4),
-                    map(0x36, Version.V1_17, Version.V1_18_2),
-                    map(0x34, Version.V1_19, Version.V1_19),
-                    map(0x37, Version.V1_19_1, Version.V1_19_1)
+                    map(0x38, V1_7_2, V1_8),
+                    map(0x2D, V1_9, V1_12),
+                    map(0x2E, V1_12_1, V1_12_2),
+                    map(0x30, V1_13, V1_13_2),
+                    map(0x33, V1_14, V1_14_4),
+                    map(0x34, V1_15, V1_15_2),
+                    map(0x33, V1_16, V1_16_1),
+                    map(0x32, V1_16_2, V1_16_4),
+                    map(0x36, V1_17, V1_18_2),
+                    map(0x34, V1_19, V1_19),
+                    map(0x37, V1_19_1, V1_19_1),
+                    map(0x36, V1_19_3, V1_19_3)
             );
             clientBound.register(PacketTitleLegacy::new,
-                    map(0x45, Version.V1_8, Version.V1_11_1),
-                    map(0x47, Version.V1_12, Version.V1_12),
-                    map(0x48, Version.V1_12_1, Version.V1_12_2),
-                    map(0x4B, Version.V1_13, Version.V1_13_2),
-                    map(0x4F, Version.V1_14, Version.V1_14_4),
-                    map(0x50, Version.V1_15, Version.V1_15_2),
-                    map(0x4F, Version.V1_16, Version.V1_16_4)
+                    map(0x45, V1_8, V1_11_1),
+                    map(0x47, V1_12, V1_12),
+                    map(0x48, V1_12_1, V1_12_2),
+                    map(0x4B, V1_13, V1_13_2),
+                    map(0x4F, V1_14, V1_14_4),
+                    map(0x50, V1_15, V1_15_2),
+                    map(0x4F, V1_16, V1_16_4)
             );
             clientBound.register(PacketTitleSetTitle::new,
-                    map(0x59, Version.V1_17, Version.V1_17_1),
-                    map(0x5A, Version.V1_18, Version.V1_19),
-                    map(0x5D, Version.V1_19_1, Version.V1_19_1)
+                    map(0x59, V1_17, V1_17_1),
+                    map(0x5A, V1_18, V1_19),
+                    map(0x5D, V1_19_1, V1_19_1),
+                    map(0x5B, V1_19_3, V1_19_3)
             );
             clientBound.register(PacketTitleSetSubTitle::new,
-                    map(0x57, Version.V1_17, Version.V1_17_1),
-                    map(0x58, Version.V1_18, Version.V1_19),
-                    map(0x5B, Version.V1_19_1, Version.V1_19_1)
+                    map(0x57, V1_17, V1_17_1),
+                    map(0x58, V1_18, V1_19),
+                    map(0x5B, V1_19_1, V1_19_1),
+                    map(0x59, V1_19_3, V1_19_3)
             );
             clientBound.register(PacketTitleTimes::new,
-                    map(0x5A, Version.V1_17, Version.V1_17_1),
-                    map(0x5B, Version.V1_18, Version.V1_19),
-                    map(0x5E, Version.V1_19_1, Version.V1_19_1)
+                    map(0x5A, V1_17, V1_17_1),
+                    map(0x5B, V1_18, V1_19),
+                    map(0x5E, V1_19_1, V1_19_1),
+                    map(0x5C, V1_19_3, V1_19_3)
             );
             clientBound.register(PacketPlayerListHeader::new,
-                    map(0x47, Version.V1_8, Version.V1_8),
-                    map(0x48, Version.V1_9, Version.V1_9_2),
-                    map(0x47, Version.V1_9_4, Version.V1_11_1),
-                    map(0x49, Version.V1_12, Version.V1_12),
-                    map(0x4A, Version.V1_12_1, Version.V1_12_2),
-                    map(0x4E, Version.V1_13, Version.V1_13_2),
-                    map(0x53, Version.V1_14, Version.V1_14_4),
-                    map(0x54, Version.V1_15, Version.V1_15_2),
-                    map(0x53, Version.V1_16, Version.V1_16_4),
-                    map(0x5E, Version.V1_17, Version.V1_17_1),
-                    map(0x5F, Version.V1_18, Version.V1_18_2),
-                    map(0x60, Version.V1_19, Version.V1_19),
-                    map(0x63, Version.V1_19_1, Version.V1_19_1)
+                    map(0x47, V1_8, V1_8),
+                    map(0x48, V1_9, V1_9_2),
+                    map(0x47, V1_9_4, V1_11_1),
+                    map(0x49, V1_12, V1_12),
+                    map(0x4A, V1_12_1, V1_12_2),
+                    map(0x4E, V1_13, V1_13_2),
+                    map(0x53, V1_14, V1_14_4),
+                    map(0x54, V1_15, V1_15_2),
+                    map(0x53, V1_16, V1_16_4),
+                    map(0x5E, V1_17, V1_17_1),
+                    map(0x5F, V1_18, V1_18_2),
+                    map(0x60, V1_19, V1_19),
+                    map(0x63, V1_19_1, V1_19_1),
+                    map(0x61, V1_19_3, V1_19_3)
+            );
+            clientBound.register(PacketSpawnPosition::new,
+                    map(0x4C, V1_19_3, V1_19_3)
             );
         }
     };
@@ -270,7 +269,7 @@ public enum State {
         private final Map<Version, PacketRegistry> registry = new HashMap<>();
 
         public PacketRegistry getRegistry(Version version) {
-            return registry.getOrDefault(version, registry.get(Version.getMin()));
+            return registry.getOrDefault(version, registry.get(getMin()));
         }
 
         public void register(Supplier<?> packet, Mapping... mappings) {
