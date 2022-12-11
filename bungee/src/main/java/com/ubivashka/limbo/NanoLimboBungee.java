@@ -11,10 +11,10 @@ import com.ubivashka.limbo.config.model.BungeeLimboServer;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.plugin.Plugin;
-import ru.nanit.limbo.NanoLimbo;
-import ru.nanit.limbo.server.Command;
-import ru.nanit.limbo.server.CommandHandler;
-import ru.nanit.limbo.server.LimboServer;
+import ua.nanit.limbo.NanoLimbo;
+import ua.nanit.limbo.server.Command;
+import ua.nanit.limbo.server.CommandHandler;
+import ua.nanit.limbo.server.LimboServer;
 
 public class NanoLimboBungee extends Plugin {
     static {

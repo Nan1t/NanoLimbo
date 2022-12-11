@@ -9,10 +9,10 @@ import com.ubivashka.limbo.command.exception.VelocityExceptionHandler;
 
 import revxrsal.commands.CommandHandler;
 import revxrsal.commands.velocity.core.VelocityHandler;
-import ru.nanit.limbo.server.Command;
-import ru.nanit.limbo.server.LimboServer;
+import ua.nanit.limbo.server.Command;
+import ua.nanit.limbo.server.LimboServer;
 
-public class LampVelocityCommandHandler implements ru.nanit.limbo.server.CommandHandler<Command> {
+public class LampVelocityCommandHandler implements ua.nanit.limbo.server.CommandHandler<Command> {
     private final NanoLimboVelocity plugin;
     private final CommandHandler commandHandler;
 

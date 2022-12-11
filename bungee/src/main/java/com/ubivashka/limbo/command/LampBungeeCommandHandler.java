@@ -9,10 +9,10 @@ import com.ubivashka.limbo.command.exception.BungeeExceptionHandler;
 import revxrsal.commands.CommandHandler;
 import revxrsal.commands.bungee.core.BungeeHandler;
 import revxrsal.commands.exception.SendMessageException;
-import ru.nanit.limbo.server.Command;
-import ru.nanit.limbo.server.LimboServer;
+import ua.nanit.limbo.server.Command;
+import ua.nanit.limbo.server.LimboServer;
 
-public class LampBungeeCommandHandler implements ru.nanit.limbo.server.CommandHandler<Command> {
+public class LampBungeeCommandHandler implements ua.nanit.limbo.server.CommandHandler<Command> {
     private final NanoLimboBungee plugin;
     private final CommandHandler commandHandler;
 

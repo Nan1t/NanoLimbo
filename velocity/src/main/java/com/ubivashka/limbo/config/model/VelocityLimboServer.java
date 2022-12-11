@@ -11,8 +11,8 @@ import org.spongepowered.configurate.serialize.TypeSerializer;
 import com.ubivashka.limbo.NanoLimboVelocity;
 import com.ubivashka.limbo.config.ConfigurationUtil;
 
-import ru.nanit.limbo.configuration.LimboConfig;
-import ru.nanit.limbo.configuration.YamlLimboConfig;
+import ua.nanit.limbo.configuration.LimboConfig;
+import ua.nanit.limbo.configuration.YamlLimboConfig;
 
 public class VelocityLimboServer {
     private final LimboConfig limboConfig;

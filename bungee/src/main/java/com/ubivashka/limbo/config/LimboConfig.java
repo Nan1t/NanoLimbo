@@ -14,7 +14,7 @@ import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 import com.ubivashka.limbo.config.model.BungeeLimboServer;
 
 import net.md_5.bungee.api.plugin.Plugin;
-import ru.nanit.limbo.server.Logger;
+import ua.nanit.limbo.server.Logger;
 
 public class LimboConfig {
     private List<BungeeLimboServer> servers;

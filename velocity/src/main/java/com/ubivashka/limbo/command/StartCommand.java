@@ -8,7 +8,7 @@ import revxrsal.commands.annotation.Default;
 import revxrsal.commands.annotation.Dependency;
 import revxrsal.commands.command.CommandActor;
 import revxrsal.commands.velocity.annotation.CommandPermission;
-import ru.nanit.limbo.server.LimboServer;
+import ua.nanit.limbo.server.LimboServer;
 
 @Command("limbostart")
 public class StartCommand {
