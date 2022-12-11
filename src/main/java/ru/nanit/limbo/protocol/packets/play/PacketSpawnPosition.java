@@ -6,9 +6,11 @@ import ru.nanit.limbo.protocol.registry.Version;
 
 public class PacketSpawnPosition implements PacketOut  {
 
-    private final long x;
-    private final long y;
-    private final long z;
+    private long x;
+    private long y;
+    private long z;
+
+    public PacketSpawnPosition() { }
 
     public PacketSpawnPosition(long x, long y, long z) {
         this.x = x;
