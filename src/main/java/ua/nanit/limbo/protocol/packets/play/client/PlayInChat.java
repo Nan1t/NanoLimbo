@@ -19,8 +19,7 @@ public class PlayInChat implements PacketIn {
     @Override
     public void handle(ClientConnection conn, LimboServer server) {
         this.player = conn.getUsername();
-        System.out.println(player + " | [" + chat + "] CMD");
-        if (chat.startsWith("/") && server.getCommandManager().getClientCommands().containsKey(chat.split(" ")[0]))
+        if (chat.startsWith("/") && server.getCommandManager().getClientCommands().containsKey(chat.split(" ")[0].replace("/", "")))
             server.getCommandManager().getClientCommand(chat.split(" ")[0].replace("/", "")).execute(server, conn, chat.split(" "));
     }
 }
