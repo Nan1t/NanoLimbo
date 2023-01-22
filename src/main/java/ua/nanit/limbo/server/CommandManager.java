@@ -4,23 +4,35 @@ import ua.nanit.limbo.server.commands.CmdConn;
 import ua.nanit.limbo.server.commands.CmdHelp;
 import ua.nanit.limbo.server.commands.CmdMem;
 import ua.nanit.limbo.server.commands.CmdStop;
+import ua.nanit.limbo.server.commands.client.ClientCommand;
 
 import java.util.*;
 
 public final class CommandManager extends Thread {
 
     private final Map<String, Command> commands = new HashMap<>();
+    private final Map<String, ClientCommand> clientCommands = new HashMap<>();
 
     public Map<String, Command> getCommands() {
         return Collections.unmodifiableMap(commands);
     }
 
+    public Map<String, ClientCommand> getClientCommands() {
+        return Collections.unmodifiableMap(clientCommands);
+    }
+
     public Command getCommand(String name) {
         return commands.get(name.toLowerCase());
+    }
+    public ClientCommand getClientCommand(String name) {
+        return clientCommands.get(name.toLowerCase());
     }
 
     public void register(String name, Command cmd) {
         commands.put(name.toLowerCase(), cmd);
+    }
+    public void register(String name, ClientCommand cmd) {
+        clientCommands.put(name.toLowerCase(), cmd);
     }
 
     @Override
@@ -55,5 +67,6 @@ public final class CommandManager extends Thread {
         register("conn", new CmdConn(server));
         register("mem", new CmdMem());
         register("stop", new CmdStop());
+        register("help", new ua.nanit.limbo.server.commands.client.CmdHelp());
     }
 }
