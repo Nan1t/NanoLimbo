@@ -21,6 +21,8 @@ import ua.nanit.limbo.protocol.Packet;
 import ua.nanit.limbo.protocol.packets.PacketHandshake;
 import ua.nanit.limbo.protocol.packets.login.*;
 import ua.nanit.limbo.protocol.packets.play.*;
+import ua.nanit.limbo.protocol.packets.play.client.PlayInChat;
+import ua.nanit.limbo.protocol.packets.play.client.PlayInCommand;
 import ua.nanit.limbo.protocol.packets.status.PacketStatusPing;
 import ua.nanit.limbo.protocol.packets.status.PacketStatusRequest;
 import ua.nanit.limbo.protocol.packets.status.PacketStatusResponse;
@@ -88,6 +90,21 @@ public enum State {
                     map(0x11, V1_19, V1_19),
                     map(0x12, V1_19_1, V1_19_1),
                     map(0x11, V1_19_3, V1_19_3)
+            );
+
+
+            serverBound.register(PlayInChat::new,
+                    map(0x01, V1_7_2, V1_8),
+                    map(0x02, V1_9, V1_11_1),
+                    map(0x03, V1_12, V1_12),
+                    map(0x04, V1_12_1, V1_12_2),
+                    map(0x02, V1_13, V1_13_2),
+                    map(0x03, V1_14, V1_18_2),
+                    map(0x05, V1_19, V1_19_3)
+            );
+
+            serverBound.register(PlayInCommand::new,
+                    map(0x04, V1_19, V1_19_3)
             );
 
             clientBound.register(PacketDeclareCommands::new,
@@ -252,9 +269,9 @@ public enum State {
         }
     }
 
-    private final int stateId;
     public final ProtocolMappings serverBound = new ProtocolMappings();
     public final ProtocolMappings clientBound = new ProtocolMappings();
+    private final int stateId;
 
     State(int stateId) {
         this.stateId = stateId;
@@ -262,6 +279,18 @@ public enum State {
 
     public static State getById(int stateId) {
         return STATE_BY_ID.get(stateId);
+    }
+
+    /**
+     * Map packet id to version range
+     *
+     * @param packetId Packet id
+     * @param from     Minimal version (include)
+     * @param to       Last version (include)
+     * @return Created mapping
+     */
+    private static Mapping map(int packetId, Version from, Version to) {
+        return new Mapping(packetId, from, to);
     }
 
     public static class ProtocolMappings {
@@ -343,17 +372,6 @@ public enum State {
             this.to = to;
             this.packetId = packetId;
         }
-    }
-
-    /**
-     * Map packet id to version range
-     * @param packetId Packet id
-     * @param from Minimal version (include)
-     * @param to Last version (include)
-     * @return Created mapping
-     */
-    private static Mapping map(int packetId, Version from, Version to) {
-        return new Mapping(packetId, from, to);
     }
 
 }
