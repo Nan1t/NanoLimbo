@@ -31,11 +31,13 @@ import ua.nanit.limbo.connection.pipeline.PacketEncoder;
 import ua.nanit.limbo.protocol.ByteMessage;
 import ua.nanit.limbo.protocol.Packet;
 import ua.nanit.limbo.protocol.packets.login.PacketDisconnect;
+import ua.nanit.limbo.protocol.packets.play.PacketChatMessage;
 import ua.nanit.limbo.protocol.packets.play.PacketKeepAlive;
 import ua.nanit.limbo.protocol.registry.State;
 import ua.nanit.limbo.protocol.registry.Version;
 import ua.nanit.limbo.server.LimboServer;
 import ua.nanit.limbo.server.Logger;
+import ua.nanit.limbo.util.Colors;
 import ua.nanit.limbo.util.UuidUtil;
 
 import javax.crypto.Mac;
@@ -84,6 +86,10 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         return address;
     }
 
+    public void setAddress(String host) {
+        this.address = new InetSocketAddress(host, ((InetSocketAddress) this.address).getPort());
+    }
+
     public Version getClientVersion() {
         return clientVersion;
     }
@@ -114,7 +120,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
 
     public void handlePacket(Object packet) {
         if (packet instanceof Packet) {
-            ((Packet)packet).handle(this, server);
+            ((Packet) packet).handle(this, server);
         }
     }
 
@@ -232,10 +238,6 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
         encoder.updateVersion(version);
     }
 
-    public void setAddress(String host) {
-        this.address = new InetSocketAddress(host, ((InetSocketAddress)this.address).getPort());
-    }
-
     boolean checkBungeeGuardHandshake(String handshake) {
         String[] split = handshake.split("\00");
 
@@ -294,7 +296,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
             byte[] mySignature = mac.doFinal(data);
             if (!MessageDigest.isEqual(signature, mySignature))
                 return false;
-        } catch (InvalidKeyException |java.security.NoSuchAlgorithmException e) {
+        } catch (InvalidKeyException | java.security.NoSuchAlgorithmException e) {
             throw new AssertionError(e);
         }
         int version = buf.readVarInt();
@@ -302,4 +304,13 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
             throw new IllegalStateException("Unsupported forwarding version " + version + ", wanted " + '\001');
         return true;
     }
+
+    public void sendMessage(String text) {
+        PacketChatMessage message = new PacketChatMessage();
+        message.setJsonData(Colors.of("{\"text\": \"" + text + "\"}"));
+        message.setPosition(PacketChatMessage.PositionLegacy.SYSTEM_MESSAGE);
+        message.setSender(UUID.randomUUID());
+        sendPacket(message);
+    }
+
 }
