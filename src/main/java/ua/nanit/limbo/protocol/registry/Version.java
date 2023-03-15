@@ -65,6 +65,7 @@ public enum Version {
     V1_18_2(758),
     V1_19(759),
     V1_19_1(760),
+    // 1.19.2 has same protocol number
     V1_19_3(761),
     V1_19_4(762);
 
