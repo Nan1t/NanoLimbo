@@ -2,7 +2,7 @@
 
 This is lightweight minecraft limbo server, written on Java with Netty.
 The main goal of the project is maximum simplicity with a minimum number of sent and processed packets.
-This limbo is empty, there are no ability to set schematic building since 
+This limbo is empty, there are no ability to set schematic building since
 this is not necessary. You can send useful information in chat or BossBar.
 
 No plugins, no logs. The server is fully clear. It only able keep a lot of players while the main server is down.
@@ -34,10 +34,7 @@ Symbol `X` means all minor versions.
 - [x] 1.16.X
 - [x] 1.17.X
 - [x] 1.18.X
-- [x] 1.19
-- [x] 1.19.1
-- [x] 1.19.2
-- [x] 1.19.3
+- [x] 1.19.X
 
 The server **doesn't** support snapshots.
 
@@ -57,7 +54,7 @@ The installation process is simple.
 1. Download the latest version of program **[here](https://github.com/Nan1t/NanoLimbo/releases)**
 2. Put jar file in the folder you want.
 3. Create a start script as you did it for Bukkit or BungeeCord with command like this:
-`java -jar NanoLimbo-<version>.jar`
+   `java -jar NanoLimbo-<version>.jar`
 4. The server will create `settings.yml` file. It's a server configuration.
 5. Configure it as you want and restart server.
 
@@ -70,22 +67,24 @@ The server supports player info forwarding from the proxy. There are several typ
 * `BUNGEE_GUARD` - **BungeeGuard** forwarding type.
 
 If you use BungeeCord, or Velocity with `LEGACY` forwarding, just set this type in the config.  
-If you use Velocity with `MODERN` info forwarding, set this type and paste secret key from Velocity 
+If you use Velocity with `MODERN` info forwarding, set this type and paste secret key from Velocity
 config into `secret` field.
-If you installed BungeeGuard on your proxy, then use `BUNGEE_GUARD` forwarding type. 
+If you installed BungeeGuard on your proxy, then use `BUNGEE_GUARD` forwarding type.
 Then add your tokens to `tokens` list.
 
 ### Contributing
 
-You can create pull request, if you found some bug, optimization ability, or you want to add some functional, 
+You can create pull request, if you found some bug, optimization ability, or you want to add some functional,
 which is suitable for limbo server and won't significantly load the server.
+
+All PR's should be targeted to the `dev` branch to keep the `main` stable and clear.
 
 ### Building
 
 Required software:
 
 * JDK 1.8+
-* Gradle 7+
+* Gradle 7+ (optional)
 
 To build minimized .jar, go to project root and write in terminal:
 
