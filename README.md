@@ -1,20 +1,20 @@
 ## NanoLimbo
 
-This is lightweight minecraft limbo server, written on Java with Netty.
-The main goal of the project is maximum simplicity with a minimum number of sent and processed packets.
-This limbo is empty, there are no ability to set schematic building since
-this is not necessary. You can send useful information in chat or BossBar.
+This is a lightweight Minecraft limbo server, written in Java with Netty.
+The main goal of this project is maximum simplicity with a minimum number of sent and processed packets.
+The limbo is empty; there is no ability to set a schematic building since this is not necessary.
+You can send useful information via chat or boss bar.
 
-No plugins, no logs. The server is fully clear. It only able keep a lot of players while the main server is down.
+No plugins, no logs. The server is fully clear. It is only able keep a lot of players while the main server is down.
 
-The general features:
-* High performance. The server not saves and not cached any useless (for limbo) data.
-* Doesn't spawn threads per player. Uses fixed threads pool.
+General features:
+* High performance. The server doesn't save or cache any useless (for limbo) data.
+* Doesn't spawn threads per player. Uses a fixed thread pool.
 * Support for **BungeeCord** and **Velocity** info forwarding.
 * Support for [BungeeGuard](https://www.spigotmc.org/resources/79601/) handshake format.
 * Multiple versions support.
 * Fully configurable.
-* Lightweight. App size around **2MB.**
+* Lightweight. App size around **2MB**.
 
 ![](https://i.imgur.com/sT8p1Gz.png)
 
@@ -41,24 +41,24 @@ The server **doesn't** support snapshots.
 ### Commands
 
 * `help` - Show help message
-* `conn` - Display amount of connections
+* `conn` - Display number of connections
 * `mem` - Display memory usage stats
 * `stop` - Stop the server
 
-Note, that it also will be closed correctly if you just press `Ctrl+C`.
+Note that the server also will be closed correctly if you just press `Ctrl+C`.
 
 ### Installation
 
 The installation process is simple.
 
-1. Download the latest version of program **[here](https://github.com/Nan1t/NanoLimbo/releases)**
-2. Put jar file in the folder you want.
-3. Create a start script as you did it for Bukkit or BungeeCord with command like this:
+1. Download the latest version of the program [**here**](https://github.com/Nan1t/NanoLimbo/releases).
+2. Put the jar file in the folder you want.
+3. Create a start script as you did for Bukkit or BungeeCord, with a command like this:
    `java -jar NanoLimbo-<version>.jar`
-4. The server will create `settings.yml` file. It's a server configuration.
-5. Configure it as you want and restart server.
+5. The server will create `settings.yml` file, which is the server configuration.
+6. Configure it as you want and restart the server.
 
-### About player info forwarding
+### Player info forwarding
 
 The server supports player info forwarding from the proxy. There are several types of info forwarding:
 
@@ -67,17 +67,17 @@ The server supports player info forwarding from the proxy. There are several typ
 * `BUNGEE_GUARD` - **BungeeGuard** forwarding type.
 
 If you use BungeeCord, or Velocity with `LEGACY` forwarding, just set this type in the config.  
-If you use Velocity with `MODERN` info forwarding, set this type and paste secret key from Velocity
-config into `secret` field.
+If you use Velocity with `MODERN` info forwarding, set this type and paste the secret key from
+Velocity config into `secret` field.
 If you installed BungeeGuard on your proxy, then use `BUNGEE_GUARD` forwarding type.
 Then add your tokens to `tokens` list.
 
 ### Contributing
 
-You can create pull request, if you found some bug, optimization ability, or you want to add some functional,
-which is suitable for limbo server and won't significantly load the server.
+Feel free to create a pull request if you found some bug or optimization opportunity, or if you want
+to add some functionality that is suitable for a limbo server and won't significantly load the server.
 
-All PR's should be targeted to the `dev` branch to keep the `main` stable and clear.
+All PRs should target the `dev` branch to keep the `main` branch stable and clean.
 
 ### Building
 
@@ -86,7 +86,7 @@ Required software:
 * JDK 1.8+
 * Gradle 7+ (optional)
 
-To build minimized .jar, go to project root and write in terminal:
+To build a minimized jar, go to the project root directory and run in the terminal:
 
 ```
 ./gradlew shadowJar
@@ -94,4 +94,4 @@ To build minimized .jar, go to project root and write in terminal:
 
 ### Contacts
 
-If you have any question or suggestion, join to [Discord server](https://discord.gg/4VGP3Gv)
+If you have any questions or suggestions, join our [Discord server](https://discord.gg/4VGP3Gv)!
