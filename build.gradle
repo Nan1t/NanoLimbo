@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
 group 'ru.nanit'
@@ -24,8 +24,8 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
 
     implementation 'org.spongepowered:configurate-yaml:4.1.2'
-    implementation 'io.netty:netty-all:4.1.90.Final'
-    implementation 'net.kyori:adventure-nbt:4.13.0'
+    implementation 'io.netty:netty-all:4.1.91.Final'
+    implementation 'net.kyori:adventure-nbt:4.13.1'
     implementation 'com.grack:nanojson:1.8'
 }
 
