@@ -20,11 +20,11 @@ repositories {
 }
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.3'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.3'
 
     implementation 'org.spongepowered:configurate-yaml:4.1.2'
-    implementation 'io.netty:netty-all:4.1.91.Final'
+    implementation 'io.netty:netty-all:4.1.92.Final'
     implementation 'net.kyori:adventure-nbt:4.13.1'
     implementation 'com.grack:nanojson:1.8'
 }
