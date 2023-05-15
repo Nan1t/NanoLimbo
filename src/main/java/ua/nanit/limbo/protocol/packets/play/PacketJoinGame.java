@@ -201,7 +201,7 @@ public class PacketJoinGame implements PacketOut {
             msg.writeBoolean(isFlat);
         }
 
-        if (version.moreOrEqual(Version.V1_19)) {
+        if (version.fromTo(Version.V1_19, Version.V1_19_4)) {
             msg.writeBoolean(isHardcore);
             msg.writeByte(gameMode);
             msg.writeByte(previousGameMode);
@@ -228,6 +228,26 @@ public class PacketJoinGame implements PacketOut {
             msg.writeBoolean(isDebug);
             msg.writeBoolean(isFlat);
             msg.writeBoolean(false);
+        }
+
+        if (version.moreOrEqual(Version.V1_20)) {
+            msg.writeBoolean(isHardcore);
+            msg.writeByte(gameMode);
+            msg.writeByte(previousGameMode);
+            msg.writeStringsArray(worldNames);
+            msg.writeCompoundTag(dimensionRegistry.getCodec_1_20());
+            msg.writeString(worldName); // World type
+            msg.writeString(worldName);
+            msg.writeLong(hashedSeed);
+            msg.writeVarInt(maxPlayers);
+            msg.writeVarInt(viewDistance);
+            msg.writeVarInt(viewDistance); // Simulation Distance
+            msg.writeBoolean(reducedDebugInfo);
+            msg.writeBoolean(enableRespawnScreen);
+            msg.writeBoolean(isDebug);
+            msg.writeBoolean(isFlat);
+            msg.writeBoolean(false);
+            msg.writeVarInt(0);
         }
     }
 
