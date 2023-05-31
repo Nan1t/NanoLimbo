@@ -36,9 +36,16 @@ public class PacketStatusResponse implements PacketOut {
 
     @Override
     public void encode(ByteMessage msg, Version version) {
-        int protocol = server.getConfig().getInfoForwarding().isNone()
-                ? version.getProtocolNumber()
-                : Version.getMax().getProtocolNumber();
+        int protocol;
+        int staticProtocol =  server.getConfig().getPingData().getProtocol();
+
+        if (staticProtocol > 0) {
+            protocol = staticProtocol;
+        } else {
+            protocol = server.getConfig().getInfoForwarding().isNone()
+                    ? version.getProtocolNumber()
+                    : Version.getMax().getProtocolNumber();
+        }
 
         String ver = server.getConfig().getPingData().getVersion();
         String desc = server.getConfig().getPingData().getDescription();

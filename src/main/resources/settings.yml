@@ -15,6 +15,7 @@ maxPlayers: 100
 ping:
   description: '{"text": "&9NanoLimbo"}'
   version: 'NanoLimbo'
+  protocol: -1
 
 # Available dimensions: OVERWORLD, NETHER, THE_END
 dimension: THE_END
