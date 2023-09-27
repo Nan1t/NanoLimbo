@@ -51,7 +51,7 @@ public class PacketEncoder extends MessageToByteEncoder<Packet> {
         }
 
         if (packetId == -1) {
-            Logger.warning("Undefined packet class: %s[0x%s]", packet.getClass().getName(), Integer.toHexString(packetId));
+            Logger.warning("Undefined packet class: %s[0x%s] (%d bytes)", packet.getClass().getName(), Integer.toHexString(packetId), msg.readableBytes());
             return;
         }
 

@@ -19,6 +19,8 @@ package ua.nanit.limbo.connection;
 
 import ua.nanit.limbo.LimboConstants;
 import ua.nanit.limbo.protocol.PacketSnapshot;
+import ua.nanit.limbo.protocol.packets.configuration.PacketFinishConfiguration;
+import ua.nanit.limbo.protocol.packets.configuration.PacketRegistryData;
 import ua.nanit.limbo.protocol.packets.login.PacketLoginSuccess;
 import ua.nanit.limbo.protocol.packets.play.*;
 import ua.nanit.limbo.server.LimboServer;
@@ -54,6 +56,8 @@ public final class PacketSnapshots {
     public static PacketSnapshot PACKET_TITLE_LEGACY_SUBTITLE;
     public static PacketSnapshot PACKET_TITLE_LEGACY_TIMES;
 
+    public static PacketSnapshot PACKET_REGISTRY_DATA;
+    public static PacketSnapshot PACKET_FINISH_CONFIGURATION;
 
     private PacketSnapshots() { }
 
@@ -178,5 +182,11 @@ public final class PacketSnapshots {
             PACKET_TITLE_LEGACY_SUBTITLE = PacketSnapshot.of(legacySubtitle);
             PACKET_TITLE_LEGACY_TIMES = PacketSnapshot.of(legacyTimes);
         }
+
+        PacketRegistryData packetRegistryData = new PacketRegistryData();
+        packetRegistryData.setDimensionRegistry(server.getDimensionRegistry());
+
+        PACKET_REGISTRY_DATA = PacketSnapshot.of(packetRegistryData);
+        PACKET_FINISH_CONFIGURATION = PacketSnapshot.of(new PacketFinishConfiguration());
     }
 }

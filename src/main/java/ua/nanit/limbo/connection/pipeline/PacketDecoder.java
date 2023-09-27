@@ -47,11 +47,17 @@ public class PacketDecoder extends MessageToMessageDecoder<ByteBuf> {
         Packet packet = mappings.getPacket(packetId);
 
         if (packet != null) {
-            Logger.debug("Received packet %s[0x%s]", packet.toString(), Integer.toHexString(packetId));
+            Logger.debug("Received packet %s[0x%s] (%d bytes)", packet.toString(), Integer.toHexString(packetId), msg.readableBytes());
             try {
                 packet.decode(msg, version);
             } catch (Exception e) {
-                Logger.warning("Cannot decode packet 0x%s: %s", Integer.toHexString(packetId), e.getMessage());
+                if (Logger.isDebug()) {
+                    Logger.warning("Cannot decode packet 0x%s", Integer.toHexString(packetId));
+                    e.printStackTrace();
+                }
+                else {
+                    Logger.warning("Cannot decode packet 0x%s: %s", Integer.toHexString(packetId), e.getMessage());
+                }
             }
 
             ctx.fireChannelRead(packet);
