@@ -29,8 +29,6 @@ public class ChannelTrafficHandler extends ChannelInboundHandlerAdapter {
             ByteBuf in = (ByteBuf) msg;
             int bytes = in.readableBytes();
 
-            System.out.println(bytes + " bytes");
-
             if (packetSize > 0 && bytes > packetSize) {
                 closeConnection(ctx, "Closed %s due too large packet size (%d bytes)", ctx.channel().remoteAddress(), bytes);
                 return;
