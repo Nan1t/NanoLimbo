@@ -62,6 +62,10 @@ public final class Logger {
         }
     }
 
+    public static boolean isDebug() {
+        return debugLevel >= Level.DEBUG.getIndex();
+    }
+
     private static String getPrefix(Level level) {
         return String.format("[%s] [%s]", getTime(), level.getDisplay());
     }

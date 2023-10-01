@@ -22,6 +22,7 @@ import io.netty.handler.codec.DecoderException;
 import io.netty.handler.codec.EncoderException;
 import io.netty.util.ByteProcessor;
 import net.kyori.adventure.nbt.BinaryTagIO;
+import net.kyori.adventure.nbt.BinaryTagTypes;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
 
 import java.io.IOException;
@@ -187,6 +188,16 @@ public class ByteMessage extends ByteBuf {
     public void writeCompoundTag(CompoundBinaryTag compoundTag) {
         try (ByteBufOutputStream stream = new ByteBufOutputStream(buf)) {
             BinaryTagIO.writer().write(compoundTag, (OutputStream) stream);
+        }
+        catch (IOException e) {
+            throw new EncoderException("Cannot write NBT CompoundTag");
+        }
+    }
+
+    public void writeNamelessCompoundTag(CompoundBinaryTag compoundTag) {
+        try (ByteBufOutputStream stream = new ByteBufOutputStream(buf)) {
+            stream.writeByte(10); // CompoundTag ID
+            BinaryTagTypes.COMPOUND.write(compoundTag, stream);
         }
         catch (IOException e) {
             throw new EncoderException("Cannot write NBT CompoundTag");
