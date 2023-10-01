@@ -1,9 +1,6 @@
 package ua.nanit.limbo.server;
 
-import ua.nanit.limbo.server.commands.CmdConn;
-import ua.nanit.limbo.server.commands.CmdHelp;
-import ua.nanit.limbo.server.commands.CmdMem;
-import ua.nanit.limbo.server.commands.CmdStop;
+import ua.nanit.limbo.server.commands.*;
 
 import java.util.*;
 
@@ -19,8 +16,10 @@ public final class CommandManager extends Thread {
         return commands.get(name.toLowerCase());
     }
 
-    public void register(String name, Command cmd) {
-        commands.put(name.toLowerCase(), cmd);
+    public void register(Command cmd, String... aliases) {
+        for (String alias : aliases) {
+            commands.put(alias.toLowerCase(), cmd);
+        }
     }
 
     @Override
@@ -51,9 +50,10 @@ public final class CommandManager extends Thread {
     }
 
     public void registerAll(LimboServer server) {
-        register("help", new CmdHelp(server));
-        register("conn", new CmdConn(server));
-        register("mem", new CmdMem());
-        register("stop", new CmdStop());
+        register(new CmdHelp(server), "help");
+        register(new CmdConn(server), "conn");
+        register(new CmdMem(), "mem");
+        register(new CmdStop(), "stop");
+        register(new CmdVersion(), "version", "ver");
     }
 }

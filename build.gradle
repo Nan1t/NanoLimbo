@@ -1,10 +1,13 @@
 plugins {
     id 'java'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id 'com.github.gmazzo.buildconfig' version '3.1.0'
 }
 
+//def limboVersion = '1.6'
+
 group 'ru.nanit'
-version '1.5.2'
+version '1.6'
 
 compileJava {
     options.encoding = "UTF-8"
@@ -27,6 +30,13 @@ dependencies {
     implementation 'io.netty:netty-all:4.1.93.Final'
     implementation 'net.kyori:adventure-nbt:4.14.0'
     implementation 'com.grack:nanojson:1.8'
+}
+
+buildConfig {
+    className("BuildConfig")   // forces the class name. Defaults to 'BuildConfig'
+    packageName("ua.nanit.limbo")
+
+    buildConfigField('String', 'LIMBO_VERSION', "\"${project.version}\"")
 }
 
 shadowJar {
