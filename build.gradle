@@ -4,8 +4,6 @@ plugins {
     id 'com.github.gmazzo.buildconfig' version '3.1.0'
 }
 
-//def limboVersion = '1.6'
-
 group 'ru.nanit'
 version '1.6'
 
@@ -13,7 +11,7 @@ compileJava {
     options.encoding = "UTF-8"
 }
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
 }
@@ -27,15 +25,14 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.3'
 
     implementation 'org.spongepowered:configurate-yaml:4.1.2'
-    implementation 'io.netty:netty-all:4.1.93.Final'
+    implementation 'io.netty:netty-all:4.1.99.Final'
     implementation 'net.kyori:adventure-nbt:4.14.0'
     implementation 'com.grack:nanojson:1.8'
 }
 
 buildConfig {
-    className("BuildConfig")   // forces the class name. Defaults to 'BuildConfig'
+    className("BuildConfig")
     packageName("ua.nanit.limbo")
-
     buildConfigField('String', 'LIMBO_VERSION', "\"${project.version}\"")
 }
 
