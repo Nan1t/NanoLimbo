@@ -47,6 +47,7 @@ public class VarIntFrameDecoder extends ByteToMessageDecoder {
                 in.readerIndex(varIntEnd + 1);
             } else {
                 int minimumRead = bytesRead + readVarInt;
+
                 if (in.isReadable(minimumRead)) {
                     out.add(in.retainedSlice(varIntEnd + 1, readVarInt));
                     in.skipBytes(minimumRead);

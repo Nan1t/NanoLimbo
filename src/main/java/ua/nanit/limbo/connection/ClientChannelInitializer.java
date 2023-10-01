@@ -21,10 +21,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.timeout.ReadTimeoutHandler;
-import ua.nanit.limbo.connection.pipeline.PacketDecoder;
-import ua.nanit.limbo.connection.pipeline.PacketEncoder;
-import ua.nanit.limbo.connection.pipeline.VarIntFrameDecoder;
-import ua.nanit.limbo.connection.pipeline.VarIntLengthEncoder;
+import ua.nanit.limbo.connection.pipeline.*;
 import ua.nanit.limbo.server.LimboServer;
 
 import java.util.concurrent.TimeUnit;
@@ -49,6 +46,15 @@ public class ClientChannelInitializer extends ChannelInitializer<Channel> {
                 TimeUnit.MILLISECONDS));
         pipeline.addLast("frame_decoder", new VarIntFrameDecoder());
         pipeline.addLast("frame_encoder", new VarIntLengthEncoder());
+
+        if (server.getConfig().isUseTrafficLimits()) {
+            pipeline.addLast("traffic_limit", new ChannelTrafficHandler(
+                    server.getConfig().getMaxPacketSize(),
+                    server.getConfig().getMaxPacketsPerSec(),
+                    server.getConfig().getMaxBytesPerSec()
+            ));
+        }
+
         pipeline.addLast("decoder", decoder);
         pipeline.addLast("encoder", encoder);
         pipeline.addLast("handler", connection);
