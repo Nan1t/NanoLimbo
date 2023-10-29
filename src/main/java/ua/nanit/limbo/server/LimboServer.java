@@ -72,6 +72,9 @@ public final class LimboServer {
     }
 
     public void start() throws Exception {
+
+        long start = System.currentTimeMillis();
+
         Logger.info("Starting server...");
 
         ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.DISABLED);
@@ -99,6 +102,8 @@ public final class LimboServer {
         commandManager = new CommandManager();
         commandManager.registerAll(this);
         commandManager.start();
+
+        Logger.info("Done ("+ (System.currentTimeMillis() - start) / 1000 + "s)! For help, type \"help\"");
 
         System.gc();
     }
