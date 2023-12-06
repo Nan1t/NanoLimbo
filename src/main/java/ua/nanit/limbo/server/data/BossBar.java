@@ -21,18 +21,20 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
+import ua.nanit.limbo.protocol.NbtMessage;
 import ua.nanit.limbo.util.Colors;
+import ua.nanit.limbo.util.NbtMessageUtil;
 
 import java.lang.reflect.Type;
 
 public class BossBar {
 
-    private String text;
+    private NbtMessage text;
     private float health;
     private Color color;
     private Division division;
 
-    public String getText() {
+    public NbtMessage getText() {
         return text;
     }
 
@@ -48,7 +50,7 @@ public class BossBar {
         return division;
     }
 
-    public void setText(String text) {
+    public void setText(NbtMessage text) {
         this.text = text;
     }
 
@@ -110,7 +112,7 @@ public class BossBar {
         public BossBar deserialize(Type type, ConfigurationNode node) throws SerializationException {
             BossBar bossBar = new BossBar();
 
-            bossBar.setText(Colors.of(node.node("text").getString("")));
+            bossBar.setText(NbtMessageUtil.create(Colors.of(node.node("text").getString(""))));
             bossBar.setHealth(node.node("health").getFloat());
 
             if (bossBar.getHealth() < 0 || bossBar.getHealth() > 1)

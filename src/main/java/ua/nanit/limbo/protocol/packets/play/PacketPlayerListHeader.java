@@ -18,25 +18,26 @@
 package ua.nanit.limbo.protocol.packets.play;
 
 import ua.nanit.limbo.protocol.ByteMessage;
+import ua.nanit.limbo.protocol.NbtMessage;
 import ua.nanit.limbo.protocol.PacketOut;
 import ua.nanit.limbo.protocol.registry.Version;
 
 public class PacketPlayerListHeader implements PacketOut {
 
-    private String header;
-    private String footer;
+    private NbtMessage header;
+    private NbtMessage footer;
 
-    public void setHeader(String header) {
+    public void setHeader(NbtMessage header) {
         this.header = header;
     }
 
-    public void setFooter(String footer) {
+    public void setFooter(NbtMessage footer) {
         this.footer = footer;
     }
 
     @Override
     public void encode(ByteMessage msg, Version version) {
-        msg.writeString(header);
-        msg.writeString(footer);
+        msg.writeNbtMessage(header, version);
+        msg.writeNbtMessage(footer, version);
     }
 }

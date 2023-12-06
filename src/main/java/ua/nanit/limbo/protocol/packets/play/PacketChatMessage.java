@@ -18,6 +18,7 @@
 package ua.nanit.limbo.protocol.packets.play;
 
 import ua.nanit.limbo.protocol.ByteMessage;
+import ua.nanit.limbo.protocol.NbtMessage;
 import ua.nanit.limbo.protocol.PacketOut;
 import ua.nanit.limbo.protocol.registry.Version;
 
@@ -25,12 +26,12 @@ import java.util.UUID;
 
 public class PacketChatMessage implements PacketOut {
 
-    private String jsonData;
+    private NbtMessage message;
     private PositionLegacy position;
     private UUID sender;
 
-    public void setJsonData(String jsonData) {
-        this.jsonData = jsonData;
+    public void setMessage(NbtMessage message) {
+        this.message = message;
     }
 
     public void setPosition(PositionLegacy position) {
@@ -43,7 +44,7 @@ public class PacketChatMessage implements PacketOut {
 
     @Override
     public void encode(ByteMessage msg, Version version) {
-        msg.writeString(jsonData);
+        msg.writeNbtMessage(message, version);
         if (version.moreOrEqual(Version.V1_19_1)) {
             msg.writeBoolean(position.index == PositionLegacy.ACTION_BAR.index);
         } else if (version.moreOrEqual(Version.V1_19)) {

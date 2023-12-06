@@ -25,9 +25,12 @@ import ua.nanit.limbo.protocol.packets.login.PacketLoginSuccess;
 import ua.nanit.limbo.protocol.packets.play.*;
 import ua.nanit.limbo.server.LimboServer;
 import ua.nanit.limbo.server.data.Title;
+import ua.nanit.limbo.util.NbtMessageUtil;
 import ua.nanit.limbo.util.UuidUtil;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -58,6 +61,9 @@ public final class PacketSnapshots {
 
     public static PacketSnapshot PACKET_REGISTRY_DATA;
     public static PacketSnapshot PACKET_FINISH_CONFIGURATION;
+
+    public static List<PacketSnapshot> PACKETS_EMPTY_CHUNKS;
+    public static PacketSnapshot PACKET_START_WAITING_CHUNKS;
 
     private PacketSnapshots() { }
 
@@ -121,8 +127,8 @@ public final class PacketSnapshots {
 
         if (server.getConfig().isUseHeaderAndFooter()) {
             PacketPlayerListHeader header = new PacketPlayerListHeader();
-            header.setHeader(server.getConfig().getPlayerListHeader());
-            header.setFooter(server.getConfig().getPlayerListFooter());
+            header.setHeader(NbtMessageUtil.create(server.getConfig().getPlayerListHeader()));
+            header.setFooter(NbtMessageUtil.create(server.getConfig().getPlayerListFooter()));
             PACKET_HEADER_AND_FOOTER = PacketSnapshot.of(header);
         }
 
@@ -135,7 +141,7 @@ public final class PacketSnapshots {
 
         if (server.getConfig().isUseJoinMessage()) {
             PacketChatMessage joinMessage = new PacketChatMessage();
-            joinMessage.setJsonData(server.getConfig().getJoinMessage());
+            joinMessage.setMessage(NbtMessageUtil.create(server.getConfig().getJoinMessage()));
             joinMessage.setPosition(PacketChatMessage.PositionLegacy.SYSTEM_MESSAGE);
             joinMessage.setSender(UUID.randomUUID());
             PACKET_JOIN_MESSAGE = PacketSnapshot.of(joinMessage);
@@ -188,5 +194,27 @@ public final class PacketSnapshots {
 
         PACKET_REGISTRY_DATA = PacketSnapshot.of(packetRegistryData);
         PACKET_FINISH_CONFIGURATION = PacketSnapshot.of(new PacketFinishConfiguration());
+
+        PacketGameEvent packetGameEvent = new PacketGameEvent();
+        packetGameEvent.setType((byte) 13); // Waiting for chunks type
+        packetGameEvent.setValue(0);
+        PACKET_START_WAITING_CHUNKS = PacketSnapshot.of(packetGameEvent);
+
+        int chunkXOffset = (int) 0 >> 4; // Default x position is 0
+        int chunkZOffset = (int) 0 >> 4; // Default z position is 0
+        int chunkEdgeSize = 1; // TODO Make configurable?
+
+        List<PacketSnapshot> emptyChunks = new ArrayList<>();
+        // Make multiple chunks for edges
+        for (int chunkX = chunkXOffset - chunkEdgeSize; chunkX <= chunkXOffset + chunkEdgeSize; ++chunkX) {
+            for (int chunkZ = chunkZOffset - chunkEdgeSize; chunkZ <= chunkZOffset + chunkEdgeSize; ++chunkZ) {
+                PacketEmptyChunk packetEmptyChunk = new PacketEmptyChunk();
+                packetEmptyChunk.setX(chunkX);
+                packetEmptyChunk.setZ(chunkZ);
+
+                emptyChunks.add(PacketSnapshot.of(packetEmptyChunk));
+            }
+        }
+        PACKETS_EMPTY_CHUNKS = emptyChunks;
     }
 }
