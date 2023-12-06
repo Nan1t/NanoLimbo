@@ -177,10 +177,10 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
                 writePacket(PacketSnapshots.PACKET_HEADER_AND_FOOTER);
 
             if (clientVersion.moreOrEqual(Version.V1_20_3)) {
-                sendPacket(PacketSnapshots.PACKET_START_WAITING_CHUNKS);
+                writePacket(PacketSnapshots.PACKET_START_WAITING_CHUNKS);
 
                 for (PacketSnapshot chunk : PacketSnapshots.PACKETS_EMPTY_CHUNKS) {
-                    sendPacket(chunk);
+                    writePacket(chunk);
                 }
             }
 
