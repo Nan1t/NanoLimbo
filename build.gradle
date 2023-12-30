@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'ru.nanit'
-version '1.6'
+version '1.7'
 
 compileJava {
     options.encoding = "UTF-8"
