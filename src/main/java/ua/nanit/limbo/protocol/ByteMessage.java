@@ -73,14 +73,37 @@ public class ByteMessage extends ByteBuf {
     }
 
     public void writeVarInt(int value) {
-        while (true) {
-            if ((value & 0xFFFFFF80) == 0) {
-                buf.writeByte(value);
-                return;
-            }
+        // Peel the one and two byte count cases explicitly as they are the most common VarInt sizes
+        // that the proxy will write, to improve inlining.
+        if ((value & (0xFFFFFFFF << 7)) == 0) {
+            buf.writeByte(value);
+        } else if ((value & (0xFFFFFFFF << 14)) == 0) {
+            int w = (value & 0x7F | 0x80) << 8 | (value >>> 7);
+            buf.writeShort(w);
+        } else {
+            writeVarIntFull(value);
+        }
+    }
 
-            buf.writeByte(value & 0x7F | 0x80);
-            value >>>= 7;
+    private void writeVarIntFull(final int value) {
+        // See https://steinborn.me/posts/performance/how-fast-can-you-write-a-varint/
+        if ((value & (0xFFFFFFFF << 7)) == 0) {
+            buf.writeByte(value);
+        } else if ((value & (0xFFFFFFFF << 14)) == 0) {
+            int w = (value & 0x7F | 0x80) << 8 | (value >>> 7);
+            buf.writeShort(w);
+        } else if ((value & (0xFFFFFFFF << 21)) == 0) {
+            int w = (value & 0x7F | 0x80) << 16 | ((value >>> 7) & 0x7F | 0x80) << 8 | (value >>> 14);
+            buf.writeMedium(w);
+        } else if ((value & (0xFFFFFFFF << 28)) == 0) {
+            int w = (value & 0x7F | 0x80) << 24 | (((value >>> 7) & 0x7F | 0x80) << 16)
+                    | ((value >>> 14) & 0x7F | 0x80) << 8 | (value >>> 21);
+            buf.writeInt(w);
+        } else {
+            int w = (value & 0x7F | 0x80) << 24 | ((value >>> 7) & 0x7F | 0x80) << 16
+                    | ((value >>> 14) & 0x7F | 0x80) << 8 | ((value >>> 21) & 0x7F | 0x80);
+            buf.writeInt(w);
+            buf.writeByte(value >>> 28);
         }
     }
 
