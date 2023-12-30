@@ -21,9 +21,8 @@ import io.netty.buffer.*;
 import io.netty.handler.codec.DecoderException;
 import io.netty.handler.codec.EncoderException;
 import io.netty.util.ByteProcessor;
-import net.kyori.adventure.nbt.BinaryTagIO;
-import net.kyori.adventure.nbt.BinaryTagTypes;
-import net.kyori.adventure.nbt.CompoundBinaryTag;
+import net.kyori.adventure.nbt.*;
+import ua.nanit.limbo.protocol.registry.Version;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -194,13 +193,60 @@ public class ByteMessage extends ByteBuf {
         }
     }
 
-    public void writeNamelessCompoundTag(CompoundBinaryTag compoundTag) {
+    public void writeNamelessCompoundTag(BinaryTag binaryTag) {
         try (ByteBufOutputStream stream = new ByteBufOutputStream(buf)) {
-            stream.writeByte(10); // CompoundTag ID
-            BinaryTagTypes.COMPOUND.write(compoundTag, stream);
+            stream.writeByte(binaryTag.type().id());
+
+            // TODO Find a way to improve this...
+            if (binaryTag instanceof CompoundBinaryTag) {
+                CompoundBinaryTag tag = (CompoundBinaryTag) binaryTag;
+                tag.type().write(tag, stream);
+            }
+            else if (binaryTag instanceof ByteBinaryTag) {
+                ByteBinaryTag tag = (ByteBinaryTag) binaryTag;
+                tag.type().write(tag, stream);
+            }
+            else if (binaryTag instanceof ShortBinaryTag) {
+                ShortBinaryTag tag = (ShortBinaryTag) binaryTag;
+                tag.type().write(tag, stream);
+            }
+            else  if (binaryTag instanceof IntBinaryTag) {
+                IntBinaryTag tag = (IntBinaryTag) binaryTag;
+                tag.type().write(tag, stream);
+            }
+            else if (binaryTag instanceof LongBinaryTag) {
+                LongBinaryTag tag = (LongBinaryTag) binaryTag;
+                tag.type().write(tag, stream);
+            }
+            else if (binaryTag instanceof DoubleBinaryTag) {
+                DoubleBinaryTag tag = (DoubleBinaryTag) binaryTag;
+                tag.type().write(tag, stream);
+            }
+            else if (binaryTag instanceof StringBinaryTag) {
+                StringBinaryTag tag = (StringBinaryTag) binaryTag;
+                tag.type().write(tag, stream);
+            }
+            else if (binaryTag instanceof ListBinaryTag) {
+                ListBinaryTag tag = (ListBinaryTag) binaryTag;
+                tag.type().write(tag, stream);
+            }
+            else if (binaryTag instanceof EndBinaryTag) {
+                EndBinaryTag tag = (EndBinaryTag) binaryTag;
+                tag.type().write(tag, stream);
+            }
+
         }
         catch (IOException e) {
             throw new EncoderException("Cannot write NBT CompoundTag");
+        }
+    }
+
+    public void writeNbtMessage(NbtMessage nbtMessage, Version version) {
+        if (version.moreOrEqual(Version.V1_20_3)) {
+            writeNamelessCompoundTag(nbtMessage.getTag());
+        }
+        else {
+            writeString(nbtMessage.getJson());
         }
     }
 

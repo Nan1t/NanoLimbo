@@ -18,20 +18,21 @@
 package ua.nanit.limbo.protocol.packets.play;
 
 import ua.nanit.limbo.protocol.ByteMessage;
+import ua.nanit.limbo.protocol.NbtMessage;
 import ua.nanit.limbo.protocol.PacketOut;
 import ua.nanit.limbo.protocol.registry.Version;
 
 public class PacketTitleSetSubTitle implements PacketOut {
 
-    private String subtitle;
+    private NbtMessage subtitle;
 
-    public void setSubtitle(String subtitle) {
+    public void setSubtitle(NbtMessage subtitle) {
         this.subtitle = subtitle;
     }
 
     @Override
     public void encode(ByteMessage msg, Version version) {
-        msg.writeString(subtitle);
+        msg.writeNbtMessage(subtitle, version);
     }
 
 }
