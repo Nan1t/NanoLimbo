@@ -1,0 +1,24 @@
+services:
+  nanolimbo:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: nanolimbo
+    container_name: nanolimbo
+    networks:
+      default: null
+    ports:
+    - mode: ingress
+      target: 65535
+      published: "65535"
+      protocol: tcp
+    restart: unless-stopped
+    volumes:
+    - type: bind
+      source: nanolimbo_data
+      target: /data
+      bind:
+        create_host_path: true
+networks:
+  default:
+    name: nanolimbo_default
