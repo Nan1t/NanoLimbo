@@ -73,8 +73,8 @@ public final class LimboConfig {
 
     private boolean useTrafficLimits;
     private int maxPacketSize;
-    private int maxPacketsPerSec;
-    private int maxBytesPerSec;
+    private double interval;
+    private double maxPacketRate;
 
     public LimboConfig(Path root) {
         this.root = root;
@@ -134,9 +134,9 @@ public final class LimboConfig {
         workerGroupSize = conf.node("netty", "threads", "workerGroup").getInt(4);
 
         useTrafficLimits = conf.node("traffic", "enable").getBoolean(false);
-        maxPacketSize = conf.node("traffic", "packetSize").getInt(-1);
-        maxPacketsPerSec = conf.node("traffic", "packets").getInt(-1);
-        maxBytesPerSec = conf.node("traffic", "bytes").getInt(-1);
+        maxPacketSize = conf.node("traffic", "maxPacketSize").getInt(-1);
+        interval = conf.node("traffic", "interval").getDouble(-1.0);
+        maxPacketRate = conf.node("traffic", "maxPacketRate").getDouble(-1.0);
     }
 
     private BufferedReader getReader() throws IOException {
@@ -269,11 +269,11 @@ public final class LimboConfig {
         return maxPacketSize;
     }
 
-    public int getMaxPacketsPerSec() {
-        return maxPacketsPerSec;
+    public double getInterval() {
+        return interval;
     }
 
-    public int getMaxBytesPerSec() {
-        return maxBytesPerSec;
+    public double getMaxPacketRate() {
+        return maxPacketRate;
     }
 }

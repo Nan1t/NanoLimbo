@@ -114,18 +114,20 @@ netty:
     bossGroup: 1
     workerGroup: 4
 
-# [Experimental]
 # Options to check incoming traffic and kick potentially malicious connections.
 # Take into account that player can send many small packets, for example just moving mouse.
 traffic:
   # If true, then additional handler will be added to channel pipeline
-  enable: false
+  enable: true
   # Max packet size in bytes
   # Unlimited if -1
-  packetSize: 1024
-  # How many packets per second allowed for single connection
-  # Ignored if -1
-  packets: -1
-  # How many bytes per second allowed for single connection
-  # Ignored if -1
-  bytes: 2048
+  maxPacketSize: 8192
+  # The interval to measure packets over
+  # Lowering this value will limit peak packets from players which would target people with bad connections
+  # Raising this value will allow higher peak packet rates, which will help with people who have poor connections
+  # Ignored if -1.0
+  interval: 7.0
+  # The maximum maximum packets per second for players
+  # It is measured over the configured interval
+  # Ignored if -1.0
+  maxPacketRate: 500.0
