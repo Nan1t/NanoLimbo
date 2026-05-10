@@ -68,12 +68,7 @@ public class PacketHandler {
                 }
 
                 if (this.server.getConfig().getInfoForwarding().isLegacy()) {
-                    String[] split = packet.getHost().split("\00");
-
-                    if (split.length == 3 || split.length == 4) {
-                        conn.setAddress(split[1]);
-                        conn.getGameProfile().setUuid(UUIDUtils.fromString(split[2]));
-                    } else {
+                    if (!applyLegacyForwarding(conn, packet.getHost())) {
                         conn.disconnect(Component.text("You've enabled player info forwarding. You need to connect with proxy", NamedTextColor.RED));
                     }
                 } else if (this.server.getConfig().getInfoForwarding().isBungeeGuard()) {
@@ -83,6 +78,36 @@ public class PacketHandler {
                 }
             }
             default -> conn.disconnect(Component.text("Invalid handshake intent!", NamedTextColor.RED));
+        }
+    }
+
+    private boolean applyLegacyForwarding(@NonNull ClientConnection conn, @NonNull String handshake) {
+        String[] split = handshake.split("\00");
+        if (split.length < 3) {
+            return false;
+        }
+
+        if (applyLegacyForwarding(conn, split[1], split[2])) {
+            return true;
+        }
+
+        return split.length >= 4 && applyLegacyForwarding(conn, split[2], split[3]);
+    }
+
+    private boolean applyLegacyForwarding(@NonNull ClientConnection conn,
+                                          @NonNull String address,
+                                          @NonNull String uuid) {
+        if (address.isBlank() || address.startsWith("[") || address.startsWith("{")) {
+            return false;
+        }
+
+        try {
+            UUID parsedUuid = UUIDUtils.fromString(uuid);
+            conn.setAddress(address);
+            conn.getGameProfile().setUuid(parsedUuid);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
         }
     }
 
