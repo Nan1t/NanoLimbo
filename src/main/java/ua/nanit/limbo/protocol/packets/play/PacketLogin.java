@@ -130,8 +130,18 @@ public class PacketLogin implements PacketOut {
             }
             msg.writeNamespacedKey(this.dimension.getKey());
             msg.writeLong(this.seed);
-            msg.writeByte(this.gameMode);
-            msg.writeByte(this.previousGameMode);
+            if (version.moreOrEqual(Version.V26_3)) {
+                msg.writeVarInt(this.gameMode);
+                if (this.previousGameMode == -1) {
+                    msg.writeBoolean(false);
+                } else {
+                    msg.writeBoolean(true);
+                    msg.writeVarInt(this.previousGameMode);
+                }
+            } else {
+                msg.writeByte(this.gameMode);
+                msg.writeByte(this.previousGameMode);
+            }
         }
         if (version.moreOrEqual(Version.V1_16)) {
             msg.writeBoolean(this.debug);

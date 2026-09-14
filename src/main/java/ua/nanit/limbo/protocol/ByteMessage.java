@@ -258,6 +258,28 @@ public class ByteMessage extends ByteBuf {
         }
     }
 
+    public void writeTag(@NonNull net.kyori.adventure.nbt.BinaryTag tag, @NonNull Version version) {
+        if (tag instanceof CompoundBinaryTag compound) {
+            writeCompoundTag(compound, version);
+            return;
+        }
+
+        try (ByteBufOutputStream stream = new ByteBufOutputStream(buf);
+            java.io.DataOutputStream dos = new java.io.DataOutputStream(stream)) {
+            net.kyori.adventure.nbt.BinaryTagType type = tag.type();
+            if (version.moreOrEqual(Version.V1_20_2)) {
+                dos.writeByte(type.id());
+                type.write(tag, dos);
+            } else {
+                dos.writeByte(type.id());
+                dos.writeUTF("");
+                type.write(tag, dos);
+            }
+        } catch (IOException e) {
+            throw new EncoderException("Cannot write NBT BinaryTag: " + tag.type(), e);
+        }
+    }
+
     public void writeComponent(@NonNull Component component, @NonNull Version version) {
         GsonComponentSerializer gsonComponentSerializer = ComponentUtils.getJsonChatSerializer(version);
 

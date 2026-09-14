@@ -57,6 +57,7 @@ public final class DimensionRegistry {
     private CompoundBinaryTag codec_1_21_11;
     private CompoundBinaryTag codec_26_1;
     private CompoundBinaryTag codec_26_2;
+    private CompoundBinaryTag codec_26_3;
 
     private CompoundBinaryTag tags_1_20_5;
     private CompoundBinaryTag tags_1_21;
@@ -69,6 +70,7 @@ public final class DimensionRegistry {
     private CompoundBinaryTag tags_1_21_11;
     private CompoundBinaryTag tags_26_1;
     private CompoundBinaryTag tags_26_2;
+    private CompoundBinaryTag tags_26_3;
 
     public void load() throws IOException {
         codec_1_16 = readCompoundBinaryTag("/dimension/codec_1_16.nbt");
@@ -90,6 +92,7 @@ public final class DimensionRegistry {
         codec_1_21_11 = readCompoundBinaryTag("/dimension/codec_1_21_11.nbt");
         codec_26_1 = readCompoundBinaryTag("/dimension/codec_26_1.nbt");
         codec_26_2 = readCompoundBinaryTag("/dimension/codec_26_2.nbt");
+        codec_26_3 = readCompoundBinaryTag("/dimension/codec_26_3.nbt");
 
         tags_1_20_5 = readCompoundBinaryTag("/dimension/tags_1_20_5.nbt");
         tags_1_21 = readCompoundBinaryTag("/dimension/tags_1_21.nbt");
@@ -102,6 +105,7 @@ public final class DimensionRegistry {
         tags_1_21_11 = readCompoundBinaryTag("/dimension/tags_1_21_11.nbt");
         tags_26_1 = readCompoundBinaryTag("/dimension/tags_26_1.nbt");
         tags_26_2 = readCompoundBinaryTag("/dimension/tags_26_2.nbt");
+        tags_26_3 = readCompoundBinaryTag("/dimension/tags_26_3.nbt");
     }
 
     @NonNull
@@ -116,7 +120,9 @@ public final class DimensionRegistry {
 
     @NonNull
     private CompoundBinaryTag getRegistryByVersion(@NonNull Version version) {
-        if (version.moreOrEqual(Version.V26_2)) {
+        if (version.moreOrEqual(Version.V26_3)) {
+            return this.codec_26_3;
+        } else if (version.moreOrEqual(Version.V26_2)) {
             return this.codec_26_2;
         } else if (version.moreOrEqual(Version.V26_1)) {
             return this.codec_26_1;
@@ -264,9 +270,9 @@ public final class DimensionRegistry {
                 BinaryTag element = entryTag.get("element");
 
                 msg.writeString(name);
-                if (element instanceof CompoundBinaryTag elementTag) {
+                if (element != null) {
                     msg.writeBoolean(true);
-                    msg.writeCompoundTag(elementTag, version);
+                    msg.writeTag(element, version);
                 } else {
                     msg.writeBoolean(false);
                 }
@@ -276,7 +282,9 @@ public final class DimensionRegistry {
 
     @NonNull
     public Map<String, Map<String, List<Integer>>> createUpdateTags(@NonNull Version version) {
-        if (version.moreOrEqual(Version.V26_2)) {
+        if (version.moreOrEqual(Version.V26_3)) {
+            return parseUpdateTags(this.tags_26_3);
+        } else if (version.moreOrEqual(Version.V26_2)) {
             return parseUpdateTags(this.tags_26_2);
         } else if (version.moreOrEqual(Version.V26_1)) {
             return parseUpdateTags(this.tags_26_1);
