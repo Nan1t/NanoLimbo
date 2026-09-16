@@ -36,6 +36,7 @@ import ua.nanit.limbo.server.data.NamespacedKey;
 import ua.nanit.limbo.util.ComponentUtils;
 import ua.nanit.limbo.util.NbtUtils;
 
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -274,7 +275,7 @@ public class ByteMessage extends ByteBuf {
 
     public void writeTag(@NonNull BinaryTag tag, @NonNull Version version) {
         try (ByteBufOutputStream stream = new ByteBufOutputStream(buf);
-             java.io.DataOutputStream dos = new java.io.DataOutputStream(stream)) {
+             DataOutputStream dos = new DataOutputStream(stream)) {
             BinaryTagType type = tag.type();
             if (version.moreOrEqual(Version.V1_20_2)) {
                 dos.writeByte(type.id());
