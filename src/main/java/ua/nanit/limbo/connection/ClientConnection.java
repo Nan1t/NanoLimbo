@@ -23,6 +23,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.DecoderException;
 import io.netty.handler.timeout.ReadTimeoutException;
+import io.netty.util.NetUtil;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -44,6 +45,7 @@ import ua.nanit.limbo.server.Log;
 import ua.nanit.limbo.util.ComponentUtils;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.List;
@@ -338,7 +340,12 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
     }
 
     public void setAddress(@NonNull String host) {
-        this.address = new InetSocketAddress(host, ((InetSocketAddress) this.address).getPort());
+        if (!(this.address instanceof InetSocketAddress inetSocketAddress)) {
+            return;
+        }
+        int port = inetSocketAddress.getPort();
+        InetAddress ip = NetUtil.createInetAddressFromIpAddressString(host);
+        this.address = ip != null ? new InetSocketAddress(ip, port) : InetSocketAddress.createUnresolved(host, port);
     }
 
 }
