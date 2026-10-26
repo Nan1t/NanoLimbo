@@ -59,8 +59,8 @@ public class PacketPlayerInfo implements PacketOut {
                 msg.writeString(this.username); //Username
                 msg.writeVarInt(0); //Properties (0 is empty)
 
-                msg.writeBoolean(true); //Update listed
                 msg.writeVarInt(this.gameMode); //Gamemode
+                msg.writeBoolean(true); //Update listed
                 return;
             }
 
