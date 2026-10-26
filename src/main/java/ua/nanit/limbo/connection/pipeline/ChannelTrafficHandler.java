@@ -46,18 +46,18 @@ public class ChannelTrafficHandler extends ChannelInboundHandlerAdapter {
             int bytes = in.readableBytes();
 
             if (maxPacketSize > 0 && bytes > maxPacketSize) {
-                closeConnection(ctx, "Closed %s due to large packet size (%d bytes)", ctx.channel().remoteAddress(), bytes);
+                closeConnection(ctx, "Closed %s due to large packet size (%d bytes)", in, ctx.channel().remoteAddress(), bytes);
                 return;
             }
 
             if (packetBucket != null) {
                 packetBucket.recordPacket(1, bytes);
                 if (maxPacketRate > 0.0 && packetBucket.getCurrentPacketRate() > maxPacketRate) {
-                    closeConnection(ctx, "Closed %s due to many packets sent (%d in the last %.1f seconds)", ctx.channel().remoteAddress(), packetBucket.sumPackets, (packetBucket.intervalTime / 1000.0));
+                    closeConnection(ctx, "Closed %s due to many packets sent (%d in the last %.1f seconds)", in, ctx.channel().remoteAddress(), packetBucket.sumPackets, (packetBucket.intervalTime / 1000.0));
                     return;
                 }
                 if (maxPacketBytesRate > 0.0 && packetBucket.getCurrentPacketBytesRate() > maxPacketBytesRate) {
-                    closeConnection(ctx, "Closed %s due to many bytes sent (%d in the last %.1f seconds)", ctx.channel().remoteAddress(), packetBucket.sumBytes, (packetBucket.intervalTime / 1000.0));
+                    closeConnection(ctx, "Closed %s due to many bytes sent (%d in the last %.1f seconds)", in, ctx.channel().remoteAddress(), packetBucket.sumBytes, (packetBucket.intervalTime / 1000.0));
                     return;
                 }
             }
@@ -68,7 +68,9 @@ public class ChannelTrafficHandler extends ChannelInboundHandlerAdapter {
 
     private void closeConnection(@NonNull ChannelHandlerContext ctx,
                                  @NonNull String reason,
+                                 @NonNull ByteBuf buf,
                                  @NonNull Object... args) {
+        buf.release();
         ctx.close();
         Log.info(reason, args);
     }

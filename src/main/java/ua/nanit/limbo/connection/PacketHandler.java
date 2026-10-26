@@ -166,7 +166,7 @@ public class PacketHandler {
                 return;
             }
 
-            ByteMessage msg = packet.getData();
+            ByteMessage msg = new ByteMessage(Unpooled.wrappedBuffer(packet.getData()));
             if (!ForwardingUtils.checkVelocityKeyIntegrity(conn, msg)) {
                 conn.disconnect(Component.text("Can't verify forwarded player info", NamedTextColor.RED));
                 return;

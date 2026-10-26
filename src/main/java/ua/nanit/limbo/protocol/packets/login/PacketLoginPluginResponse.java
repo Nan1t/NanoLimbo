@@ -35,7 +35,7 @@ public class PacketLoginPluginResponse implements PacketIn {
 
     private int messageId;
     private boolean successful;
-    private ByteMessage data;
+    private byte[] data;
 
     @Override
     public void decode(@NonNull ByteMessage msg, @NonNull Version version) {
@@ -47,7 +47,8 @@ public class PacketLoginPluginResponse implements PacketIn {
             if (readableBytes > Short.MAX_VALUE) {
                 throw new DecoderException("Cannot receive payload larger than " + Short.MAX_VALUE);
             }
-            this.data = new ByteMessage(msg.readBytes(readableBytes));
+            this.data = new byte[msg.readableBytes()];
+            msg.readBytes(this.data);
         }
     }
 
