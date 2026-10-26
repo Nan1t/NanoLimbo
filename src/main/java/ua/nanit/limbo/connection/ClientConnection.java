@@ -94,9 +94,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelInactive(@NotNull ChannelHandlerContext ctx) throws Exception {
-        if (state == State.PLAY || state == State.CONFIGURATION) {
-            server.getConnections().removeConnection(this);
-        }
+        server.getConnections().removeConnection(this);
         super.channelInactive(ctx);
     }
 
@@ -146,9 +144,12 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
             return;
         }
 
-        sendPacket(PacketSnapshots.PACKET_LOGIN_SUCCESS);
+        ClientConnection oldConnection = this.server.getConnections().addConnection(this);
+        if (oldConnection != null) {
+            oldConnection.disconnect(Component.text("You logged in from another location", NamedTextColor.RED));
+        }
 
-        server.getConnections().addConnection(this);
+        sendPacket(PacketSnapshots.PACKET_LOGIN_SUCCESS);
 
         // Preparing for configuration mode
         if (clientVersion.moreOrEqual(Version.V1_20_2)) {
