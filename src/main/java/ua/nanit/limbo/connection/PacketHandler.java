@@ -167,27 +167,31 @@ public class PacketHandler {
             }
 
             ByteMessage msg = new ByteMessage(Unpooled.wrappedBuffer(packet.getData()));
-            if (!ForwardingUtils.checkVelocityKeyIntegrity(conn, msg)) {
-                conn.disconnect(Component.text("Can't verify forwarded player info", NamedTextColor.RED));
-                return;
+            try {
+                if (!ForwardingUtils.checkVelocityKeyIntegrity(conn, msg)) {
+                    conn.disconnect(Component.text("Can't verify forwarded player info", NamedTextColor.RED));
+                    return;
+                }
+
+                int version = msg.readVarInt();
+                if (version > ForwardingUtils.VELOCITY_MAX_SUPPORTED_FORWARDING_VERSION) {
+                    conn.disconnect(Component.text("Unsupported forwarding version " + version + ", wanted upto " + ForwardingUtils.VELOCITY_MAX_SUPPORTED_FORWARDING_VERSION, NamedTextColor.RED));
+                    return;
+                }
+
+                String address = msg.readString();
+                UUID uuid = msg.readUuid();
+                String userName = msg.readString();
+
+                conn.setAddress(address);
+                GameProfile gameProfile = conn.getGameProfile();
+                gameProfile.setUuid(uuid);
+                gameProfile.setUsername(userName);
+
+                conn.fireLoginSuccess();
+            } finally {
+                msg.release();
             }
-
-            int version = msg.readVarInt();
-            if (version > ForwardingUtils.VELOCITY_MAX_SUPPORTED_FORWARDING_VERSION) {
-                conn.disconnect(Component.text("Unsupported forwarding version " + version + ", wanted upto " + ForwardingUtils.VELOCITY_MAX_SUPPORTED_FORWARDING_VERSION, NamedTextColor.RED));
-                return;
-            }
-
-            String address = msg.readString();
-            UUID uuid = msg.readUuid();
-            String userName = msg.readString();
-
-            conn.setAddress(address);
-            GameProfile gameProfile = conn.getGameProfile();
-            gameProfile.setUuid(uuid);
-            gameProfile.setUsername(userName);
-
-            conn.fireLoginSuccess();
         }
     }
 

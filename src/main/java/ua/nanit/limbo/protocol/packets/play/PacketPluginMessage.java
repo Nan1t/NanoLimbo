@@ -49,7 +49,7 @@ public class PacketPluginMessage implements PacketIn, PacketOut {
             throw new DecoderException("Cannot receive payload larger than " + Short.MAX_VALUE);
         }
         this.data = new byte[msg.readableBytes()];
-        msg.readBytes(this.data);
+        msg.readBytes(data);
     }
 
     @Override
