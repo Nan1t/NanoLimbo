@@ -1,9 +1,4 @@
 **
-!build/
-!build/libs/
 !build/libs/NanoLimbo.jar
-!src/
-!src/main/
-!src/main/resources/
 !src/main/resources/settings.yml
 !docker-entrypoint.sh

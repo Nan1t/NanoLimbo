@@ -77,6 +77,7 @@ docker run -d --name nanolimbo \
   ghcr.io/nan1t/nanolimbo:latest
 ```
 
+A host directory mounted as `/data` must be writable by UID 10001 (`chown -R 10001:10001 ./data`), or run the container with `--user` set to the directory owner.
 An imported `settings.yml` must not bind to `localhost`; set `bind.ip` to `""` to listen on all container interfaces.
 Forwarding secrets can be mounted read-only and referenced with the existing `@file` syntax, for example `secret: '@/run/secrets/forwarding'`.
 
