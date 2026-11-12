@@ -20,6 +20,7 @@ package ua.nanit.limbo.protocol.packets.play;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NonNull;
+import net.kyori.adventure.text.Component;
 import ua.nanit.limbo.protocol.ByteMessage;
 import ua.nanit.limbo.protocol.PacketOut;
 import ua.nanit.limbo.protocol.registry.Version;
@@ -48,12 +49,16 @@ public class PacketTitleLegacy implements PacketOut {
         this.times.setFadeOut(title.getFadeOut());
     }
 
+    public void setActionBar(@NonNull Component actionBar) {
+        this.title.setTitle(actionBar);
+    }
+
     @Override
     public void encode(@NonNull ByteMessage msg, @NonNull Version version) {
         msg.writeVarInt(action.getId(version));
 
         switch (action) {
-            case SET_TITLE -> title.encode(msg, version);
+            case SET_TITLE, SET_ACTION_BAR -> title.encode(msg, version);
             case SET_SUBTITLE -> subtitle.encode(msg, version);
             case SET_TIMES_AND_DISPLAY -> times.encode(msg, version);
             default -> throw new IllegalArgumentException("Invalid title action: " + action);
@@ -69,6 +74,7 @@ public class PacketTitleLegacy implements PacketOut {
     public enum Action {
         SET_TITLE(0),
         SET_SUBTITLE(1),
+        SET_ACTION_BAR(2),
         SET_TIMES_AND_DISPLAY(3, 2);
 
         private final int id;

@@ -65,6 +65,9 @@ public final class LimboConfig {
     private BossBar bossBar;
     private Title title;
 
+    private boolean useActionBar;
+    private Component actionBar;
+
     private String playerListUsername;
     private Component playerListHeader;
     private Component playerListFooter;
@@ -121,6 +124,11 @@ public final class LimboConfig {
 
         if (useTitle) {
             title = conf.node("title").get(Title.class);
+        }
+
+        useActionBar = conf.node("actionBar", "enable").getBoolean(false);
+        if (useActionBar) {
+            actionBar = conf.node("actionBar", "text").get(Component.class, Component.empty());
         }
 
         if (useHeaderAndFooter) {
