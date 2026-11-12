@@ -66,6 +66,20 @@ The installation process is simple.
 4. The server will create `settings.yml` file, which is the server configuration. 
 5. Configure it as you want and restart the server.
 
+#### Docker
+
+Run the release image with persistent settings and logs:
+
+```sh
+docker run -d --name nanolimbo \
+  -p 127.0.0.1:65535:65535/tcp \
+  -v nanolimbo_data:/data \
+  ghcr.io/nan1t/nanolimbo:latest
+```
+
+An imported `settings.yml` must not bind to `localhost`; set `bind.ip` to `""` to listen on all container interfaces.
+Forwarding secrets can be mounted read-only and referenced with the existing `@file` syntax, for example `secret: '@/run/secrets/forwarding'`.
+
 ### Player info forwarding
 
 The server supports player info forwarding from the proxy. There are several types of info forwarding:
