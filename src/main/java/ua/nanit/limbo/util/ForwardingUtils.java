@@ -18,8 +18,10 @@
 package ua.nanit.limbo.util;
 
 import com.google.gson.*;
+import io.netty.util.NetUtil;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import ua.nanit.limbo.connection.ClientConnection;
 import ua.nanit.limbo.protocol.ByteMessage;
 
@@ -35,6 +37,36 @@ public class ForwardingUtils {
     private static final String ALGORITHM = "HmacSHA256";
 
     public static final byte VELOCITY_MAX_SUPPORTED_FORWARDING_VERSION = 1;
+
+    @Nullable
+    public static LegacyForwarding parseLegacyForwarding(@NonNull String handshake) {
+        String[] split = handshake.split("\00", -1);
+        if (split.length < 3) {
+            return null;
+        }
+
+        int addressIndex = split[1].startsWith("^Floodgate^") ? 2 : 1;
+        if (split.length != addressIndex + 2 && split.length != addressIndex + 3) {
+            return null;
+        }
+
+        String address = split[addressIndex];
+        if (address.isBlank() || address.startsWith("{") ||
+                (address.startsWith("[") && !NetUtil.isValidIpV6Address(address))) {
+            return null;
+        }
+
+        try {
+            UUID uuid = UUIDUtils.fromString(split[addressIndex + 1]);
+            String properties = split.length == addressIndex + 3 ? split[addressIndex + 2] : null;
+            return new LegacyForwarding(address, uuid, properties);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+    }
+
+    public record LegacyForwarding(String address, UUID uuid, @Nullable String properties) {
+    }
 
     public static boolean checkVelocityKeyIntegrity(@NonNull ClientConnection conn,
                                                     @NonNull ByteMessage buf) {
@@ -59,19 +91,18 @@ public class ForwardingUtils {
 
     public static boolean checkBungeeGuardHandshake(@NonNull ClientConnection conn,
                                                     @NonNull String handshake) {
-        String[] split = handshake.split("\00");
-
-        if (split.length != 4) {
+        LegacyForwarding forwarding = parseLegacyForwarding(handshake);
+        if (forwarding == null || forwarding.properties() == null) {
             return false;
         }
 
-        String socketAddressHostname = split[1];
-        UUID uuid = UUIDUtils.fromString(split[2]);
+        String socketAddressHostname = forwarding.address();
+        UUID uuid = forwarding.uuid();
 
         String token = null;
 
         try {
-            JsonElement rootElement = JsonParser.parseString(split[3]);
+            JsonElement rootElement = JsonParser.parseString(forwarding.properties());
             if (!rootElement.isJsonArray()) {
                 return false;
             }
