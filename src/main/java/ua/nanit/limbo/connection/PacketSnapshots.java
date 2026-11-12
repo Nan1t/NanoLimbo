@@ -140,7 +140,6 @@ public class PacketSnapshots {
         );
 
         PacketDeclareCommands declareCommands = new PacketDeclareCommands();
-        declareCommands.setCommands(Collections.emptyList());
 
         PacketPlayerInfo info = new PacketPlayerInfo();
         info.setUsername(playerListName);
