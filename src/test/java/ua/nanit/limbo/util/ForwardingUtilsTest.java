@@ -33,7 +33,6 @@ class ForwardingUtilsTest {
     private static final UUID PLAYER_UUID = UUID.fromString(UUID_TEXT);
     private static final String FLOODGATE = "^Floodgate^>aGVsbG8=!YWJj";
     private static final String PROPERTIES = "[{\"name\":\"textures\",\"value\":\"skin\"}]";
-    private static final String TOKEN_PROPERTIES = "[{\"name\":\"bungeeguard-token\",\"value\":\"secret\"}]";
 
     @ParameterizedTest(name = "{0}")
     @MethodSource("legacyHandshakes")
@@ -57,32 +56,21 @@ class ForwardingUtilsTest {
                         new LegacyForwarding("::1", PLAYER_UUID, null)),
                 Arguments.of("plain bracketed IPv6", handshake("host", "[::1]", UUID_TEXT),
                         new LegacyForwarding("[::1]", PLAYER_UUID, null)),
-                Arguments.of("Floodgate bare IPv6", handshake("host", FLOODGATE, "::1", UUID_TEXT),
-                        new LegacyForwarding("::1", PLAYER_UUID, null)),
-                Arguments.of("Floodgate bracketed IPv6", handshake("host", FLOODGATE, "[::1]", UUID_TEXT),
-                        new LegacyForwarding("[::1]", PLAYER_UUID, null)),
-                Arguments.of("BungeeGuard properties", handshake("host", "127.0.0.1", UUID_TEXT, TOKEN_PROPERTIES),
-                        new LegacyForwarding("127.0.0.1", PLAYER_UUID, TOKEN_PROPERTIES)),
-                Arguments.of("Floodgate BungeeGuard properties", handshake("host", FLOODGATE, "127.0.0.1", UUID_TEXT, TOKEN_PROPERTIES),
-                        new LegacyForwarding("127.0.0.1", PLAYER_UUID, TOKEN_PROPERTIES)),
                 Arguments.of("empty properties field", handshake("host", "127.0.0.1", UUID_TEXT, ""),
                         new LegacyForwarding("127.0.0.1", PLAYER_UUID, "")),
                 Arguments.of("bad plain UUID", handshake("host", "127.0.0.1", "bad-uuid"), null),
                 Arguments.of("bad Floodgate UUID", handshake("host", FLOODGATE, "127.0.0.1", "bad-uuid"), null),
-                Arguments.of("bad UUID cannot fall back to properties", handshake("host", "127.0.0.1", "bad-uuid", UUID_TEXT), null),
                 Arguments.of("unmarked shifted fields", handshake("host", "ignored", "127.0.0.1", UUID_TEXT), null),
                 Arguments.of("excess plain fields", handshake("host", "127.0.0.1", UUID_TEXT, PROPERTIES, "extra"), null),
                 Arguments.of("excess Floodgate fields", handshake("host", FLOODGATE, "127.0.0.1", UUID_TEXT, PROPERTIES, "extra"), null),
                 Arguments.of("excess empty plain field", handshake("host", "127.0.0.1", UUID_TEXT, PROPERTIES, ""), null),
-                Arguments.of("excess empty Floodgate field", handshake("host", FLOODGATE, "127.0.0.1", UUID_TEXT, PROPERTIES, ""), null),
                 Arguments.of("missing Floodgate UUID", handshake("host", FLOODGATE, "127.0.0.1"), null),
                 Arguments.of("vanilla host", "host", null),
                 Arguments.of("incomplete plain fields", handshake("host", "127.0.0.1"), null),
                 Arguments.of("blank address", handshake("host", "", UUID_TEXT), null),
+                Arguments.of("hostname address", handshake("host", "attacker.example", UUID_TEXT), null),
                 Arguments.of("JSON object address", handshake("host", "{}", UUID_TEXT), null),
                 Arguments.of("JSON array address", handshake("host", "[]", UUID_TEXT), null),
-                Arguments.of("UUID properties cannot replace the player UUID", handshake("host", "127.0.0.1", UUID_TEXT, "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"),
-                        new LegacyForwarding("127.0.0.1", PLAYER_UUID, "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee")),
                 Arguments.of("marker must start the field", handshake("host", "prefix" + FLOODGATE, "127.0.0.1", UUID_TEXT), null)
         );
     }

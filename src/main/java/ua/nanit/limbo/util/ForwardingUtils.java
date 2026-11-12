@@ -51,8 +51,8 @@ public class ForwardingUtils {
         }
 
         String address = split[addressIndex];
-        if (address.isBlank() || address.startsWith("{") ||
-                (address.startsWith("[") && !NetUtil.isValidIpV6Address(address))) {
+        // Proxies always forward an IP literal; anything else is a forged handshake.
+        if (!NetUtil.isValidIpV4Address(address) && !NetUtil.isValidIpV6Address(address)) {
             return null;
         }
 
