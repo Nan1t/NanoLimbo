@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "ua.nanit"
-version = "1.12.0"
+version = "1.13.0"
 
 repositories {
     mavenCentral()
@@ -40,45 +40,46 @@ dependencies {
     testRuntimeOnly(libs.junit.platform.launcher)
 }
 
-tasks.test {
-    useJUnitPlatform()
-}
+tasks {
+    test {
+        useJUnitPlatform()
+    }
 
-tasks.compileJava {
-    options.encoding = "UTF-8"
-}
+    compileJava {
+        options.encoding = "UTF-8"
+    }
 
-tasks.build {
-    dependsOn("shadowJar")
+    shadowJar {
+        from("LICENSE")
+
+        archiveClassifier.set("")
+        archiveVersion.set("")
+
+        manifest {
+            attributes(
+                mapOf(
+                    "Main-Class" to "ua.nanit.limbo.NanoLimbo"
+                )
+            )
+        }
+
+        minimize {
+            exclude(dependency("ch.qos.logback:logback-classic:.*:.*"))
+        }
+    }
+
+    build {
+        dependsOn(shadowJar)
+    }
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
-
 
 buildConfig {
     className("BuildConfig")
     packageName("ua.nanit.limbo")
     buildConfigField("LIMBO_VERSION", provider { "${project.version}" })
-}
-
-tasks.shadowJar {
-    from("LICENSE")
-
-    archiveClassifier.set("")
-    archiveVersion.set("")
-
-    manifest {
-        attributes(
-            mapOf(
-                "Main-Class" to "ua.nanit.limbo.NanoLimbo"
-            )
-        )
-    }
-
-    minimize {
-        exclude(dependency("ch.qos.logback:logback-classic:.*:.*"))
-    }
 }
