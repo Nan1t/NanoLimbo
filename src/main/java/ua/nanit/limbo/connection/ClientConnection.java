@@ -117,14 +117,14 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
             return true;
         }
         if (!(cause instanceof DecoderException)
-                || (state != null && state != State.HANDSHAKING && state != State.STATUS)) {
+                || (state != null && state != State.STATUS)) {
             return false;
         }
         while (cause instanceof DecoderException && cause.getCause() != null) {
             cause = cause.getCause();
         }
         return cause.getCause() == null
-                && (cause instanceof DecoderException || cause instanceof IndexOutOfBoundsException);
+                && (cause instanceof DecoderException || cause.getClass() == IndexOutOfBoundsException.class);
     }
 
     @Override
