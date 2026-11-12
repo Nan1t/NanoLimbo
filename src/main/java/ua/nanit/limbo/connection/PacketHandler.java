@@ -161,6 +161,9 @@ public class PacketHandler {
     }
 
     public void handle(@NonNull ClientConnection conn, @NonNull PacketLoginPluginResponse packet) {
+        if (conn.getUsername() != null) {
+            return;
+        }
         if (server.getConfig().getInfoForwarding().isModern()
                 && packet.getMessageId() == conn.getVelocityLoginMessageId()) {
 
