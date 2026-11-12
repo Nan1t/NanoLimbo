@@ -149,7 +149,9 @@ public class PacketHandler {
 
         if (!server.getConfig().getInfoForwarding().isModern()) {
             conn.getGameProfile().setUsername(packet.getUsername());
-            conn.getGameProfile().setUuid(UUIDUtils.getOfflineModeUuid(packet.getUsername()));
+            if (conn.getGameProfile().getUuid() == null) {
+                conn.getGameProfile().setUuid(UUIDUtils.getOfflineModeUuid(packet.getUsername()));
+            }
         }
 
         conn.fireLoginSuccess();
