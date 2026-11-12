@@ -69,6 +69,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
 
     @Setter
     private int velocityLoginMessageId = -1;
+    private boolean knownPacksReceived;
 
     public ClientConnection(@NonNull Channel channel,
                             @NonNull LimboServer server,
@@ -139,6 +140,9 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
     }
 
     public void fireLoginSuccess() {
+        if (!isConnected()) {
+            return;
+        }
         if (server.getConfig().getInfoForwarding().isModern() && velocityLoginMessageId == -1) {
             disconnect(Component.text("You need to connect with Velocity", NamedTextColor.RED));
             return;
@@ -239,6 +243,11 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
     }
 
     public void onKnownPacksReceived() {
+        // Each reply resends the full registry, so a repeat would amplify traffic.
+        if (knownPacksReceived) {
+            return;
+        }
+        knownPacksReceived = true;
         List<PacketSnapshot> registry = PacketSnapshots.getPacketsRegistryData(this.clientVersion);
         if (registry != null) {
             writePackets(registry);
@@ -310,7 +319,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
 
     public void sendPacketAndClose(@NonNull Object packet) {
         if (isConnected()) {
-            channel.writeAndFlush(packet).addListener(ChannelFutureListener.CLOSE);
+            channel.writeAndFlush(packet).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE).addListener(ChannelFutureListener.CLOSE);
         }
     }
 

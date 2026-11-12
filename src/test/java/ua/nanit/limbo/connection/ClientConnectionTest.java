@@ -28,6 +28,7 @@ import ua.nanit.limbo.connection.pipeline.PacketDecoder;
 import ua.nanit.limbo.connection.pipeline.PacketEncoder;
 import ua.nanit.limbo.protocol.ByteMessage;
 import ua.nanit.limbo.protocol.PacketSnapshot;
+import ua.nanit.limbo.protocol.packets.PacketHandshake;
 import ua.nanit.limbo.protocol.packets.login.PacketLoginPluginResponse;
 import ua.nanit.limbo.protocol.packets.login.PacketLoginStart;
 import ua.nanit.limbo.protocol.packets.login.PacketLoginSuccess;
@@ -119,11 +120,26 @@ class ClientConnectionTest {
         ClientConnection replacement = connection();
         startLogin(replacement, "Player");
 
-        oldConnection.getChannel().close();
-
+        assertFalse(oldConnection.isConnected());
         assertTrue(replacement.isConnected());
         assertEquals(1, server.getConnections().getCount());
         assertTrue(server.getConnections().getAllConnections().contains(replacement));
+    }
+
+    @Test
+    void keepsLegacyForwardedUuidOnLoginStart() {
+        server.getConfig().getInfoForwarding().setType(InfoForwarding.Type.LEGACY);
+        ClientConnection connection = connection();
+        UUID forwardedUuid = UUID.randomUUID();
+        EmbeddedChannel channel = (EmbeddedChannel) connection.getChannel();
+
+        channel.writeInbound(new PacketHandshake(Version.V1_20_2, "host\0" + "10.0.0.1\0" + forwardedUuid, 25565,
+                PacketHandshake.Intent.LOGIN));
+        PacketLoginStart start = new PacketLoginStart();
+        start.setUsername("Player");
+        channel.writeInbound(start);
+
+        assertEquals(forwardedUuid, connection.getUuid());
     }
 
     @Test

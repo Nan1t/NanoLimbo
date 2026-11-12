@@ -202,6 +202,11 @@ public class PacketHandler {
     }
 
     public void handle(@NonNull ClientConnection conn, @NonNull PacketLoginAcknowledged packet) {
+        // Without a completed login the client would skip forwarding and the player limit.
+        if (conn.getUsername() == null) {
+            conn.disconnect(Component.text("Login was not completed", NamedTextColor.RED));
+            return;
+        }
         conn.onLoginAcknowledgedReceived();
     }
 

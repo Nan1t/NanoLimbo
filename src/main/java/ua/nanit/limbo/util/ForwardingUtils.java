@@ -70,6 +70,9 @@ public class ForwardingUtils {
 
     public static boolean checkVelocityKeyIntegrity(@NonNull ClientConnection conn,
                                                     @NonNull ByteMessage buf) {
+        if (buf.readableBytes() < 32) {
+            return false;
+        }
         byte[] signature = new byte[32];
         buf.readBytes(signature);
 
