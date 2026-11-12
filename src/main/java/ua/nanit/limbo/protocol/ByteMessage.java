@@ -36,7 +36,6 @@ import ua.nanit.limbo.server.data.NamespacedKey;
 import ua.nanit.limbo.util.ComponentUtils;
 import ua.nanit.limbo.util.NbtUtils;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -220,11 +219,7 @@ public class ByteMessage extends ByteBuf {
 
     public void writeBitSet(BitSet bitSet, @NonNull Version version) {
         if (version.moreOrEqual(Version.V26_3)) {
-            if (bitSet == null || bitSet.isEmpty()) {
-                writeVarInt(0);
-                return;
-            }
-            writeBytesArray(bitSet.toByteArray());
+            writeBytesArray(bitSet != null ? bitSet.toByteArray() : new byte[0]);
         } else {
             writeBitSet(bitSet);
         }
@@ -273,18 +268,12 @@ public class ByteMessage extends ByteBuf {
         }
     }
 
-    public void writeTag(@NonNull BinaryTag tag, @NonNull Version version) {
-        try (ByteBufOutputStream stream = new ByteBufOutputStream(buf);
-             DataOutputStream dos = new DataOutputStream(stream)) {
-            BinaryTagType type = tag.type();
-            if (version.moreOrEqual(Version.V1_20_2)) {
-                dos.writeByte(type.id());
-                type.write(tag, dos);
-            } else {
-                dos.writeByte(type.id());
-                dos.writeUTF("");
-                type.write(tag, dos);
-            }
+    @SuppressWarnings("unchecked")
+    public void writeTag(@NonNull BinaryTag tag) {
+        try (ByteBufOutputStream stream = new ByteBufOutputStream(buf)) {
+            BinaryTagType<BinaryTag> type = (BinaryTagType<BinaryTag>) tag.type();
+            stream.writeByte(type.id());
+            type.write(tag, stream);
         } catch (IOException e) {
             throw new EncoderException("Cannot write NBT BinaryTag: " + tag.type(), e);
         }

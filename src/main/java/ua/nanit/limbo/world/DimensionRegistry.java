@@ -272,7 +272,7 @@ public final class DimensionRegistry {
                 msg.writeString(name);
                 if (element != null) {
                     msg.writeBoolean(true);
-                    msg.writeTag(element, version);
+                    msg.writeTag(element);
                 } else {
                     msg.writeBoolean(false);
                 }
