@@ -1,0 +1,4 @@
+**
+!build/libs/NanoLimbo.jar
+!src/main/resources/settings.yml
+!docker-entrypoint.sh
