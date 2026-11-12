@@ -132,7 +132,7 @@ public class PacketLogin implements PacketOut {
             msg.writeLong(this.seed);
             if (version.moreOrEqual(Version.V26_3)) {
                 msg.writeVarInt(this.gameMode);
-                msg.writeVarInt(this.previousGameMode);
+                msg.writeVarInt(this.previousGameMode + 1);
             } else {
                 msg.writeByte(this.gameMode);
                 msg.writeByte(this.previousGameMode);
