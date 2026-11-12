@@ -34,7 +34,6 @@ public class ComponentUtils {
 
     private static final GsonComponentSerializer PRE_1_16_GSON_SERIALIZER =
             GsonComponentSerializer.builder()
-                    .downsampleColors()
                     .legacyHoverEventSerializer(NBTLegacyHoverEventSerializer.get())
                     .options(
                             OptionSchema.globalSchema().stateBuilder()

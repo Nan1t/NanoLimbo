@@ -51,6 +51,7 @@ public class PacketLogin implements PacketOut {
     private boolean limitedCrafting;
     private int portalCooldown;
     private int seaLevel;
+    private boolean onlineMode;
     private boolean secureProfile;
 
     public void encode(@NonNull ByteMessage msg, @NonNull Version version) {
@@ -144,6 +145,9 @@ public class PacketLogin implements PacketOut {
         }
         if (version.moreOrEqual(Version.V1_21_2)) {
             msg.writeVarInt(this.seaLevel);
+        }
+        if (version.moreOrEqual(Version.V26_2)) {
+            msg.writeBoolean(this.onlineMode);
         }
         if (version.moreOrEqual(Version.V1_20_5)) {
             msg.writeBoolean(this.secureProfile);

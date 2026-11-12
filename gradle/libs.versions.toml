@@ -1,12 +1,12 @@
 [versions]
-netty = "4.2.11.Final"
-lombok = "1.18.44"
-shadow = "9.3.2"
-buildconfig = "6.0.9"
-gson = "2.13.2"
-logback = "1.5.18"
+netty = "4.2.15.Final"
+lombok = "1.18.46"
+shadow = "9.4.2"
+buildconfig = "6.0.10"
+gson = "2.14.0"
+logback = "1.5.34"
 configurate = "4.2.0"
-kyori-adventure = "4.26.1"
+kyori-adventure = "5.1.1"
 
 [plugins]
 shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }

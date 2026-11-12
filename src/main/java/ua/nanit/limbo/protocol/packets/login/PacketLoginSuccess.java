@@ -34,6 +34,7 @@ public class PacketLoginSuccess implements PacketOut {
 
     private UUID uuid;
     private String username;
+    private UUID sessionId;
 
     @Override
     public void encode(@NonNull ByteMessage msg, @NonNull Version version) {
@@ -50,6 +51,9 @@ public class PacketLoginSuccess implements PacketOut {
         }
         if (version.fromTo(Version.V1_20_5, Version.V1_21)) {
             msg.writeBoolean(true);
+        }
+        if (version.moreOrEqual(Version.V26_2)) {
+            msg.writeUuid(this.sessionId);
         }
     }
 
