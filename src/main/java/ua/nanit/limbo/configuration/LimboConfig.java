@@ -104,7 +104,7 @@ public final class LimboConfig {
         useBossBar = conf.node("bossBar", "enable").getBoolean();
         useTitle = conf.node("title", "enable").getBoolean();
         usePlayerList = conf.node("playerList", "enable").getBoolean();
-        playerListUsername = conf.node("playerList", "username").getString();
+        playerListUsername = conf.node("playerList", "username").getString("NanoLimbo");
         useHeaderAndFooter = conf.node("headerAndFooter", "enable").getBoolean();
 
         if (useBrandName) {
