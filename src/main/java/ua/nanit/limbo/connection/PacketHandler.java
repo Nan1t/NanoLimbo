@@ -68,11 +68,10 @@ public class PacketHandler {
                 }
 
                 if (this.server.getConfig().getInfoForwarding().isLegacy()) {
-                    String[] split = packet.getHost().split("\00");
-
-                    if (split.length == 3 || split.length == 4) {
-                        conn.setAddress(split[1]);
-                        conn.getGameProfile().setUuid(UUIDUtils.fromString(split[2]));
+                    ForwardingUtils.LegacyForwarding forwarding = ForwardingUtils.parseLegacyForwarding(packet.getHost());
+                    if (forwarding != null) {
+                        conn.setAddress(forwarding.address());
+                        conn.getGameProfile().setUuid(forwarding.uuid());
                     } else {
                         conn.disconnect(Component.text("You've enabled player info forwarding. You need to connect with proxy", NamedTextColor.RED));
                     }
@@ -150,7 +149,9 @@ public class PacketHandler {
 
         if (!server.getConfig().getInfoForwarding().isModern()) {
             conn.getGameProfile().setUsername(packet.getUsername());
-            conn.getGameProfile().setUuid(UUIDUtils.getOfflineModeUuid(packet.getUsername()));
+            if (conn.getGameProfile().getUuid() == null) {
+                conn.getGameProfile().setUuid(UUIDUtils.getOfflineModeUuid(packet.getUsername()));
+            }
         }
 
         conn.fireLoginSuccess();
