@@ -20,6 +20,7 @@ package ua.nanit.limbo.connection;
 import io.netty.buffer.ByteBufAllocator;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
+import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import ua.nanit.limbo.LimboConstants;
 import ua.nanit.limbo.protocol.ByteMessage;
@@ -68,6 +69,10 @@ public class PacketSnapshots {
     public static PacketSnapshot PACKET_TITLE_LEGACY_TITLE;
     public static PacketSnapshot PACKET_TITLE_LEGACY_SUBTITLE;
     public static PacketSnapshot PACKET_TITLE_LEGACY_TIMES;
+
+    public static PacketSnapshot PACKET_ACTION_BAR;
+    public static PacketSnapshot PACKET_ACTION_BAR_LEGACY;
+    public static PacketSnapshot PACKET_ACTION_BAR_CHAT;
 
     public static PacketSnapshot PACKET_REGISTRY_DATA;
     private static Map<Version, List<PacketSnapshot>> PACKETS_REGISTRY_DATA;
@@ -135,7 +140,6 @@ public class PacketSnapshots {
         );
 
         PacketDeclareCommands declareCommands = new PacketDeclareCommands();
-        declareCommands.setCommands(Collections.emptyList());
 
         PacketPlayerInfo info = new PacketPlayerInfo();
         info.setUsername(playerListName);
@@ -220,6 +224,27 @@ public class PacketSnapshots {
             PACKET_TITLE_LEGACY_TITLE = PacketSnapshot.of(legacyTitle);
             PACKET_TITLE_LEGACY_SUBTITLE = PacketSnapshot.of(legacySubtitle);
             PACKET_TITLE_LEGACY_TIMES = PacketSnapshot.of(legacyTimes);
+        }
+
+        if (server.getConfig().isUseActionBar()) {
+            Component text = server.getConfig().getActionBar();
+
+            PacketChatMessage actionBar = new PacketChatMessage();
+            actionBar.setMessage(text);
+            actionBar.setPosition(PacketChatMessage.PositionLegacy.ACTION_BAR);
+            actionBar.setSender(new UUID(0, 0));
+            PACKET_ACTION_BAR = PacketSnapshot.of(actionBar);
+
+            PacketTitleLegacy legacyActionBar = new PacketTitleLegacy();
+            legacyActionBar.setAction(PacketTitleLegacy.Action.SET_ACTION_BAR);
+            legacyActionBar.setActionBar(text);
+            PACKET_ACTION_BAR_LEGACY = PacketSnapshot.of(legacyActionBar);
+
+            PacketChatMessage chatActionBar = new PacketChatMessage();
+            chatActionBar.setMessage(Component.text(ComponentUtils.toLegacyString(text)));
+            chatActionBar.setPosition(PacketChatMessage.PositionLegacy.ACTION_BAR);
+            chatActionBar.setSender(new UUID(0, 0));
+            PACKET_ACTION_BAR_CHAT = PacketSnapshot.of(chatActionBar);
         }
 
         PACKET_KNOWN_PACKS = PacketSnapshot.of(PacketKnownPacks.class, (version) -> {

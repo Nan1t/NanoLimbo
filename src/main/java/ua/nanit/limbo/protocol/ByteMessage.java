@@ -24,7 +24,9 @@ import io.netty.handler.codec.EncoderException;
 import io.netty.util.ByteProcessor;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
+import net.kyori.adventure.nbt.BinaryTag;
 import net.kyori.adventure.nbt.BinaryTagIO;
+import net.kyori.adventure.nbt.BinaryTagType;
 import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
@@ -215,6 +217,14 @@ public class ByteMessage extends ByteBuf {
         writeLongArray((bitSet != null ? bitSet.toLongArray() : null));
     }
 
+    public void writeBitSet(BitSet bitSet, @NonNull Version version) {
+        if (version.moreOrEqual(Version.V26_3)) {
+            writeBytesArray(bitSet != null ? bitSet.toByteArray() : new byte[0]);
+        } else {
+            writeBitSet(bitSet);
+        }
+    }
+
     public void writeCompoundTagArray(CompoundBinaryTag[] compoundTags) {
         try (ByteBufOutputStream stream = new ByteBufOutputStream(buf)) {
             writeVarInt(compoundTags.length);
@@ -255,6 +265,17 @@ public class ByteMessage extends ByteBuf {
             }
         } catch (IOException e) {
             throw new EncoderException("Cannot write NBT CompoundTag");
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public void writeTag(@NonNull BinaryTag tag) {
+        try (ByteBufOutputStream stream = new ByteBufOutputStream(buf)) {
+            BinaryTagType<BinaryTag> type = (BinaryTagType<BinaryTag>) tag.type();
+            stream.writeByte(type.id());
+            type.write(tag, stream);
+        } catch (IOException e) {
+            throw new EncoderException("Cannot write NBT BinaryTag: " + tag.type(), e);
         }
     }
 

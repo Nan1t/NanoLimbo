@@ -205,6 +205,16 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
                 writeTitle();
             }
 
+            if (PacketSnapshots.PACKET_ACTION_BAR != null && clientVersion.moreOrEqual(Version.V1_8)) {
+                if (clientVersion.moreOrEqual(Version.V1_17)) {
+                    writePacket(PacketSnapshots.PACKET_ACTION_BAR);
+                } else if (clientVersion.moreOrEqual(Version.V1_11)) {
+                    writePacket(PacketSnapshots.PACKET_ACTION_BAR_LEGACY);
+                } else {
+                    writePacket(PacketSnapshots.PACKET_ACTION_BAR_CHAT);
+                }
+            }
+
             if (PacketSnapshots.PACKET_HEADER_AND_FOOTER != null && clientVersion.moreOrEqual(Version.V1_8)) {
                 writePacket(PacketSnapshots.PACKET_HEADER_AND_FOOTER);
             }
