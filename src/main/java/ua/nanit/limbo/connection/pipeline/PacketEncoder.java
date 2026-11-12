@@ -19,6 +19,7 @@ package ua.nanit.limbo.connection.pipeline;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.EncoderException;
 import io.netty.handler.codec.MessageToByteEncoder;
 import lombok.NonNull;
 import ua.nanit.limbo.protocol.ByteMessage;
@@ -67,8 +68,8 @@ public class PacketEncoder extends MessageToByteEncoder<Packet> {
             if (Log.isDebug()) {
                 Log.debug("Sending %s(%s) [%s|%s] packet (%d bytes)", packet.toString(), PacketUtils.toPacketId(packetId), version, state, msg.readableBytes());
             }
-        } catch (Exception e) {
-            Log.error("Cannot encode packet %s(%s) [%s|%s]: %s", packet.toString(), PacketUtils.toPacketId(packetId), version, state, e.getMessage());
+        } catch (Throwable throwable) {
+            throw new EncoderException("Cannot encode packet " + PacketUtils.toDetailedInfo(packet, packetId, version, state), throwable);
         }
     }
 

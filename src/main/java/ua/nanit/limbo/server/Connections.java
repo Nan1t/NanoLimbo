@@ -19,6 +19,7 @@ package ua.nanit.limbo.server;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.Nullable;
 import ua.nanit.limbo.configuration.LimboConfig;
 import ua.nanit.limbo.connection.ClientConnection;
 
@@ -45,15 +46,20 @@ public final class Connections {
         return this.connections.size();
     }
 
-    public void addConnection(@NonNull ClientConnection connection) {
-        this.connections.put(connection.getUuid(), connection);
+    @Nullable
+    public ClientConnection addConnection(@NonNull ClientConnection connection) {
         Object address = config.isLogPlayersIp() ? connection.getAddress() : REDACTED_ADDRESS;
         Log.info("Player %s connected (%s) [%s]", connection.getUsername(),
                 address, connection.getClientVersion());
+        return this.connections.put(connection.getUuid(), connection);
     }
 
     public void removeConnection(@NonNull ClientConnection connection) {
-        this.connections.remove(connection.getUuid());
-        Log.info("Player %s disconnected", connection.getUsername());
+        UUID uuid = connection.getUuid();
+        if (uuid != null && this.connections.remove(uuid, connection)) {
+            Object address = config.isLogPlayersIp() ? connection.getAddress() : REDACTED_ADDRESS;
+            Log.info("Player %s disconnected (%s) [%s]", connection.getUsername(),
+                    address, connection.getClientVersion());
+        }
     }
 }

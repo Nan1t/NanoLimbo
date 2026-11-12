@@ -68,11 +68,10 @@ public class PacketHandler {
                 }
 
                 if (this.server.getConfig().getInfoForwarding().isLegacy()) {
-                    String[] split = packet.getHost().split("\00");
-
-                    if (split.length == 3 || split.length == 4) {
-                        conn.setAddress(split[1]);
-                        conn.getGameProfile().setUuid(UUIDUtils.fromString(split[2]));
+                    ForwardingUtils.LegacyForwarding forwarding = ForwardingUtils.parseLegacyForwarding(packet.getHost());
+                    if (forwarding != null) {
+                        conn.setAddress(forwarding.address());
+                        conn.getGameProfile().setUuid(forwarding.uuid());
                     } else {
                         conn.disconnect(Component.text("You've enabled player info forwarding. You need to connect with proxy", NamedTextColor.RED));
                     }
@@ -124,6 +123,9 @@ public class PacketHandler {
     }
 
     public void handle(@NonNull ClientConnection conn, @NonNull PacketLoginStart packet) {
+        if (conn.getUsername() != null) {
+            return;
+        }
         if (server.getConfig().getMaxPlayers() > 0 &&
                 server.getConnections().getCount() >= server.getConfig().getMaxPlayers()) {
             conn.disconnect(Component.text("Too many players connected", NamedTextColor.RED));
@@ -150,13 +152,18 @@ public class PacketHandler {
 
         if (!server.getConfig().getInfoForwarding().isModern()) {
             conn.getGameProfile().setUsername(packet.getUsername());
-            conn.getGameProfile().setUuid(UUIDUtils.getOfflineModeUuid(packet.getUsername()));
+            if (conn.getGameProfile().getUuid() == null) {
+                conn.getGameProfile().setUuid(UUIDUtils.getOfflineModeUuid(packet.getUsername()));
+            }
         }
 
         conn.fireLoginSuccess();
     }
 
     public void handle(@NonNull ClientConnection conn, @NonNull PacketLoginPluginResponse packet) {
+        if (conn.getUsername() != null) {
+            return;
+        }
         if (server.getConfig().getInfoForwarding().isModern()
                 && packet.getMessageId() == conn.getVelocityLoginMessageId()) {
 
@@ -165,32 +172,41 @@ public class PacketHandler {
                 return;
             }
 
-            ByteMessage msg = packet.getData();
-            if (!ForwardingUtils.checkVelocityKeyIntegrity(conn, msg)) {
-                conn.disconnect(Component.text("Can't verify forwarded player info", NamedTextColor.RED));
-                return;
+            ByteMessage msg = new ByteMessage(Unpooled.wrappedBuffer(packet.getData()));
+            try {
+                if (!ForwardingUtils.checkVelocityKeyIntegrity(conn, msg)) {
+                    conn.disconnect(Component.text("Can't verify forwarded player info", NamedTextColor.RED));
+                    return;
+                }
+
+                int version = msg.readVarInt();
+                if (version > ForwardingUtils.VELOCITY_MAX_SUPPORTED_FORWARDING_VERSION) {
+                    conn.disconnect(Component.text("Unsupported forwarding version " + version + ", wanted upto " + ForwardingUtils.VELOCITY_MAX_SUPPORTED_FORWARDING_VERSION, NamedTextColor.RED));
+                    return;
+                }
+
+                String address = msg.readString();
+                UUID uuid = msg.readUuid();
+                String userName = msg.readString();
+
+                conn.setAddress(address);
+                GameProfile gameProfile = conn.getGameProfile();
+                gameProfile.setUuid(uuid);
+                gameProfile.setUsername(userName);
+
+                conn.fireLoginSuccess();
+            } finally {
+                msg.release();
             }
-
-            int version = msg.readVarInt();
-            if (version > ForwardingUtils.VELOCITY_MAX_SUPPORTED_FORWARDING_VERSION) {
-                conn.disconnect(Component.text("Unsupported forwarding version " + version + ", wanted upto " + ForwardingUtils.VELOCITY_MAX_SUPPORTED_FORWARDING_VERSION, NamedTextColor.RED));
-                return;
-            }
-
-            String address = msg.readString();
-            UUID uuid = msg.readUuid();
-            String userName = msg.readString();
-
-            conn.setAddress(address);
-            GameProfile gameProfile = conn.getGameProfile();
-            gameProfile.setUuid(uuid);
-            gameProfile.setUsername(userName);
-
-            conn.fireLoginSuccess();
         }
     }
 
     public void handle(@NonNull ClientConnection conn, @NonNull PacketLoginAcknowledged packet) {
+        // Without a completed login the client would skip forwarding and the player limit.
+        if (conn.getUsername() == null) {
+            conn.disconnect(Component.text("Login was not completed", NamedTextColor.RED));
+            return;
+        }
         conn.onLoginAcknowledgedReceived();
     }
 

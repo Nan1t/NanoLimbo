@@ -65,6 +65,9 @@ public final class LimboConfig {
     private BossBar bossBar;
     private Title title;
 
+    private boolean useActionBar;
+    private Component actionBar;
+
     private String playerListUsername;
     private Component playerListHeader;
     private Component playerListFooter;
@@ -104,7 +107,7 @@ public final class LimboConfig {
         useBossBar = conf.node("bossBar", "enable").getBoolean();
         useTitle = conf.node("title", "enable").getBoolean();
         usePlayerList = conf.node("playerList", "enable").getBoolean();
-        playerListUsername = conf.node("playerList", "username").getString();
+        playerListUsername = conf.node("playerList", "username").getString("NanoLimbo");
         useHeaderAndFooter = conf.node("headerAndFooter", "enable").getBoolean();
 
         if (useBrandName) {
@@ -121,6 +124,11 @@ public final class LimboConfig {
 
         if (useTitle) {
             title = conf.node("title").get(Title.class);
+        }
+
+        useActionBar = conf.node("actionBar", "enable").getBoolean(false);
+        if (useActionBar) {
+            actionBar = conf.node("actionBar", "text").get(Component.class, Component.empty());
         }
 
         if (useHeaderAndFooter) {
