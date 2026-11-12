@@ -3,7 +3,7 @@
 This is a lightweight Minecraft limbo server, written in Java with Netty.
 The main goal of this project is maximum simplicity with a minimum number of sent and processed packets.
 The limbo is empty; there is no ability to set a schematic building since this is not necessary.
-You can send useful information via chat or boss bar.
+You can send useful information via chat, boss bar, or an optional action bar message on join.
 
 The server is fully clear. It is only able to keep a lot of players while the main server is down.
 

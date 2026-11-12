@@ -70,6 +70,11 @@ bossBar:
   # Available divisions: SOLID, DASHES_6, DASHES_10, DASHES_12, DASHES_20
   division: SOLID
 
+# Action bar text shows for about 3 seconds after join on 1.8+ clients.
+actionBar:
+  enable: false
+  text: "<white>Welcome to the <gradient:blue:white>NanoLimbo<white>!"
+
 # Display title and subtitle
 # For 1.8+ clients
 title:
