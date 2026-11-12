@@ -106,15 +106,15 @@ public class PacketChunkWithLight implements PacketOut {
     }
 
     private void writeLightData(@NonNull ByteMessage buf, @NonNull Version version) {
-        buf.writeBitSet(null); // Sky y mask
-        buf.writeBitSet(null); // Block y mask
-        buf.writeBitSet(null); // Empty sky y mask
-        BitSet emptyBlocksYMask = new BitSet();
         int sections = this.dimension.getChunkSections(version);
-        for (int i = 0; i < (sections + 2); i++) {
-            emptyBlocksYMask.set(i, true);
-        }
-        buf.writeBitSet(emptyBlocksYMask);
+        BitSet emptyBlocksYMask = new BitSet(sections + 2);
+        emptyBlocksYMask.set(0, sections + 2);
+
+        buf.writeBitSet(null, version); // Sky y mask
+        buf.writeBitSet(null, version); // Block y mask
+        buf.writeBitSet(null, version); // Empty sky y mask
+        buf.writeBitSet(emptyBlocksYMask, version); // Empty block y mask
+
         // Skip sky updates
         buf.writeVarInt(0);
         // Skip block updates

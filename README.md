@@ -40,6 +40,7 @@ Symbol `X` means all minor versions.
 - [x] 1.21.X &nbsp; *(incl. 1.21.2, 1.21.3, 1.21.4, 1.21.5, 1.21.6, 1.21.7, 1.21.8, 1.21.9, 1.21.10, 1.21.11)*
 - [x] 26.1.X
 - [x] 26.2
+- [x] 26.3
 
 The server **doesn't** support snapshots.
 
