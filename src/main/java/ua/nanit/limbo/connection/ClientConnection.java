@@ -21,6 +21,8 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.handler.codec.DecoderException;
+import io.netty.handler.timeout.ReadTimeoutException;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -41,6 +43,7 @@ import ua.nanit.limbo.server.LimboServer;
 import ua.nanit.limbo.server.Log;
 import ua.nanit.limbo.util.ComponentUtils;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.List;
@@ -89,7 +92,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelInactive(@NotNull ChannelHandlerContext ctx) throws Exception {
-        if (state.equals(State.PLAY) || state.equals(State.CONFIGURATION)) {
+        if (state == State.PLAY || state == State.CONFIGURATION) {
             server.getConnections().removeConnection(this);
         }
         super.channelInactive(ctx);
@@ -98,10 +101,30 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         if (channel.isActive()) {
-            Log.error("Encountered exception", cause);
+            if (isExpectedDisconnect(cause)) {
+                String message = String.valueOf(cause.getMessage()).replace("\r", "").replace("\n", "");
+                Log.debug("Expected disconnect: %s: %s", cause.getClass().getSimpleName(), message);
+            } else {
+                Log.error("Encountered exception", cause);
+            }
 
             ctx.close();
         }
+    }
+
+    private boolean isExpectedDisconnect(Throwable cause) {
+        if (cause instanceof IOException || cause instanceof ReadTimeoutException) {
+            return true;
+        }
+        if (!(cause instanceof DecoderException)
+                || (state != null && state != State.HANDSHAKING && state != State.STATUS)) {
+            return false;
+        }
+        while (cause instanceof DecoderException && cause.getCause() != null) {
+            cause = cause.getCause();
+        }
+        return cause.getCause() == null
+                && (cause instanceof DecoderException || cause instanceof IndexOutOfBoundsException);
     }
 
     @Override
