@@ -27,6 +27,7 @@ public final class NanoLimbo {
             new LimboServer().start();
         } catch (Exception e) {
             Log.error("Cannot start server: ", e);
+            System.exit(1);
         }
     }
 }

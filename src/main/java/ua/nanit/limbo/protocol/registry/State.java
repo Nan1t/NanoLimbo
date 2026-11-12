@@ -137,7 +137,7 @@ public enum State {
             serverBound.register(
                     PacketPluginMessage::new,
                     map(0x01, V1_20_2, V1_20_3),
-                    map(0x02, V1_20_2, Version.getMax())
+                    map(0x02, V1_20_5, Version.getMax())
             );
             serverBound.register(
                     PacketFinishConfiguration::new,

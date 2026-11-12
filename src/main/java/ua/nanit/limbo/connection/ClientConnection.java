@@ -23,6 +23,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.DecoderException;
 import io.netty.handler.timeout.ReadTimeoutException;
+import io.netty.util.NetUtil;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -44,6 +45,7 @@ import ua.nanit.limbo.server.Log;
 import ua.nanit.limbo.util.ComponentUtils;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.List;
@@ -67,6 +69,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
 
     @Setter
     private int velocityLoginMessageId = -1;
+    private boolean knownPacksReceived;
 
     public ClientConnection(@NonNull Channel channel,
                             @NonNull LimboServer server,
@@ -92,9 +95,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelInactive(@NotNull ChannelHandlerContext ctx) throws Exception {
-        if (state == State.PLAY || state == State.CONFIGURATION) {
-            server.getConnections().removeConnection(this);
-        }
+        server.getConnections().removeConnection(this);
         super.channelInactive(ctx);
     }
 
@@ -139,14 +140,20 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
     }
 
     public void fireLoginSuccess() {
+        if (!isConnected()) {
+            return;
+        }
         if (server.getConfig().getInfoForwarding().isModern() && velocityLoginMessageId == -1) {
             disconnect(Component.text("You need to connect with Velocity", NamedTextColor.RED));
             return;
         }
 
-        sendPacket(PacketSnapshots.PACKET_LOGIN_SUCCESS);
+        ClientConnection oldConnection = this.server.getConnections().addConnection(this);
+        if (oldConnection != null) {
+            oldConnection.disconnect(Component.text("You logged in from another location", NamedTextColor.RED));
+        }
 
-        server.getConnections().addConnection(this);
+        sendPacket(PacketSnapshots.PACKET_LOGIN_SUCCESS);
 
         // Preparing for configuration mode
         if (clientVersion.moreOrEqual(Version.V1_20_2)) {
@@ -246,6 +253,11 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
     }
 
     public void onKnownPacksReceived() {
+        // Each reply resends the full registry, so a repeat would amplify traffic.
+        if (knownPacksReceived) {
+            return;
+        }
+        knownPacksReceived = true;
         List<PacketSnapshot> registry = PacketSnapshots.getPacketsRegistryData(this.clientVersion);
         if (registry != null) {
             writePackets(registry);
@@ -317,7 +329,7 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
 
     public void sendPacketAndClose(@NonNull Object packet) {
         if (isConnected()) {
-            channel.writeAndFlush(packet).addListener(ChannelFutureListener.CLOSE);
+            channel.writeAndFlush(packet).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE).addListener(ChannelFutureListener.CLOSE);
         }
     }
 
@@ -348,7 +360,12 @@ public class ClientConnection extends ChannelInboundHandlerAdapter {
     }
 
     public void setAddress(@NonNull String host) {
-        this.address = new InetSocketAddress(host, ((InetSocketAddress) this.address).getPort());
+        if (!(this.address instanceof InetSocketAddress inetSocketAddress)) {
+            return;
+        }
+        int port = inetSocketAddress.getPort();
+        InetAddress ip = NetUtil.createInetAddressFromIpAddressString(host);
+        this.address = ip != null ? new InetSocketAddress(ip, port) : InetSocketAddress.createUnresolved(host, port);
     }
 
 }
